@@ -2,7 +2,7 @@ import {booleanAttribute, Component, ContentChild, Input, OnInit, TemplateRef} f
 import {NgClass, NgStyle, NgTemplateOutlet} from "@angular/common";
 import {Nullable, Timeout} from "@ngp/core";
 import {Modal} from "../../modal";
-import {BooleanAttribute, Size, State, TagComponent, timeoutAttribute, TimeoutAttribute} from "@ngp/material-core";
+import {BooleanAttribute, Size, State, TagComponent, timeoutAttribute, TimeoutAttribute} from "@ngp-material/core";
 
 @Component({
   selector: 'b-modal',

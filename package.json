@@ -18,8 +18,9 @@
     "@angular/platform-browser": "^18.1.0",
     "@angular/platform-browser-dynamic": "^18.1.0",
     "@angular/router": "^18.1.0",
+    "@ngp-material/bootstrap-modal": "file:dist/b-modal/ngp-material-bootstrap-modal-0.0.1.tgz",
+    "@ngp-material/core": "file:dist/core/ngp-material-core-0.0.1.tgz",
     "@ngp/core": "file:../angular/dist/core/ngp-core-0.0.1.tgz",
-    "@ngp/material-core": "file:dist/core/ngp-material-core-0.0.1.tgz",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
