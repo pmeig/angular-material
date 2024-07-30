@@ -1,0 +1,138 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "schematics": {
+    "@schematics/angular:interceptor": {
+      "skipTests": true,
+      "functional": true
+    },
+    "@schematics/angular:resolver": {
+      "functional": true,
+      "skipTests": true
+    },
+    "@schematics/angular:guard": {
+      "skipTests": true,
+      "functional": true
+    },
+    "@schematics/angular:interface": {
+      "prefix": "ngp"
+    },
+    "@schematics/angular:class": {
+      "skipTests": true
+    },
+    "@schematics/angular:service": {
+      "skipTests": true
+    },
+    "@schematics/angular:pipe": {
+      "skipTests": true,
+      "standalone": true
+    },
+    "@schematics/angular:library": {
+      "standalone": true,
+      "prefix": "ngp"
+    },
+    "@schematics/angular:application": {
+      "prefix": "ngp",
+      "standalone": true,
+      "skipTests": true,
+      "ssr": true,
+      "routing": true,
+      "style": "scss",
+      "strict": true
+    },
+    "@schematics/angular:directive": {
+      "skipTests": true,
+      "standalone": true,
+      "prefix": "ngp"
+    },
+    "@schematics/angular:component": {
+      "prefix": "ngp",
+      "standalone": true,
+      "skipTests": true,
+      "style": "scss",
+      "changeDetection": "OnPush"
+    },
+    "@schematics/angular:ng-new": {
+      "style": "scss",
+      "skipTests": true,
+      "standalone": true,
+      "prefix": "ngp",
+      "strict": true,
+      "routing": true,
+      "ssr": true,
+      "createApplication": false
+    }
+  },
+  "cli": {
+    "analytics": false
+  },
+  "projects": {
+    "core": {
+      "projectType": "library",
+      "root": "projects/core",
+      "sourceRoot": "projects/core/src",
+      "prefix": "ngp",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/core/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/core/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/core/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/core/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-modal": {
+      "projectType": "library",
+      "root": "projects/bootstrap/modal",
+      "sourceRoot": "projects/bootstrap/modal/src",
+      "prefix": "ngp",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/modal/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/modal/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/modal/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/modal/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
