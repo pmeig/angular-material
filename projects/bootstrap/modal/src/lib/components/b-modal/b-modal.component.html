@@ -1,5 +1,5 @@
 @if (visible.display) {
-<div [id]="id()" [class]="'modal ' + classes" [style]="styles" (click)="closeByClick(modalTemplate, $event)"
+<div [id]="name" [class]="'modal ' + classes" (click)="closeByClick(modalTemplate, $event)"
      [ngClass]="{show: visible.show, 'd-block': visible.display, 'no-backdrop': !enabled.backdrop,
       'modal-static': animations.static, zoom: animations.type === 'zoom', fade: animations.type === 'fade'}">
     <div [class]="'modal-dialog ' + settings.size" [ngClass]="{'modal-dialog-centered': settings.center,
@@ -16,7 +16,7 @@
             </div>
             <div class="btn-group">
               @if (enabled.cross) {
-                <button [id]="id() + '-close'" class="btn-close" (click)="close()"></button>
+                <button [id]="name + '-close'" class="btn-close" (click)="close()"></button>
               }
             </div>
           </div>

@@ -1,6 +1,6 @@
 export interface Modal {
-  id: () => string
+  name: string
   close: () => void
   open: () => void
-  isOpened: () => boolean
+  opened: boolean
 }

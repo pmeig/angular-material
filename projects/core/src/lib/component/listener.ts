@@ -67,8 +67,8 @@ export abstract class Listener implements OnDestroy {
     })
   }
 
-  public addTimeout(timeout: number): ItemListener<number> {
-    const item = { id: Math.random().toString(36), item: timeout }
+  public    addTimeout(timeout: any): ItemListener<number> {
+    const item = { id: Math.random().toString(36), item: timeout as number }
     this.timeouts.push(item)
     return item
   }

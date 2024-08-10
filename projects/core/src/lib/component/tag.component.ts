@@ -1,55 +1,46 @@
-import {Component, HostListener, Input} from "@angular/core";
-import {State} from "../annotation/signal.helper";
+import {Component, computed, Directive, HostListener, input, Input} from "@angular/core";
+import {ref, state} from "../annotation/signal.helper";
 import {Listener} from "./listener";
 import {isNotBlank} from "@ngp/core";
+import {classesCss, stylesCss} from "../helper/style.helper";
 
-@Component({ template: '' })
+@Component({template: ''})
 export abstract class TagComponent extends Listener {
-  @State()
   @Input()
-  name?: string
-  @State()
-  isHovered: boolean = false;
-  @State()
-  private properties = {
+  name = ref(this, 'name', '')
+  protected isHovered = ref(this, 'isHovered', false)
+  protected classes = ref(this, 'classes', computed(() =>  `${this.properties.classes} ${this.properties.ngClasses}`))
+  protected styles = ref(this, 'styles', computed(() =>  `${this.properties.styles ? this.properties.styles + ';' : ''}${this.properties.ngStyles}`))
+
+  private properties = state({
     classes: '',
     styles: '',
     ngStyles: '',
     ngClasses: ''
+  })
+
+  protected constructor() {
+    super();
   }
 
-  get classes(): string {
-    return `${this.properties.classes} ${this.properties.ngClasses}`
-  }
-
-  get styles(): string {
-    return `${this.properties.styles ? this.properties.styles + ';' : ''}${this.properties.ngStyles}`
-  }
-
-  @Input()
-  set classes(classes: string) {
+  @Input('classes')
+  set _classes(classes: string) {
     this.properties.classes = classes;
   }
 
-  @Input()
-  set styles(styles: string) {
+  @Input('styles')
+  set _styles(styles: string) {
     this.properties.styles = styles;
   }
 
   @Input()
-  set ngStyles(styles: Record<string, unknown>) {
-    this.properties.ngStyles = Object.entries(styles)
-      .filter(value => isNotBlank(value[1]) && value[1])
-      .map(value => `${value[0]}: ${value[1]}`)
-      .join('; ')
+  set ngStyles(styles: Record<string, string>) {
+    this.properties.ngStyles = stylesCss(styles)
   }
 
   @Input()
   set ngClasses(classes: Record<string, unknown>) {
-    this.properties.ngClasses = Object.entries(classes)
-      .filter(([_, value]) => isNotBlank(value) && value)
-      .map(([name]) => name)
-      .join('; ')
+    this.properties.ngClasses = classesCss(classes)
   }
 
   @HostListener('mouseenter')

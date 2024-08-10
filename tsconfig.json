@@ -4,8 +4,14 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
+      "b-btn": [
+        "./dist/b-btn"
+      ],
       "b-modal": [
         "./dist/b-modal"
+      ],
+      "button": [
+        "./dist/button"
       ],
       "core": [
         "./dist/core"

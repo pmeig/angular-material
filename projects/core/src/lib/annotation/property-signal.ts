@@ -1,18 +1,17 @@
-import { isSignal, signal, Signal, WritableSignal } from '@angular/core'
-import { toSignal } from '@angular/core/rxjs-interop'
+import {isSignal, signal, Signal, WritableSignal} from '@angular/core'
+import {toSignal} from '@angular/core/rxjs-interop'
+import {isBlank, isNotBlank} from "@ngp/core";
 
 export class PropertySignal implements PropertyDescriptor {
   configurable = true
   enumerable = false
-  property: WritableSignal<any> | Signal<any>
+  property?: Signal<any>
 
-  constructor(property: any) {
-    this.property = isSignal(property)
-      ? (property as WritableSignal<any>)
-      : PropertySignal.initSignal(property)
+  constructor(property?: any) {
     this.set = this.set.bind(this)
     this.get = this.get.bind(this)
     this.putProperty = this.putProperty.bind(this)
+    this.set(property)
   }
 
   private static initSignal(property: any): Signal<any> | WritableSignal<any> {
@@ -23,10 +22,24 @@ export class PropertySignal implements PropertyDescriptor {
   }
 
   get(): any {
-    return this.property()
+    return this.property ? this.property() : undefined
   }
 
   set(value: any): void {
+    if (isNotBlank(value)) {
+      if (isBlank(this.property)) {
+        this.property = this.convertToSignal(value)
+      }
+      if ('set' in this.property!!) {
+        // this.set = this.insert.bind(this)
+        this.insert(value)
+      } else {
+        // this.set = () => {}
+      }
+    }
+  }
+
+  private insert(value: any) {
     this.enumerable = false
     if (typeof value === 'object' && value !== null) {
       if (Array.isArray(value)) {
@@ -43,7 +56,6 @@ export class PropertySignal implements PropertyDescriptor {
         Object.entries(value).forEach(([key, item]) => {
           Reflect.deleteProperty(value, key)
           Reflect.defineProperty(value, key, new PropertySignal(item))
-          value[key] = item
         })
         this.putProperty(value)
       }
@@ -51,9 +63,14 @@ export class PropertySignal implements PropertyDescriptor {
       this.putProperty(value)
     }
   }
-
   private putProperty(property: any) {
     (this.property as WritableSignal<any>).set(property)
+  }
+
+  private convertToSignal(property: any) {
+    return isSignal(property)
+      ? property
+      : PropertySignal.initSignal(property)
   }
 }
 

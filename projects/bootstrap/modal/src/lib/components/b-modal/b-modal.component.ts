@@ -1,8 +1,24 @@
-import {booleanAttribute, Component, ContentChild, Input, OnInit, TemplateRef} from '@angular/core';
+import {
+  booleanAttribute,
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  Input,
+  OnInit,
+  TemplateRef
+} from '@angular/core';
 import {NgClass, NgStyle, NgTemplateOutlet} from "@angular/common";
 import {Nullable, Timeout} from "@ngp/core";
 import {Modal} from "../../modal";
-import {BooleanAttribute, Size, State, TagComponent, timeoutAttribute, TimeoutAttribute} from "@ngp-material/core";
+import {
+  BooleanAttribute,
+  Size,
+  SizeAttribute,
+  state,
+  TagComponent,
+  timeoutAttribute,
+  TimeoutAttribute
+} from "@ngp-material/core";
 
 @Component({
   selector: 'b-modal',
@@ -13,15 +29,15 @@ import {BooleanAttribute, Size, State, TagComponent, timeoutAttribute, TimeoutAt
     NgStyle
   ],
   templateUrl: './b-modal.component.html',
-  styleUrl: './b-modal.component.scss'
+  styleUrl: './b-modal.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BModalComponent extends TagComponent implements Modal, OnInit {
   @ContentChild('header') protected header?: TemplateRef<any> | any
   @ContentChild('body') protected body?: TemplateRef<any> | any
   @ContentChild('footer') protected footer?: TemplateRef<any> | any
 
-  @State()
-  private state = {
+  private state = state({
     visible: {
       show: false,
       display: false,
@@ -46,9 +62,9 @@ export class BModalComponent extends TagComponent implements Modal, OnInit {
       closeOutside: true,
       size: ''
     }
-  }
+  })
   private isFullscreen = false
-  private lastSize: Size
+  private lastSize?: Size
   private timeBeforeClose?: Timeout;
   private onInitEnable = false
   private onStart = {
@@ -93,7 +109,7 @@ export class BModalComponent extends TagComponent implements Modal, OnInit {
   }
 
   @Input()
-  set size(size: Size) {
+  set size(size: SizeAttribute) {
     let template = this.isFullscreen ? 'modal-fullscreen-size-down' : 'modal-size'
     if (size) {
       if (!this.isFullscreen) {
@@ -117,8 +133,8 @@ export class BModalComponent extends TagComponent implements Modal, OnInit {
     this.text.title = title
   }
 
-  id(): string {
-    return this.name || '';
+  constructor() {
+    super();
   }
 
   ngOnInit(): void {
@@ -148,25 +164,25 @@ export class BModalComponent extends TagComponent implements Modal, OnInit {
       this.clearTimeout(this.onStart.timeout)
       this.onStart.timeout = undefined
       this.clearTimeout(this.onStart.animation)
-      this.onStart.animation = undefined
       this.visible.show = false
+      setTimeout(() => this.visible.display = false, 170)
       this.onStart.animation = this.appendTimeout(170, () => this.visible.display = false).id
     }
   }
 
   open() {
-    if (!this.visible.show) {
+    // if (!this.visible.show) {
       this.visible.display = true
       this.clearTimeout(this.onStart.animation)
-      this.onStart.animation = undefined
       this.onStart.animation = this.appendTimeout(170, () => this.visible.show = true).id
+      setTimeout(() => this.visible.show = true, 170)
       if (this.timeBeforeClose) {
         this.onStart.timeout = this.appendTimeout(this.timeBeforeClose, () => this.close()).id
       }
-    }
+    // }
   }
 
-  isOpened(): boolean {
+  get opened(): boolean {
     return this.visible.show;
   }
 
