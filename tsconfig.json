@@ -7,6 +7,9 @@
       "b-btn": [
         "./dist/b-btn"
       ],
+      "b-input": [
+        "./dist/b-input",
+      ],
       "b-modal": [
         "./dist/b-modal"
       ],

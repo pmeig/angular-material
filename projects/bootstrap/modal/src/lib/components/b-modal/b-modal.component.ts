@@ -19,6 +19,7 @@ import {
   timeoutAttribute,
   TimeoutAttribute
 } from "@ngp-material/core";
+import { BBtnGroup } from '@ngp-material/bootstrap-btn';
 
 @Component({
   selector: 'b-modal',
@@ -26,7 +27,8 @@ import {
   imports: [
     NgTemplateOutlet,
     NgClass,
-    NgStyle
+    NgStyle,
+    BBtnGroup
   ],
   templateUrl: './b-modal.component.html',
   styleUrl: './b-modal.component.scss',

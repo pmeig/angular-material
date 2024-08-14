@@ -48,15 +48,15 @@ export class BBtnDirective extends TagDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    this.element?.addEventListener('click', this.eventClickBind, true)
-    this.element?.addEventListener('dblclick', this.eventClickBind, true)
-    this.element?.addEventListener('submit', this.eventClickBind, true)
-    this.element?.addEventListener('enter', this.eventClickBind, true)
+    this.overrideEvent('click', this.eventClickBind)
+    this.overrideEvent('dblclick', this.eventClickBind)
+    this.overrideEvent('submit', this.eventClickBind)
+    this.overrideEvent('enter', this.eventClickBind)
   }
 
 
 
-  protected afterViewInit(): void {
+  protected override afterViewInit(): void {
     if (this.disabled) {
       this.renderer.setAttribute(this.element, 'disabled', '')
     } else {

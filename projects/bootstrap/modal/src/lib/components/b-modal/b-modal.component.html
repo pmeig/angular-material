@@ -14,7 +14,8 @@
                 <div class="modal-title">{{ text.title }}</div>
               }
             </div>
-            <div class="btn-group">
+            <div b-btn-group>
+              <ng-content select="[btn]"></ng-content>
               @if (enabled.cross) {
                 <button [id]="name + '-close'" class="btn-close" (click)="close()"></button>
               }

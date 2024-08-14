@@ -18,7 +18,6 @@
     "@angular/platform-browser": "^18.1.0",
     "@angular/platform-browser-dynamic": "^18.1.0",
     "@angular/router": "^18.1.0",
-    "@ngp-material/b-btn": "file:dist/b-btn/ngp-material-b-btn-0.0.1.tgz",
     "@ngp-material/bootstrap-btn": "file:dist/b-btn/ngp-material-bootstrap-btn-0.0.1.tgz",
     "@ngp-material/bootstrap-modal": "file:dist/b-modal/ngp-material-bootstrap-modal-0.0.1.tgz",
     "@ngp-material/core": "file:dist/core/ngp-material-core-0.0.1.tgz",
