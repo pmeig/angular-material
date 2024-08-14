@@ -22,6 +22,7 @@
     "@ngp-material/bootstrap-modal": "file:dist/b-modal/ngp-material-bootstrap-modal-0.0.1.tgz",
     "@ngp-material/core": "file:dist/core/ngp-material-core-0.0.1.tgz",
     "@ngp/core": "file:../angular/dist/core/ngp-core-0.0.1.tgz",
+    "b-input": "file:dist/b-input/b-input-0.0.1.tgz",
     "bootstrap": "^5.3.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

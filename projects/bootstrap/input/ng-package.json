@@ -3,5 +3,13 @@
   "dest": "../../../dist/b-input",
   "lib": {
     "entryFile": "src/public-api.ts"
+  },
+  "assets": [{
+    "glob": "**/*.scss",
+    "ignore": ["**/*.component.scss"],
+    "followSymlinks": true,
+    "output": "./scss",
+    "input": "./src/lib"
   }
+  ]
 }

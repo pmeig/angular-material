@@ -1,3 +1,2 @@
-/*
- * Public API Surface of b-input
- */
+export * from './lib/b-input/b-input.component'
+export * from './lib/b-input.directive'

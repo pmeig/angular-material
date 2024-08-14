@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'ngp-b-input',
+  selector: 'b-input',
   standalone: true,
   imports: [],
   templateUrl: './b-input.component.html',
