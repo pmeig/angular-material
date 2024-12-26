@@ -7,7 +7,7 @@ import {
   OnInit,
   TemplateRef
 } from '@angular/core';
-import {NgClass, NgStyle, NgTemplateOutlet} from "@angular/common";
+import {NgClass, NgTemplateOutlet} from "@angular/common";
 import {Nullable, Timeout} from "@ngp/core";
 import {Modal} from "../../modal";
 import {
@@ -19,7 +19,7 @@ import {
   timeoutAttribute,
   TimeoutAttribute
 } from "@ngp-material/core";
-import { BBtnGroup } from '@ngp-material/bootstrap-btn';
+import {BBtnGroupDirective} from '@ngp-material/bootstrap-btn';
 
 @Component({
   selector: 'b-modal',
@@ -27,8 +27,7 @@ import { BBtnGroup } from '@ngp-material/bootstrap-btn';
   imports: [
     NgTemplateOutlet,
     NgClass,
-    NgStyle,
-    BBtnGroup
+    BBtnGroupDirective
   ],
   templateUrl: './b-modal.component.html',
   styleUrl: './b-modal.component.scss',

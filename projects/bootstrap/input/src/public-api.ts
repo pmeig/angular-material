@@ -1,2 +1,1 @@
-export * from './lib/b-input/b-input.component'
-export * from './lib/b-input.directive'
+export * from './lib/directive/public-api.directive'

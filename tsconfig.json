@@ -7,8 +7,14 @@
       "b-btn": [
         "./dist/b-btn"
       ],
+      "b-form": [
+        "./dist/b-form"
+      ],
       "b-input": [
         "./dist/b-input",
+      ],
+      "b-label": [
+        "./dist/b-label"
       ],
       "b-modal": [
         "./dist/b-modal"
@@ -18,6 +24,9 @@
       ],
       "core": [
         "./dist/core"
+      ],
+      "form": [
+        "./dist/form"
       ]
     },
     "outDir": "./dist/out-tsc",

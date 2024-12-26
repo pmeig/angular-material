@@ -3,5 +3,9 @@
   "dest": "../../../dist/b-btn",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": [
+    "bootstrap",
+    "@ngp-material/core"
+  ]
 }

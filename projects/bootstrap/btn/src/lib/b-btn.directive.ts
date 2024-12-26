@@ -1,4 +1,4 @@
-import {Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
+import {Directive, ElementRef, Input, OnInit, Renderer2} from '@angular/core';
 import {ColorAttribute, colorToString, isColor, rgbToString, Size, TagDirective, toRGB} from "@ngp-material/core";
 
 @Directive({
@@ -13,9 +13,6 @@ export class BBtnDirective extends TagDirective implements OnInit {
     },
     size: ''
   }
-
-  @Output('b-btn-click')
-  onClick = new EventEmitter<Event>();
 
   @Input() disabled = false;
 
@@ -47,7 +44,7 @@ export class BBtnDirective extends TagDirective implements OnInit {
     super(element,renderer)
   }
 
-  ngOnInit(): void {
+  override onInit(): void {
     this.overrideEvent('click', this.eventClickBind)
     this.overrideEvent('dblclick', this.eventClickBind)
     this.overrideEvent('submit', this.eventClickBind)
@@ -76,8 +73,6 @@ export class BBtnDirective extends TagDirective implements OnInit {
     if (this.disabled) {
       event.stopPropagation()
       event.preventDefault()
-    } else {
-      this.onClick.emit(event);
     }
   }
 

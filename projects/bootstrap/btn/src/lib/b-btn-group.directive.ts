@@ -5,11 +5,11 @@ import {BooleanAttribute, SizeAttribute, TagParentDirective} from "@ngp-material
   standalone: true,
   selector: '[b-btn-group]'
 })
-export class BBtnGroup extends TagParentDirective {
+export class BBtnGroupDirective extends TagParentDirective {
   private lastSize: SizeAttribute
   @Input() size: SizeAttribute;
   @Input() vertical: BooleanAttribute = false
-  @Input() margin: string | undefined
+  @Input() gap: string | undefined
 
   private elements: Element[] = []
 
@@ -30,12 +30,19 @@ export class BBtnGroup extends TagParentDirective {
       this.putClass(`btn-group`)
     }
     this.elements = this.elements.length > 0 ? this.elements : this.getChildren();
-    if (this.margin && this.elements.length > 0) {
+    this.elements.forEach(element => this.putClass(element, 'btn'))
+    if (this.gap && this.elements.length > 0) {
       const addMargin = this.elements.slice(1)
       if (isVertical) {
-        addMargin.forEach(value => this.putStyle(value, {'margin-top': this.margin!!}))
+        addMargin.forEach(value => {
+          this.putStyle(value, {'margin-top': this.gap!!})
+          this.removeStyle(value, 'margin-left')
+        })
       } else {
-        addMargin.forEach(value => this.putStyle(value, {'margin-left': this.margin!!}))
+        addMargin.forEach(value => {
+          this.putStyle(value, {'margin-left': this.gap!!})
+          this.removeStyle(value, 'margin-right')
+        })
       }
     }
   }
