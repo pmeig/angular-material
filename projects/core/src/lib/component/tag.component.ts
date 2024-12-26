@@ -1,7 +1,6 @@
-import {Component, computed, Directive, HostListener, input, Input} from "@angular/core";
+import {Component, computed, HostListener, Input} from "@angular/core";
 import {ref, state} from "../annotation/signal.helper";
 import {Listener} from "./listener";
-import {isNotBlank} from "@ngp/core";
 import {classesCss, stylesCss} from "../helper/style.helper";
 
 @Component({template: ''})

@@ -2,6 +2,7 @@ import {isSignal, signal, Signal, WritableSignal} from '@angular/core'
 import {toSignal} from '@angular/core/rxjs-interop'
 import {isBlank, isNotBlank} from "@ngp/core";
 
+
 export class PropertySignal implements PropertyDescriptor {
   configurable = true
   enumerable = false
@@ -11,6 +12,8 @@ export class PropertySignal implements PropertyDescriptor {
     this.set = this.set.bind(this)
     this.get = this.get.bind(this)
     this.putProperty = this.putProperty.bind(this)
+    this.convertToSignal = this.convertToSignal.bind(this)
+    this.insert = this.insert.bind(this)
     this.set(property)
   }
 
@@ -63,6 +66,7 @@ export class PropertySignal implements PropertyDescriptor {
       this.putProperty(value)
     }
   }
+
   private putProperty(property: any) {
     (this.property as WritableSignal<any>).set(property)
   }
@@ -85,5 +89,27 @@ class ArraySignal<T> implements ProxyHandler<T[]> {
 
   getPrototypeOf(target: T[]): object | null {
     return Object.getPrototypeOf(target)
+  }
+}
+
+export class PropertyProxyHandler<T extends object = any> implements ProxyHandler<T> {
+  private property: PropertySignal
+  constructor(property: PropertySignal | T) {
+    if (property instanceof PropertySignal) {
+      this.property = property
+    } else {
+      this.property = new PropertySignal(property)
+    }
+    this.set = this.set.bind(this)
+    this.get = this.get.bind(this)
+  }
+
+  get(target: T, p: string | symbol, receiver: any): any {
+    return this.property.get()
+  }
+
+  set(target: T, p: string | symbol, newValue: any, receiver: any): boolean {
+    this.property.set(newValue);
+    return true;
   }
 }

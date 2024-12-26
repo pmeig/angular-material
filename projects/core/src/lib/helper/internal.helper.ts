@@ -16,3 +16,9 @@ export const extractElementAndAddStyle = (element: Element | string | Record<str
   }
   return item
 }
+
+export const styleToRecord = (style: string) => style.length > 0 ? style.split(';').reduce((acc, item) => {
+  const [key, value] = item.split(':')
+  acc[key.trim()] = value.trim()
+  return acc
+}, {} as Record<string, string>) : {}

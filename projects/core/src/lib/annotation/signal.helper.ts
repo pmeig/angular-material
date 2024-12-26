@@ -1,5 +1,4 @@
-import {PropertySignal} from "./property-signal";
-import {isPrimitive} from "../type/type.helper";
+import {PropertyProxyHandler, PropertySignal} from "./property-signal";
 import {isSignal, Signal} from "@angular/core";
 
 export const State = (target: object, propertyKey: PropertyKey, descriptor?: TypedPropertyDescriptor<any>) => {
@@ -16,7 +15,7 @@ export const State = (target: object, propertyKey: PropertyKey, descriptor?: Typ
       descriptor.configurable = property.configurable
     }
   } else {
-    Reflect.defineProperty(target, propertyKey, new PropertySignal());
+    Reflect.defineProperty(target, propertyKey, new PropertySignal((target as Record<PropertyKey, any>)[propertyKey]));
   }
 }
 
@@ -36,4 +35,11 @@ export function ref<U, T extends object = any>(target: T, key: string | keyof T,
   State(target, key)
   return defaultValue
 }
-export const state = <T>(value: T): T => new PropertySignal(value).get()
+export const state = <T>(value: T): T => {
+  if (typeof value !== 'object') {
+    const property = new PropertySignal(value)
+    return new Proxy(property, new PropertyProxyHandler(property)) as T
+  }
+  const obj = value as object
+  return new Proxy(obj, new PropertyProxyHandler(obj)) as T
+}
