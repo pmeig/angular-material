@@ -1,5 +1,5 @@
 import {Directive, ElementRef, Input, OnInit, Renderer2} from '@angular/core';
-import {ColorAttribute, colorToString, isColor, rgbToString, Size, TagDirective, toRGB} from "@ngp-material/core";
+import {ColorAttribute, colorToString, isColor, rgbToString, Size, TagDirective, toRGB} from '@pmeig/ng-material-core';
 
 @Directive({
   selector: '[b-btn]',

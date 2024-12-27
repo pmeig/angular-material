@@ -1,7 +1,7 @@
 import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
 import {classesCss, stylesCss} from "../helper/style.helper";
 import {Item, TagDirective} from "./tag.directive";
-import {isNotBlank} from "@ngp/core";
+import {isNotBlank} from '@pmeig/ng-core';
 import {extractElementAndAddStyle} from "../helper/internal.helper";
 
 type Handle = (child: Element | null, index: number) => void;

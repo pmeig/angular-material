@@ -11,7 +11,7 @@ import {
   BooleanAttribute,
   getDocument,
   TagDirective,
-} from '@ngp-material/core';
+} from '@pmeig/ng-material-core';
 import { bLabelCss } from './b-label.css';
 
 type LabelFor = Element & { placeholder?: string; type?: string };

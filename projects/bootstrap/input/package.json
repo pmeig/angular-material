@@ -1,5 +1,5 @@
 {
-  "name": "@ngp-material/bootstrap-input",
+  "name": "@pmeig/ngb-input",
   "version": "0.0.1",
   "exports": {
     ".": {
@@ -13,7 +13,7 @@
   "dependencies": {
     "tslib": "^2.3.0",
     "bootstrap": "^5.3.3",
-    "@ngp-material/core": "0.0.1"
+    "@pmeig/ng-material-core": "0.0.1"
   },
   "sideEffects": false
 }

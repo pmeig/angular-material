@@ -1,5 +1,5 @@
 import {Observable, Subscription, throwError} from 'rxjs'
-import {subscribe, Timeout, timeToMilliseconds} from "@ngp/core";
+import {subscribe, Timeout, timeToMilliseconds} from '@pmeig/ng-core';
 
 interface ItemListener<T> {
   id: string

@@ -1,4 +1,4 @@
-import {isNotBlank} from "@ngp/core";
+import {isNotBlank} from '@pmeig/ng-core';
 import {getWindow} from "./browser.helper";
 
 

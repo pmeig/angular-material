@@ -8,7 +8,7 @@ import {
   TemplateRef
 } from '@angular/core';
 import {NgClass, NgTemplateOutlet} from "@angular/common";
-import {Nullable, Timeout} from "@ngp/core";
+import {Nullable, Timeout} from '@pmeig/ng-core';
 import {Modal} from "../../modal";
 import {
   BooleanAttribute,
@@ -18,7 +18,7 @@ import {
   TagComponent,
   timeoutAttribute,
   TimeoutAttribute
-} from "@ngp-material/core";
+} from '@pmeig/ng-material-core';
 import {BBtnGroupDirective} from '@ngp-material/bootstrap-btn';
 
 @Component({

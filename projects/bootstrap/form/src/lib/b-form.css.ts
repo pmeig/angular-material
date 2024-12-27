@@ -1,4 +1,4 @@
-import { StyleElement } from '@ngp-material/core';
+import { StyleElement } from '@pmeig/ng-material-core';
 
 export const NoValidationCss: StyleElement = {
   id: 'b-form-css',

@@ -8,7 +8,7 @@ import {
   Renderer2,
   SimpleChanges
 } from '@angular/core';
-import {isNotBlank, Optional} from "@ngp/core";
+import {isNotBlank, Optional} from '@pmeig/ng-core';
 import {EventHandler} from "../helper/event-handler";
 import {extractElementAndAddStyle, styleToRecord} from "../helper/internal.helper";
 import {stylesCss} from "../helper/style.helper";

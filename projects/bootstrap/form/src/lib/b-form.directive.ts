@@ -6,7 +6,7 @@ import {
   input,
   Renderer2,
 } from '@angular/core';
-import { TagDirective } from '@ngp-material/core';
+import { TagDirective } from '@pmeig/ng-material-core';
 
 @Directive({
   selector: 'form, [formGroup]',

@@ -6,6 +6,6 @@
   },
   "allowedNonPeerDependencies": [
     "bootstrap",
-    "@ngp-material/core"
+    "@pmeig/ng-material-core"
   ]
 }

@@ -1,5 +1,5 @@
 import {booleanAttribute, Directive, ElementRef, Input, Renderer2} from '@angular/core';
-import {BooleanAttribute, SizeAttribute, TagParentDirective} from "@ngp-material/core";
+import {BooleanAttribute, SizeAttribute, TagParentDirective} from '@pmeig/ng-material-core';
 
 @Directive({
   standalone: true,

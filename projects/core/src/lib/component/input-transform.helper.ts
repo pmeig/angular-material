@@ -1,5 +1,5 @@
 import {NumberAttribute, TimeoutAttribute} from "./input.helper";
-import {Nullable, Timeout, TimeoutUnit} from "@ngp/core";
+import {Nullable, Timeout, TimeoutUnit} from '@pmeig/ng-core';
 
 export const numberAttribute = (value: NumberAttribute) => {
   const number = Number(value);

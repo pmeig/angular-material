@@ -9,7 +9,7 @@ import {
   Optional,
   Renderer2,
 } from '@angular/core';
-import {BooleanAttribute, TagDirective} from '@ngp-material/core';
+import {BooleanAttribute, TagDirective} from '@pmeig/ng-material-core';
 import {NoValidationCss} from './b-form.css';
 import {FormControl, FormControlName, FormGroupDirective,} from '@angular/forms';
 

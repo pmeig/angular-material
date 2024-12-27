@@ -1,7 +1,7 @@
 import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 import { findMapper, InputValueType } from '../b-input.mapper';
 import { BInputDirective } from './b-input.directive';
-import { NgpDatePipe } from '@ngp/core';
+import { NgpDatePipe } from '@pmeig/ng-core';
 
 @Directive({
   selector:

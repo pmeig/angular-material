@@ -14,8 +14,8 @@ import {
   NgpDateTime,
   NgpTime,
   Optional,
-} from '@ngp/core';
-import { BooleanAttribute, RGB, TagDirective } from '@ngp-material/core';
+} from '@pmeig/ng-core';
+import { BooleanAttribute, RGB, TagDirective } from '@pmeig/ng-material-core';
 import { findMapper, InputMapper } from '../b-input.mapper';
 
 export interface InputWeek {

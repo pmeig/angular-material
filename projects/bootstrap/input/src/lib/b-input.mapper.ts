@@ -1,6 +1,6 @@
-import {leftPad, NgpDate, ngpDateObjectToDate, NgpDatePipe, NgpDateTime, NgpTime, Optional,} from '@ngp/core';
+import {leftPad, NgpDate, ngpDateObjectToDate, NgpDatePipe, NgpDateTime, NgpTime, Optional,} from '@pmeig/ng-core';
 import {InputValue, InputWeek} from './directive/b-input.directive';
-import {RGB} from '@ngp-material/core';
+import {RGB} from '@pmeig/ng-material-core';
 
 export type InputValueType = 'ts-date' | 'ngp-date' | 'rgb';
 

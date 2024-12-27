@@ -6,7 +6,7 @@ import {
   input,
   Renderer2,
 } from '@angular/core';
-import { TagParentDirective } from '@ngp-material/core';
+import { TagParentDirective } from '@pmeig/ng-material-core';
 
 export type InputGroupSize = 'md' | 'lg' | 'sm';
 
