@@ -19,7 +19,7 @@ import {
   timeoutAttribute,
   TimeoutAttribute
 } from '@pmeig/ng-material-core';
-import {BBtnGroupDirective} from '@ngp-material/bootstrap-btn';
+import {BBtnGroupDirective} from '@pmeig/ngb-btn';
 
 @Component({
   selector: 'b-modal',
