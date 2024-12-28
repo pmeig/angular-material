@@ -1,0 +1,17 @@
+{
+  "arrowParens": "avoid",
+  "useTabs": false,
+  "trailingComma": "none",
+  "tabWidth": 2,
+  "singleQuote": true,
+  "semi": true,
+  "singleAttributePerLine": false,
+  "proseWrap": "preserve",
+  "bracketSameLine": true,
+  "editorconfig": false,
+  "embeddedLanguageFormatting": "auto",
+  "htmlWhitespaceSensitivity": "strict",
+  "jsxSingleQuote": true,
+  "parser": "angular",
+  "printWidth": 160
+}
