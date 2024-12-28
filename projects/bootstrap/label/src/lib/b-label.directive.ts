@@ -1,17 +1,5 @@
-import {
-  booleanAttribute,
-  Directive,
-  effect,
-  ElementRef,
-  Input,
-  input,
-  Renderer2,
-} from '@angular/core';
-import {
-  BooleanAttribute,
-  getDocument,
-  TagDirective,
-} from '@pmeig/ng-material-core';
+import { booleanAttribute, Directive, effect, ElementRef, Input, input } from '@angular/core';
+import { BooleanAttribute, getDocument, TagDirective } from '@pmeig/ng-material-core';
 import { bLabelCss } from './b-label.css';
 
 type LabelFor = Element & { placeholder?: string; type?: string };
@@ -31,32 +19,21 @@ interface LabelNextElement {
 
 @Directive({
   selector: '[label], label',
-  standalone: true,
+  standalone: true
 })
 export class BLabelDirective extends TagDirective {
+  classes = input<string>('', { alias: 'class' });
+  style = input<string>('');
   private readonly htmlFor?: LabelFor;
   private label: Element;
   private elements?: LabelState;
   private isFloating = true;
-  classes = input<string>('', { alias: 'class' });
-  style = input<string>('');
   private observer?: MutationObserver;
   private next: LabelNextElement = {};
 
-  @Input('label')
-  set labelText(labelText: string | Element) {
-    if (typeof labelText === 'string') this.label.innerHTML = labelText;
-    else this.label = labelText;
-  }
-
-  @Input()
-  set floating(floating: BooleanAttribute | '') {
-    this.isFloating = floating === '' ? true : booleanAttribute(floating);
-    this.refreshLabel();
-  }
-
-  constructor(elementRef: ElementRef, renderer: Renderer2) {
-    super(elementRef, renderer);
+  constructor(elementRef: ElementRef) {
+    super(elementRef);
+    this.insertStyle(bLabelCss);
     if (this.isLabel) {
       this.label = this.element;
       const id = (this.element as HTMLLabelElement).htmlFor;
@@ -84,37 +61,51 @@ export class BLabelDirective extends TagDirective {
     });
   }
 
-  protected override onInit() {
-    super.onInit();
-    if (this.isEnabled()) {
-      this.next.label = this.renderer.nextSibling(this.label) ?? undefined;
-      if (this.htmlFor) {
-        this.next.htmlFor =
-          this.renderer.nextSibling(this.htmlFor) ?? undefined;
-      }
-      this.insertStyle(bLabelCss);
-      this.refreshLabelWhenHtmlForChange();
-      if (!this.refreshClasses()) {
-        let element = this.htmlFor;
-        while (element && !(element instanceof HTMLElement)) {
-          element = element.firstElementChild as LabelFor;
-        }
-        if (element) {
-          this.renderer.listen(this.label, 'click', () => element.click());
-        }
-      }
-
-      this.refreshLabel();
-    }
+  @Input('label')
+  set labelText(labelText: string | Element) {
+    if (typeof labelText === 'string') this.label.innerHTML = labelText;
+    else this.label = labelText;
   }
 
-  protected afterViewInit(): void {}
+  @Input()
+  set floating(floating: BooleanAttribute | '') {
+    this.isFloating = floating === '' ? true : booleanAttribute(floating);
+    this.refreshLabel();
+  }
+
+  private get isLabel(): boolean {
+    return this.element.tagName === 'LABEL';
+  }
 
   override ngOnDestroy() {
     super.ngOnDestroy();
     if (this.observer) {
       this.observer.disconnect();
     }
+  }
+
+  protected override onInit() {
+    super.onInit();
+    this.next.label = this.renderer.nextSibling(this.label) ?? undefined;
+    if (this.htmlFor) {
+      this.next.htmlFor =
+        this.renderer.nextSibling(this.htmlFor) ?? undefined;
+    }
+    this.refreshLabelWhenHtmlForChange();
+    if (!this.refreshClasses()) {
+      let element = this.htmlFor;
+      while (element && !(element instanceof HTMLElement)) {
+        element = element.firstElementChild as LabelFor;
+      }
+      if (element) {
+        this.renderer.listen(this.label, 'click', () => element.click());
+      }
+    }
+  }
+
+  protected override afterViewInit(): void {
+    this.refreshLabel();
+    this.refreshClasses();
   }
 
   private mergeLabelInput(label: Element) {
@@ -132,7 +123,7 @@ export class BLabelDirective extends TagDirective {
     const suffixClassname = this.typeForm(this.htmlFor!!);
     this.putClass(
       div,
-      ...[`form-${suffixClassname}`, ...(this.elements?.css?.classes ?? [])],
+      ...[`form-${suffixClassname}`, ...(this.elements?.css?.classes ?? [])]
     );
     if (suffixClassname === 'check') this.putClass(div, 'c-default');
     if (this.elements?.css.styles) {
@@ -147,8 +138,8 @@ export class BLabelDirective extends TagDirective {
       this.renderer.insertBefore(
         div,
         label,
-        this.renderer.nextSibling(this.htmlFor),
-      ),
+        this.renderer.nextSibling(this.htmlFor)
+      )
     );
     if ('placeholder' in this.htmlFor!! && !this.htmlFor.placeholder) {
       this.htmlFor.placeholder = label.textContent || ' ';
@@ -157,7 +148,10 @@ export class BLabelDirective extends TagDirective {
   }
 
   private refreshLabel(force: boolean = false) {
-    if (this.isEnabled()) {
+    if (this.isOverride) {
+      this.insertCss();
+      this.removeParent();
+    } else {
       if (
         this.htmlFor &&
         this.isFloating &&
@@ -170,8 +164,8 @@ export class BLabelDirective extends TagDirective {
               this.htmlFor.className
                 ?.split(' ')
                 ?.filter((classname) => !classname.startsWith('form-')) || [],
-            styles: this.htmlFor.getAttribute('style') || '',
-          },
+            styles: this.htmlFor.getAttribute('style') || ''
+          }
         };
         this.removeCss();
         this.elements.parent = this.mergeLabelInput(this.label);
@@ -186,8 +180,8 @@ export class BLabelDirective extends TagDirective {
               this.htmlFor.className
                 ?.split(' ')
                 ?.filter((classname) => !classname.startsWith('form-')) || [],
-            styles: this.htmlFor.getAttribute('style') || '',
-          },
+            styles: this.htmlFor.getAttribute('style') || ''
+          }
         };
         this.insertCss();
         this.removeParent();
@@ -198,20 +192,20 @@ export class BLabelDirective extends TagDirective {
     }
   }
 
-  private get isLabel(): boolean {
-    return this.element.tagName === 'LABEL';
-  }
-
   private putClassByInputType(input: HTMLInputElement) {
-    switch (input.type) {
-      case 'checkbox':
-      case 'radio':
-        this.removeClass(this.label, 'form-label');
-        this.putClass(this.label, 'form-check-label');
-        break;
-      default:
-        this.removeClass(this.label, 'form-check-label');
-        this.putClass(this.label, 'form-label');
+    if (!this.isOverride) {
+      switch (input.type) {
+        case 'checkbox':
+        case 'radio':
+          this.removeClass(this.label, 'form-label');
+          this.putClass(this.label, 'form-check-label');
+          break;
+        default:
+          this.removeClass(this.label, 'form-check-label');
+          this.putClass(this.label, 'form-label');
+      }
+    } else {
+      this.removeClass(this.label, 'form-label', 'form-check-label');
     }
   }
 
@@ -237,14 +231,15 @@ export class BLabelDirective extends TagDirective {
 
   private putElementParentOrNextSibling(
     name: 'htmlFor' | 'label',
-    parent: Element,
+    parent: Element
   ) {
     const expectedNext = this.next[name];
     let target = this.elements!!.parent as Element | undefined;
     if (expectedNext) {
       const children = parent.children;
       let nb = parent.childElementCount;
-      while (nb-- && children[nb] !== expectedNext) {}
+      while (nb-- && children[nb] !== expectedNext) {
+      }
       if (nb > -1) target = expectedNext;
     }
     this.renderer.insertBefore(parent, this[name], target);
@@ -265,8 +260,8 @@ export class BLabelDirective extends TagDirective {
           this.refreshClasses();
         },
         {
-          attributeFilter: ['class', 'style', 'type'],
-        },
+          attributeFilter: ['class', 'style', 'type']
+        }
       );
     }
   }
@@ -287,9 +282,5 @@ export class BLabelDirective extends TagDirective {
       }
     }
     return false;
-  }
-
-  private isEnabled() {
-    return this.renderer.parentNode(this.element).tagName !== 'INPUT-GROUP';
   }
 }

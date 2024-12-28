@@ -1,20 +1,5 @@
-import {
-  booleanAttribute,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-  Renderer2,
-} from '@angular/core';
-import {
-  NgpDate,
-  NgpDatePipe,
-  NgpDateTime,
-  NgpTime,
-  Optional,
-} from '@pmeig/ng-core';
+import { booleanAttribute, Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { NgpDate, NgpDatePipe, NgpDateTime, NgpTime, Optional } from '@pmeig/ng-core';
 import { BooleanAttribute, RGB, TagDirective } from '@pmeig/ng-material-core';
 import { findMapper, InputMapper } from '../b-input.mapper';
 
@@ -47,7 +32,7 @@ interface InputState {
     'input:not([type=date]):not([type=datetime-local]):not([type=month]):not([type=week]):not([type=time])' +
     ':not([type=datetime]):not([type=datetime-local])',
   standalone: true,
-  providers: [NgpDatePipe],
+  providers: [NgpDatePipe]
 })
 export class BInputDirective extends TagDirective<HTMLInputElement> {
   @Output() valueChange = new EventEmitter<Optional<InputValue>>();
@@ -60,13 +45,19 @@ export class BInputDirective extends TagDirective<HTMLInputElement> {
     value: () => {
       this.mapper = findMapper('ts-date', this.element, this.dateParser);
       return this.mapper.value();
-    },
+    }
   };
 
   private state: InputState = {
     readonly: false,
-    disabled: false,
+    disabled: false
   };
+
+  constructor(
+    protected dateParser: NgpDatePipe
+  ) {
+    super();
+  }
 
   @Input()
   set type(type: string) {
@@ -95,19 +86,14 @@ export class BInputDirective extends TagDirective<HTMLInputElement> {
     this.element.disabled = this.state.disabled;
   }
 
-  constructor(
-    elementRef: ElementRef<HTMLInputElement>,
-    renderer: Renderer2,
-    protected dateParser: NgpDatePipe,
-  ) {
-    super(elementRef, renderer);
-  }
-
-  protected override onInit() {
+  protected override afterViewInit(): void {
     this.refreshType();
   }
 
-  protected afterViewInit(): void {}
+
+  protected override onOverride() {
+    this.removeClass('form-control', 'form-check-input', 'form-range');
+  }
 
   @HostListener('input')
   private onValueChange() {

@@ -1,8 +1,8 @@
-import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
-import {classesCss, stylesCss} from "../helper/style.helper";
-import {Item, TagDirective} from "./tag.directive";
-import {isNotBlank} from '@pmeig/ng-core';
-import {extractElementAndAddStyle} from "../helper/internal.helper";
+import { Directive, ElementRef, inject, Input } from '@angular/core';
+import { classesCss, stylesCss } from '../helper/style.helper';
+import { Item, TagDirective } from './tag.directive';
+import { isNotBlank } from '@pmeig/ng-core';
+import { extractElementAndAddStyle } from '../helper/internal.helper';
 
 type Handle = (child: Element | null, index: number) => void;
 
@@ -25,39 +25,38 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
       before: [] as string[],
       after: [] as string[]
     }
-  }
+  };
 
+  protected constructor(element: ElementRef<T> | boolean = inject(ElementRef), listenDOMInteraction: boolean = true) {
+    super(element, listenDOMInteraction);
+  }
 
   @Input()
   set ngStyleChild(styleChild: Record<string, string>) {
-    this.css.ngStyles.after = this.styleSeparateByName(stylesCss(styleChild))
+    this.css.ngStyles.after = this.styleSeparateByName(stylesCss(styleChild));
   }
 
   @Input()
   set styleChild(style: string | undefined) {
-    this.css.styles.after = this.styleSeparateByName(style)
+    this.css.styles.after = this.styleSeparateByName(style);
   }
 
   @Input()
   set classChild(classes: string | undefined) {
-    this.css.classes.after = (classes || '').split(' ')
+    this.css.classes.after = (classes || '').split(' ');
   }
 
   @Input()
   set ngClassChild(classChild: Record<string, any>) {
-    this.css.ngClasses.after = classesCss(classChild).split(' ')
-  }
-
-  protected constructor(elementRef: ElementRef<T>, renderer: Renderer2) {
-    super(elementRef, renderer)
+    this.css.ngClasses.after = classesCss(classChild).split(' ');
   }
 
   override ngAfterViewInit() {
-    this.removeClassChildren(this.element, ...Object.keys(this.css.classes.before).concat(...Object.keys(this.css.ngClasses.before)))
-    this.removeStyleChildren(this.element, ...Object.keys(this.css.styles.before).concat(...Object.keys(this.css.ngStyles.before)))
-    this.putClassChildren(this.element, ...Object.keys(this.css.classes.after).concat(...Object.keys(this.css.ngClasses.after)))
+    this.removeClassChildren(this.element, ...Object.keys(this.css.classes.before).concat(...Object.keys(this.css.ngClasses.before)));
+    this.removeStyleChildren(this.element, ...Object.keys(this.css.styles.before).concat(...Object.keys(this.css.ngStyles.before)));
+    this.putClassChildren(this.element, ...Object.keys(this.css.classes.after).concat(...Object.keys(this.css.ngClasses.after)));
     this.putStyleChildren(Object.entries(this.css.styles.after).concat(...Object.entries(this.css.ngStyles.after))
-      .reduce((accumulator, [name, value]) => ({...accumulator, [name]: value}), {}))
+      .reduce((accumulator, [name, value]) => ({ ...accumulator, [name]: value }), {}));
     this.css = {
       styles: {
         before: this.css.styles.after,
@@ -75,31 +74,31 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
         before: this.css.ngClasses.after,
         after: []
       }
-    }
-    super.ngAfterViewInit()
+    };
+    super.ngAfterViewInit();
   }
 
   protected putClassChildren(element: Item | string, ...cssClass: string[]) {
-    this.executeChild(element, cssClass, (item, classes) => this.putCSSClassesChildren(item, classes))
+    this.executeChild(element, cssClass, (item, classes) => this.putCSSClassesChildren(item, classes));
   }
 
   protected removeClassChildren(element: Item | string, ...cssClass: string[]) {
-    this.executeChild(element, cssClass, (item, classes) => this.removeCSSClassesChildren(item, classes))
+    this.executeChild(element, cssClass, (item, classes) => this.removeCSSClassesChildren(item, classes));
   }
 
   protected putStyleChildren(element: Record<string, string>): void
   protected putStyleChildren(element: string, value: string): void
   protected putStyleChildren(element: Item, value: Record<string, string>): void
   protected putStyleChildren(element: Item | Record<string, string> | string,
-                     value?: string | Record<string, string>) {
+                             value?: string | Record<string, string>) {
     if (isNotBlank(element)) {
-      const styles = {}
-      this.putCSSStyleChildren(extractElementAndAddStyle(element!!, value, styles) ?? this.element, styles)
+      const styles = {};
+      this.putCSSStyleChildren(extractElementAndAddStyle(element!!, value, styles) ?? this.element, styles);
     }
   }
 
   protected removeStyleChildren(element: Item | string, ...cssClass: string[]) {
-    this.executeChild(element, cssClass, (item, classes) => this.removeCSSStyleChildren(item, classes))
+    this.executeChild(element, cssClass, (item, classes) => this.removeCSSStyleChildren(item, classes));
   }
 
   protected children(handle: Handle, element: Item = this.element) {
@@ -114,51 +113,51 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
 
   protected getChildren(element: Item = this.element) {
     if (!element) {
-      return []
+      return [];
     }
-    const elements = []
-    const children = element.children
-    let iterator = element.childElementCount
+    const elements = [];
+    const children = element.children;
+    let iterator = element.childElementCount;
     while (iterator--) {
-      elements.unshift(children[iterator])
+      elements.unshift(children[iterator]);
     }
-    return elements
+    return elements;
   }
 
   private executeChild(element: Item | string, classes: string[], apply: (element: Item, classes: string[]) => void): void {
     if (typeof element === 'string') {
       classes.push(element);
-      element = this.element
+      element = this.element;
     }
-    apply(element, classes)
+    apply(element, classes);
   }
 
-  private styleSeparateByName(style: string | undefined): {[name: string]: string} {
+  private styleSeparateByName(style: string | undefined): { [name: string]: string } {
     return (style || '').split(';').reduce((accumulator, style) => {
-      const [name, value] = style.split(':')
-      return {...accumulator, [name]: value}
-    }, {} );
+      const [name, value] = style.split(':');
+      return { ...accumulator, [name]: value };
+    }, {});
   }
 
   private putCSSClassesChildren(element: Item, cssClass: string[]) {
     if (cssClass.length > 0) {
-      this.children(child => this.putClass(child, ...cssClass), element)
+      this.children(child => this.putClass(child, ...cssClass), element);
     }
   }
 
   private removeCSSClassesChildren(element: Item, cssClass: string[]) {
     if (cssClass.length > 0) {
-      this.children(child => this.removeClass(child, ...cssClass), element)
+      this.children(child => this.removeClass(child, ...cssClass), element);
     }
   }
 
   private putCSSStyleChildren(item: Item, styles: Record<string, string>) {
-    this.children(child => this.putStyle(child, styles), item)
+    this.children(child => this.putStyle(child, styles), item);
   }
 
   private removeCSSStyleChildren(item: Item, styles: string[]) {
     if (styles.length > 0) {
-      this.children(child => this.removeStyle(child, ...styles), item)
+      this.children(child => this.removeStyle(child, ...styles), item);
     }
   }
 }

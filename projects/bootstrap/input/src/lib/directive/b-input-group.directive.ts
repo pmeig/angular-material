@@ -1,23 +1,23 @@
-import {
-  Directive,
-  effect,
-  ElementRef,
-  Input,
-  input,
-  Renderer2,
-} from '@angular/core';
+import { Directive, effect, Input, input } from '@angular/core';
 import { TagParentDirective } from '@pmeig/ng-material-core';
 
 export type InputGroupSize = 'md' | 'lg' | 'sm';
 
 @Directive({
   selector: 'input-group, [input-group],',
-  standalone: true,
+  standalone: true
 })
 export class BInputGroupDirective extends TagParentDirective {
+  size = input<InputGroupSize>('md');
   private groupClassnames = ['input-group'];
   private sizeDirective?: InputGroupSize;
-  size = input<InputGroupSize>('md');
+
+  constructor() {
+    super();
+    effect(() => {
+      this.refreshClasses();
+    });
+  }
 
   @Input('input-group')
   protected set inputGroup(value: InputGroupSize | '') {
@@ -25,20 +25,17 @@ export class BInputGroupDirective extends TagParentDirective {
     this.refreshClasses();
   }
 
-  constructor(renderer: Renderer2, elementRef: ElementRef<Element>) {
-    super(elementRef, renderer);
-    effect(() => {
-      this.refreshClasses();
-    });
+  private get currentSize(): InputGroupSize {
+    return this.sizeDirective ?? this.size();
   }
 
-  protected afterViewInit(): void {
-    this.putClass(...this.groupClassnames);
+  protected override afterViewInit(): void {
+    this.refreshClasses();
     let idInput = '';
     this.children((child) => {
       if (
         !['input', 'textarea', 'select'].includes(
-          child?.localName ?? 'input',
+          child?.localName ?? 'input'
         ) &&
         child?.className.indexOf('form-') === -1 &&
         child?.className.indexOf('btn') === -1 &&
@@ -48,6 +45,12 @@ export class BInputGroupDirective extends TagParentDirective {
       } else if (child?.localName === 'input') {
         idInput = child.id;
       }
+      if (child?.localName === 'label') {
+        this.putAttribute(
+          child,
+          'override',
+          'true');
+      }
     });
     if (idInput) {
       this.children((child) => {
@@ -56,10 +59,6 @@ export class BInputGroupDirective extends TagParentDirective {
         }
       });
     }
-  }
-
-  private get currentSize(): InputGroupSize {
-    return this.sizeDirective ?? this.size();
   }
 
   private refreshClasses() {

@@ -1,17 +1,7 @@
-import {
-  booleanAttribute,
-  computed,
-  Directive,
-  effect,
-  ElementRef,
-  Input,
-  input,
-  Optional,
-  Renderer2,
-} from '@angular/core';
-import {BooleanAttribute, TagDirective} from '@pmeig/ng-material-core';
-import {NoValidationCss} from './b-form.css';
-import {FormControl, FormControlName, FormGroupDirective,} from '@angular/forms';
+import { booleanAttribute, computed, Directive, effect, Input, input, Optional } from '@angular/core';
+import { BooleanAttribute, TagDirective } from '@pmeig/ng-material-core';
+import { NoValidationCss } from './b-form.css';
+import { FormControl, FormControlName, FormGroupDirective } from '@angular/forms';
 
 interface ValidatorState {
   decorator: boolean;
@@ -25,21 +15,19 @@ interface ValidatorState {
 @Directive({
   selector: '[error], [valid], [decorator], [formControl], [formControlName]',
   standalone: true,
-  providers: [FormGroupDirective],
+  providers: [FormGroupDirective]
 })
 export class BValidatorDirective extends TagDirective<
   Element & { setCustomValidity?: (message: string) => void }
 > {
-  private state: ValidatorState = {
-    decorator: true,
-    classSuffixTemplate: '-feedback',
-    messages: {},
-  };
-
   invalid = input<string>('', { alias: 'error' });
   valid = input<string>('');
   formControl = input<FormControl>();
-
+  private state: ValidatorState = {
+    decorator: true,
+    classSuffixTemplate: '-feedback',
+    messages: {}
+  };
   private readonly control = computed(() => {
     if (this.formControlName) {
       return (
@@ -49,6 +37,24 @@ export class BValidatorDirective extends TagDirective<
     }
     return this.formControl() ?? new FormControl();
   });
+
+  constructor(
+    private formControlDirective: FormGroupDirective,
+    @Optional() private formControlName?: FormControlName
+  ) {
+    super(true);
+    effect(() => this.checkMessage('invalid'));
+    effect(() => this.checkMessage('valid'));
+    this.addObservable(this.control().valueChanges, () => {
+      if (this.control().invalid) {
+        this.element.ariaInvalid = 'true';
+        this.putValidity(JSON.stringify(this.control().errors));
+      } else {
+        this.element.ariaInvalid = 'false';
+        this.putValidity('');
+      }
+    });
+  }
 
   @Input('is-valid')
   set isValid(isValid: BooleanAttribute) {
@@ -76,31 +82,22 @@ export class BValidatorDirective extends TagDirective<
     this.refreshMessageType();
   }
 
-  constructor(
-    element: ElementRef<
-      Element & { setCustomValidity?: (message: string) => void }
-    >,
-    renderer: Renderer2,
-    private formControlDirective: FormGroupDirective,
-    @Optional() private formControlName?: FormControlName,
-  ) {
-    super(element, renderer, true);
-    effect(() => this.checkMessage('invalid'));
-    effect(() => this.checkMessage('valid'));
-    this.addObservable(this.control().valueChanges, () => {
-      if (this.control().invalid) {
-        this.element.ariaInvalid = 'true';
-        this.putValidity(JSON.stringify(this.control().errors));
-      } else {
-        this.element.ariaInvalid = 'false';
-        this.putValidity('');
-      }
-    });
+  protected override onInit() {
+    this.insertStyle(NoValidationCss);
   }
 
-  protected override onInit() {
-    super.onInit();
-    this.insertStyle(NoValidationCss);
+  protected override afterViewInit(): void {
+    this.refreshDecorator();
+    this.refreshMessageType();
+  }
+
+
+  protected override onOverride() {
+    this.removeMessage('invalid');
+    this.removeMessage('valid');
+  }
+
+  protected override onRemove() {
   }
 
   private refreshDecorator() {
@@ -130,7 +127,7 @@ export class BValidatorDirective extends TagDirective<
     const parent = this.renderer.parentNode(this.element) as Element;
     if (
       ['form-check', 'form-floating'].find((classname) =>
-        parent.className.includes(classname),
+        parent.className.includes(classname)
       )
     ) {
       this.renderer.appendChild(parent, div);
@@ -139,8 +136,8 @@ export class BValidatorDirective extends TagDirective<
         this.renderer.insertBefore(
           this.element,
           div,
-          this.renderer.nextSibling(this.element),
-        ),
+          this.renderer.nextSibling(this.element)
+        )
       );
     }
   }
@@ -153,17 +150,11 @@ export class BValidatorDirective extends TagDirective<
     }
   }
 
-  protected afterViewInit(): void {
-    this.refreshDecorator();
-    this.refreshMessageType();
-  }
-
-  protected override onRemove() {}
-
   private putValidity(validity: string) {
     const setterValidity = this.element.setCustomValidity
       ? this.element.setCustomValidity.bind(this.element)
-      : () => {};
+      : () => {
+      };
     setterValidity(validity);
   }
 }

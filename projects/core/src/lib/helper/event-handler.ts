@@ -1,78 +1,30 @@
-import {Observable, Subscription, throwError} from 'rxjs'
-import {subscribe, Timeout, timeToMilliseconds} from '@pmeig/ng-core';
+import { Observable, Subscription, throwError } from 'rxjs';
+import { subscribe, Timeout, timeToMilliseconds } from '@pmeig/ng-core';
 
 interface ItemListener<T> {
-  id: string
-  item: T
+  id: string;
+  item: T;
 }
 
 export abstract class EventHandler {
-  private subscriptions: ItemListener<Subscription>[] = []
-  private intervals: ItemListener<number>[] = []
-  private timeouts: ItemListener<number>[] = []
-  private onChangeObservers: ItemListener<MutationObserver>[] = []
+  private subscriptions: ItemListener<Subscription>[] = [];
+  private intervals: ItemListener<number>[] = [];
+  private timeouts: ItemListener<number>[] = [];
+  private onChangeObservers: ItemListener<MutationObserver>[] = [];
 
   protected constructor() {
-  }
-
-  protected clearEvent(): void {
-    this.destroyList(
-      () => this.subscriptions,
-      item => item.item.unsubscribe()
-    )
-    this.destroyList(
-      () => this.intervals,
-      item => clearInterval(item.item)
-    )
-    this.destroyList(
-      () => this.timeouts,
-      item => clearTimeout(item.item)
-    )
-    this.destroyList(() => this.onChangeObservers,
-        item => item.item.disconnect())
-    this.onDestroy()
-  }
-
-  onChange(element: Element, onObserve: (mutations?: MutationRecord[]) => void): string;
-  onChange(
-    element: Element,
-    onObserve: (mutations?: MutationRecord[]) => void,
-    options: MutationObserverInit): string;
-  onChange(
-    element: Element,
-    onObserve: (mutations?: MutationRecord[]) => void,
-    name: string): string
-  onChange(
-    element: Element,
-    onObserve: (mutations?: MutationRecord[]) => void,
-    name: string,
-    options: MutationObserverInit): string;
-  onChange(element: Element, onObserve: (mutations?: MutationRecord[]) => void,
-           name: MutationObserverInit | string = Math.random().toString(36),
-           options: MutationObserverInit = {}) {
-    if (typeof name === 'object') {
-      options = name
-      name = Math.random().toString(36)
-    }
-    const observer = new MutationObserver(onObserve)
-    observer.observe(element, {
-      attributes: true,
-      ...options
-    })
-    this.onChangeObservers.push({ id: name, item: observer })
-    return name
   }
 
   addSubscription(
     subscription?: Subscription,
     name: string = Math.random().toString(36)
   ): string | undefined {
-    let id = undefined
+    let id = undefined;
     if (subscription) {
-      id = name
-      this.subscriptions.push({ id, item: subscription })
+      id = name;
+      this.subscriptions.push({ id, item: subscription });
     }
-    return id
+    return id;
   }
 
   addObservable<T, V>(
@@ -84,70 +36,123 @@ export abstract class EventHandler {
   ): string | undefined {
     if (observable) {
       if (!error) {
-        error = (error) => throwError(() => error)
+        error = (error) => throwError(() => error);
       }
       return this.addSubscription(
         subscribe(observable, subscription, error, complete),
         name
-      )
+      );
     }
-    return undefined
+    return undefined;
   }
 
   clearSubscription(key: string | Subscription): boolean {
     return this.clear(this.subscriptions, key, index => {
-      this.subscriptions[index].item.unsubscribe()
-      this.subscriptions = this.subscriptions.splice(index, 1)
-    })
+      this.subscriptions[index].item.unsubscribe();
+      this.subscriptions = this.subscriptions.splice(index, 1);
+    });
   }
 
   addTimeout(timeout: any): ItemListener<number> {
-    const item = { id: Math.random().toString(36), item: timeout as number }
-    this.timeouts.push(item)
-    return item
+    const item = { id: Math.random().toString(36), item: timeout as number };
+    this.timeouts.push(item);
+    return item;
   }
 
   clearTimeout(timeout: number | string | undefined): boolean {
     return this.clear(this.timeouts, timeout, index => {
-      clearTimeout(this.timeouts[index].item)
-      this.timeouts = this.timeouts.splice(index, 1)
-    })
+      clearTimeout(this.timeouts[index].item);
+      this.timeouts = this.timeouts.splice(index, 1);
+    });
   }
 
   addInterval(interval: any): any {
-    this.timeouts.push(interval)
-    return interval
+    this.timeouts.push(interval);
+    return interval;
   }
 
   clearInterval(interval: number | string | undefined): boolean {
     return this.clear(this.intervals, interval, index => {
-      clearTimeout(this.intervals[index].item)
-      this.intervals = this.intervals.splice(index, 1)
-    })
+      clearTimeout(this.intervals[index].item);
+      this.intervals = this.intervals.splice(index, 1);
+    });
   }
 
   appendTimeout(
     timeout: Timeout | number,
     execute: () => void
   ): ItemListener<number> {
-    return this.addTimeout(setTimeout(execute, timeToMilliseconds(timeout)))
+    return this.addTimeout(setTimeout(execute, timeToMilliseconds(timeout)));
   }
 
   appendInterval(
     timeout: Timeout,
     execute: () => void
   ): ItemListener<number> {
-    return this.addInterval(setInterval(execute, timeToMilliseconds(timeout)))
+    return this.addInterval(setInterval(execute, timeToMilliseconds(timeout)));
   }
 
-  protected onDestroy(): void {}
+  protected clearEvent(): void {
+    this.destroyList(
+      () => this.subscriptions,
+      item => item.item.unsubscribe()
+    );
+    this.destroyList(
+      () => this.intervals,
+      item => clearInterval(item.item)
+    );
+    this.destroyList(
+      () => this.timeouts,
+      item => clearTimeout(item.item)
+    );
+    this.destroyList(() => this.onChangeObservers,
+      item => item.item.disconnect());
+    this.onDestroy();
+  }
+
+  protected onDestroy(): void {
+  }
+
+  protected onChange(element: Element, onObserve: (mutations?: MutationRecord[]) => void): string;
+
+  protected onChange(
+    element: Element,
+    onObserve: (mutations?: MutationRecord[]) => void,
+    options: MutationObserverInit): string;
+
+  protected onChange(
+    element: Element,
+    onObserve: (mutations?: MutationRecord[]) => void,
+    name: string): string
+
+  protected onChange(
+    element: Element,
+    onObserve: (mutations?: MutationRecord[]) => void,
+    name: string,
+    options: MutationObserverInit): string;
+
+  protected onChange(element: Element, onObserve: (mutations?: MutationRecord[]) => void,
+                     name: MutationObserverInit | string = Math.random().toString(36),
+                     options: MutationObserverInit = {}) {
+    if (typeof name === 'object') {
+      options = name;
+      name = Math.random().toString(36);
+    }
+    const observer = new MutationObserver(onObserve);
+    observer.observe(element, {
+      attributes: true,
+      ...options
+    });
+    this.onChangeObservers.push({ id: name, item: observer });
+    return name;
+  }
 
   private destroyList<T>(list: () => T[], handler: (item: T) => void) {
-    const items = list()
-    let item = items.pop()
+    const items = list();
+    let item = items.pop();
     while (item) {
-      handler(item)
-      item = items.pop()
+      handler(item);
+      item = items.pop();
     }
   }
 
@@ -160,13 +165,13 @@ export abstract class EventHandler {
       const getField: (
         item: ItemListener<T>
       ) => string | number | Subscription =
-        typeof key === 'string' ? item => item.id : item => item.item
-      const index = items.findIndex(value => getField(value) === key)
+        typeof key === 'string' ? item => item.id : item => item.item;
+      const index = items.findIndex(value => getField(value) === key);
       if (index > -1) {
-        clearable(index)
-        return true
+        clearable(index);
+        return true;
       }
     }
-    return false
+    return false;
   }
 }

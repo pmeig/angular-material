@@ -1,30 +1,21 @@
-import {
-  Directive,
-  effect,
-  ElementRef,
-  HostListener,
-  input,
-  Renderer2,
-} from '@angular/core';
+import { Directive, effect, HostListener, input } from '@angular/core';
 import { TagDirective } from '@pmeig/ng-material-core';
 
 @Directive({
   selector: 'form, [formGroup]',
-  standalone: true,
+  standalone: true
 })
 export class BFormDirective extends TagDirective<HTMLFormElement> {
-  private submitted = false;
   unvalidated = input<boolean>(false);
+  private submitted = false;
 
-  constructor(elementRef: ElementRef<HTMLFormElement>, renderer: Renderer2) {
-    super(elementRef, renderer);
+  constructor() {
+    super();
     effect(() => {
       if (this.unvalidated()) this.removeClass('was-validated');
       else if (this.submitted) this.putClass('was-validated');
     });
   }
-
-  protected afterViewInit(): void {}
 
   @HostListener('ngSubmit')
   protected onSubmit() {
