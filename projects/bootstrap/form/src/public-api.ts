@@ -4,3 +4,4 @@
 
 export * from './lib/b-form.directive';
 export * from './lib/b-validator.directive';
+export * from './lib/b-form.module';

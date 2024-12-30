@@ -1,4 +1,4 @@
-import { booleanAttribute, Directive, effect, ElementRef, Injectable, Input, input } from '@angular/core';
+import { booleanAttribute, Directive, effect, ElementRef, Input, input } from '@angular/core';
 import { BooleanAttribute, getDocument } from '@pmeig/ng-material-core';
 import { bLabelCss } from './b-label.css';
 import { BTagDirective } from '@pmeig/ngb-core';
@@ -18,7 +18,7 @@ interface LabelNextElement {
   htmlFor?: Element;
 }
 
-@Injectable({providedIn: 'root'})
+
 @Directive({
   selector: '[label], label',
   standalone: true

@@ -2,7 +2,7 @@ import { booleanAttribute, Directive, EventEmitter, HostListener, Injectable, In
 import { NgpDate, NgpDatePipe, NgpDateTime, NgpTime, Optional } from '@pmeig/ng-core';
 import { BooleanAttribute, RGB } from '@pmeig/ng-material-core';
 import { findMapper, InputMapper } from '../b-input.mapper';
-import { BTagDirective } from '@pmei/ngb-core';
+import { BTagDirective } from '@pmeig/ngb-core';
 
 export interface InputWeek {
   week?: number;
@@ -33,7 +33,7 @@ interface InputState {
   selector:
     'input:not([type=date]):not([type=datetime-local]):not([type=month]):not([type=week]):not([type=time])' +
     ':not([type=datetime]):not([type=datetime-local])',
-  standalone: true,
+  exportAs: 'input',
   providers: [NgpDatePipe]
 })
 export class BInputDirective extends BTagDirective<HTMLInputElement> {

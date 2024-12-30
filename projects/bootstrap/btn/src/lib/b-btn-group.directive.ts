@@ -1,8 +1,8 @@
-import { booleanAttribute, Directive, Injectable, Input } from '@angular/core';
+import { booleanAttribute, Directive, Input } from '@angular/core';
 import { BooleanAttribute, SizeAttribute } from '@pmeig/ng-material-core';
 import { BTagParentDirective } from '@pmeig/ngb-core';
 
-@Injectable({providedIn: 'root'})
+
 @Directive({
   standalone: true,
   selector: 'button-group, [btn-group]'

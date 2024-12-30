@@ -7,9 +7,9 @@ import {
   OnInit,
   TemplateRef
 } from '@angular/core';
-import {NgClass, NgTemplateOutlet} from "@angular/common";
-import {Nullable, Timeout} from '@pmeig/ng-core';
-import {Modal} from "../../modal";
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { Nullable, Timeout } from '@pmeig/ng-core';
+import { Modal } from '../../modal';
 import {
   BooleanAttribute,
   Size,
@@ -19,15 +19,13 @@ import {
   timeoutAttribute,
   TimeoutAttribute
 } from '@pmeig/ng-material-core';
-import {BBtnGroupDirective} from '@pmeig/ngb-btn';
 
 @Component({
   selector: 'b-modal',
   standalone: true,
   imports: [
     NgTemplateOutlet,
-    NgClass,
-    BBtnGroupDirective
+    NgClass
   ],
   templateUrl: './b-modal.component.html',
   styleUrl: './b-modal.component.scss',

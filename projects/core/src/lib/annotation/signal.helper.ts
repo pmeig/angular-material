@@ -1,5 +1,5 @@
-import {PropertyProxyHandler, PropertySignal} from "./property-signal";
-import {isSignal, Signal} from "@angular/core";
+import { PropertyProxyHandler, PropertySignal } from './property-signal';
+import { isSignal, Signal } from '@angular/core';
 
 export const State = (target: object, propertyKey: PropertyKey, descriptor?: TypedPropertyDescriptor<any>) => {
   if (descriptor) {

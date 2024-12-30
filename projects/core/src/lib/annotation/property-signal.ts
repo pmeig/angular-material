@@ -1,6 +1,6 @@
-import {isSignal, signal, Signal, WritableSignal} from '@angular/core'
-import {toSignal} from '@angular/core/rxjs-interop'
-import {isBlank, isNotBlank} from "@pmeig/ng-core";
+import { isSignal, signal, Signal, WritableSignal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { isBlank, isNotBlank } from '@pmeig/ng-core';
 
 
 export class PropertySignal implements PropertyDescriptor {

@@ -1,7 +1,7 @@
-import { Directive, effect, HostListener, Injectable, input } from '@angular/core';
+import { Directive, effect, HostListener, input } from '@angular/core';
 import { BTagDirective } from '@pmeig/ngb-core';
 
-@Injectable({providedIn: 'root'})
+
 @Directive({
   selector: 'form, [formGroup]',
   standalone: true

@@ -1,9 +1,9 @@
-import { Directive, Injectable, Input } from '@angular/core';
+import { Directive, Input } from '@angular/core';
 import { findMapper, InputValueType } from '../b-input.mapper';
 import { BInputDirective } from './b-input.directive';
 import { NgpDatePipe } from '@pmeig/ng-core';
 
-@Injectable({providedIn: 'root'})
+
 @Directive({
   selector:
     'input[type=date], input[type=datetime-local], input[type=month], input[type=week], input[type=time], input[type=datetime], input[type=datetime-local]',

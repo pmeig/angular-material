@@ -1,4 +1,4 @@
-import {isBlank, Nullable} from '@pmeig/ng-core';
+import { isBlank, Nullable } from '@pmeig/ng-core';
 
 export type ColorAttribute = Nullable<Color | RGB | string>
 export type Color = 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'light' | 'dark';

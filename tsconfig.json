@@ -19,6 +19,9 @@
       "b-label": [
         "./dist/b-label"
       ],
+      "b-material": [
+        "./dist/b-material"
+      ],
       "b-modal": [
         "./dist/b-modal"
       ],

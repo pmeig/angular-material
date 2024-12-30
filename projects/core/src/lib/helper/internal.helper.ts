@@ -1,4 +1,4 @@
-import {Nullable} from '@pmeig/ng-core';
+import { Nullable } from '@pmeig/ng-core';
 
 export const extractElementAndAddStyle = (element: Element | string | Record<string, string>,
                                           value: Nullable<string | Record<string, string>>,

@@ -1,5 +1,5 @@
-import {isNotBlank} from '@pmeig/ng-core';
-import {getWindow} from "./browser.helper";
+import { isNotBlank } from '@pmeig/ng-core';
+import { getWindow } from './browser.helper';
 
 
 export const stylesCss = (css: Record<string, string>) => checkCss(';', css, entry => `${entry[0]}: ${entry[1]}`)

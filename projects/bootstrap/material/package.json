@@ -1,0 +1,16 @@
+{
+  "name": "@pmeig/ngb-material",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^19.0.0",
+    "@angular/core": "^19.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "@pmeig/ngb-btn": "0.0.1",
+    "@pmeig/ngb-form": "0.0.1",
+    "@pmeig/ngb-input": "0.0.1",
+    "@pmeig/ngb-label": "0.0.1"
+  },
+  "sideEffects": false
+}

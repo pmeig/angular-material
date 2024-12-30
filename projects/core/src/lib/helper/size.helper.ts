@@ -1,4 +1,4 @@
-import {Nullable} from '@pmeig/ng-core';
+import { Nullable } from '@pmeig/ng-core';
 
 export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxs'
 

@@ -1,8 +1,8 @@
-import { Directive, Injectable, Input, OnInit } from '@angular/core';
+import { Directive, Input, OnInit } from '@angular/core';
 import { ColorAttribute, colorToString, isColor, rgbToString, Size, toRGB } from '@pmeig/ng-material-core';
 import { BTagDirective } from '@pmeig/ngb-core';
 
-@Injectable({providedIn: 'root'})
+
 @Directive({
   selector: 'button, [btn]',
   standalone: true

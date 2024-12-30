@@ -1,7 +1,7 @@
-import {Component, computed, HostListener, Input} from "@angular/core";
-import {ref, state} from "../annotation/signal.helper";
-import {Listener} from "./listener";
-import {classesCss, stylesCss} from "../helper/style.helper";
+import { Component, computed, HostListener, Input } from '@angular/core';
+import { ref, state } from '../annotation/signal.helper';
+import { Listener } from './listener';
+import { classesCss, stylesCss } from '../helper/style.helper';
 
 @Component({template: ''})
 export abstract class TagComponent extends Listener {
