@@ -3,7 +3,7 @@ import { BTagDirective } from '@pmeig/ngb-core';
 
 
 @Directive({
-  selector: 'form, [formGroup]',
+  selector: 'form:not([formGroup]), [formGroup]',
   standalone: true
 })
 export class BFormDirective extends BTagDirective<HTMLFormElement> {
