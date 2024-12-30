@@ -284,6 +284,12 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   }
 
   private init(listenDOMInteraction: boolean) {
+    const classname = [`pmeig-${this.element.tagName.toLowerCase()}`]
+    const id = this.element.getAttribute('id');
+    if (id) {
+      classname.push(`${classname[0]}-${id}`);
+    }
+    this.putClass(...classname);
     this.listen(mutations => {
       this.isOverride = !!mutations?.find(mutation => mutation.attributeName === 'override');
       if (this.isOverride) {
