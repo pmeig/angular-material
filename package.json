@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:all": "build.bat core b-input b-form b-label b-btn",
+    "build:all": "build.bat core b-core b-input b-form b-label b-btn",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -22,6 +22,7 @@
     "@pmeig/ng-core": "file:../angular/dist/core/pmeig-ng-core-0.0.1.tgz",
     "@pmeig/ng-material-core": "file:dist/core/pmeig-ng-material-core-0.0.1.tgz",
     "@pmeig/ngb-btn": "file:dist/b-btn/pmeig-ngb-btn-0.0.1.tgz",
+    "@pmeig/ngb-core": "file:dist/b-core/pmeig-ngb-core-0.0.1.tgz",
     "@pmeig/ngb-form": "file:dist/b-form/pmeig-ngb-form-0.0.1.tgz",
     "@pmeig/ngb-input": "file:dist/b-input/pmeig-ngb-input-0.0.1.tgz",
     "@pmeig/ngb-label": "file:dist/b-label/pmeig-ngb-label-0.0.1.tgz",

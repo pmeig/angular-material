@@ -7,6 +7,9 @@
       "b-btn": [
         "./dist/b-btn"
       ],
+      "b-core": [
+        "./dist/b-core"
+      ],
       "b-form": [
         "./dist/b-form"
       ],

@@ -34,24 +34,28 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
   @Input()
   set ngStyleChild(styleChild: Record<string, string>) {
     this.css.ngStyles.after = this.styleSeparateByName(stylesCss(styleChild));
+    this.afterViewInit();
   }
 
   @Input()
   set styleChild(style: string | undefined) {
     this.css.styles.after = this.styleSeparateByName(style);
+    this.afterViewInit();
   }
 
   @Input()
   set classChild(classes: string | undefined) {
     this.css.classes.after = (classes || '').split(' ');
+    this.afterViewInit();
   }
 
   @Input()
   set ngClassChild(classChild: Record<string, any>) {
     this.css.ngClasses.after = classesCss(classChild).split(' ');
+    this.afterViewInit();
   }
 
-  override ngAfterViewInit() {
+  protected override afterViewInit() {
     this.removeClassChildren(this.element, ...Object.keys(this.css.classes.before).concat(...Object.keys(this.css.ngClasses.before)));
     this.removeStyleChildren(this.element, ...Object.keys(this.css.styles.before).concat(...Object.keys(this.css.ngStyles.before)));
     this.putClassChildren(this.element, ...Object.keys(this.css.classes.after).concat(...Object.keys(this.css.ngClasses.after)));
@@ -75,7 +79,6 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
         after: []
       }
     };
-    super.ngAfterViewInit();
   }
 
   protected putClassChildren(element: Item | string, ...cssClass: string[]) {

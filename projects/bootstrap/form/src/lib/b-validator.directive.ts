@@ -1,7 +1,8 @@
-import { booleanAttribute, computed, Directive, effect, Input, input, Optional } from '@angular/core';
-import { BooleanAttribute, TagDirective } from '@pmeig/ng-material-core';
+import { booleanAttribute, computed, Directive, effect, Injectable, Input, input, Optional } from '@angular/core';
+import { BooleanAttribute } from '@pmeig/ng-material-core';
 import { NoValidationCss } from './b-form.css';
 import { FormControl, FormControlName, FormGroupDirective } from '@angular/forms';
+import { BTagDirective } from '@pmei/ngb-core';
 
 interface ValidatorState {
   decorator: boolean;
@@ -12,12 +13,13 @@ interface ValidatorState {
   };
 }
 
+@Injectable({providedIn: 'root'})
 @Directive({
   selector: '[error], [valid], [decorator], [formControl], [formControlName]',
   standalone: true,
   providers: [FormGroupDirective]
 })
-export class BValidatorDirective extends TagDirective<
+export class BValidatorDirective extends BTagDirective<
   Element & { setCustomValidity?: (message: string) => void }
 > {
   invalid = input<string>('', { alias: 'error' });

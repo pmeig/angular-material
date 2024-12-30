@@ -1,11 +1,12 @@
-import { Directive, effect, HostListener, input } from '@angular/core';
-import { TagDirective } from '@pmeig/ng-material-core';
+import { Directive, effect, HostListener, Injectable, input } from '@angular/core';
+import { BTagDirective } from '@pmeig/ngb-core';
 
+@Injectable({providedIn: 'root'})
 @Directive({
   selector: 'form, [formGroup]',
   standalone: true
 })
-export class BFormDirective extends TagDirective<HTMLFormElement> {
+export class BFormDirective extends BTagDirective<HTMLFormElement> {
   unvalidated = input<boolean>(false);
   private submitted = false;
 

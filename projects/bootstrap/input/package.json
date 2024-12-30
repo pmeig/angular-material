@@ -12,8 +12,7 @@
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "bootstrap": "^5.3.3",
-    "@pmeig/ng-material-core": "0.0.1"
+    "@pmeig/ngb-core": "0.0.1"
   },
   "sideEffects": false
 }

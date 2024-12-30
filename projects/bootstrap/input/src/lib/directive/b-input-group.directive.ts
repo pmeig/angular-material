@@ -1,13 +1,14 @@
-import { Directive, effect, Input, input } from '@angular/core';
-import { TagParentDirective } from '@pmeig/ng-material-core';
+import { Directive, effect, Injectable, Input, input } from '@angular/core';
+import { BTagParentDirective } from '@pmeig/ngb-core';
 
 export type InputGroupSize = 'md' | 'lg' | 'sm';
 
+@Injectable({providedIn: 'root'})
 @Directive({
   selector: 'input-group, [input-group],',
   standalone: true
 })
-export class BInputGroupDirective extends TagParentDirective {
+export class BInputGroupDirective extends BTagParentDirective {
   size = input<InputGroupSize>('md');
   private groupClassnames = ['input-group'];
   private sizeDirective?: InputGroupSize;

@@ -1,7 +1,8 @@
-import { booleanAttribute, Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { booleanAttribute, Directive, EventEmitter, HostListener, Injectable, Input, Output } from '@angular/core';
 import { NgpDate, NgpDatePipe, NgpDateTime, NgpTime, Optional } from '@pmeig/ng-core';
-import { BooleanAttribute, RGB, TagDirective } from '@pmeig/ng-material-core';
+import { BooleanAttribute, RGB } from '@pmeig/ng-material-core';
 import { findMapper, InputMapper } from '../b-input.mapper';
+import { BTagDirective } from '@pmei/ngb-core';
 
 export interface InputWeek {
   week?: number;
@@ -27,6 +28,7 @@ interface InputState {
   disabled: boolean;
 }
 
+@Injectable({ providedIn: 'root' })
 @Directive({
   selector:
     'input:not([type=date]):not([type=datetime-local]):not([type=month]):not([type=week]):not([type=time])' +
@@ -34,7 +36,7 @@ interface InputState {
   standalone: true,
   providers: [NgpDatePipe]
 })
-export class BInputDirective extends TagDirective<HTMLInputElement> {
+export class BInputDirective extends BTagDirective<HTMLInputElement> {
   @Output() valueChange = new EventEmitter<Optional<InputValue>>();
 
   protected mapper: InputMapper = {
@@ -57,6 +59,7 @@ export class BInputDirective extends TagDirective<HTMLInputElement> {
     protected dateParser: NgpDatePipe
   ) {
     super();
+    console.log('input');
   }
 
   @Input()
@@ -114,6 +117,7 @@ export class BInputDirective extends TagDirective<HTMLInputElement> {
   }
 
   private refreshType() {
+    console.log('refresh');
     switch (this.element.type) {
       case 'checkbox':
       case 'radio':

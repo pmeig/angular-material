@@ -1,6 +1,5 @@
-import {Renderer2} from "@angular/core";
-import {toSnakeKey} from "./type.helper";
-
+import { Renderer2 } from '@angular/core';
+import { toSnakeKey } from './type.helper';
 
 
 export type CssValue = Partial<Record<toSnakeKey<keyof CSSStyleDeclaration & string>, any>>;
@@ -14,6 +13,15 @@ export interface Css {
 export interface StyleElement {
   id: string;
   css: (string | Css)[];
+}
+
+export interface Link {
+  href: string;
+  rel: string;
+  type?: string;
+  id?: string;
+  integrity?: string;
+  crossorigin?: string;
 }
 
 export const cssValueToCssFormat = (value: string | CssValue | undefined) => {
@@ -49,8 +57,44 @@ export function addStyleToHead(id: string | StyleElement, css: (string | Css)[] 
     const style = (css as Renderer2).createElement('style') as HTMLStyleElement
     style.id = id.id
     style.innerHTML = id.css.map(css => cssToStyle(css)).join('\n\n')
-    const head = (renderer as Document).getElementsByTagName('head').item(0) as HTMLHeadElement
-    (css as Renderer2).appendChild(head, style)
+    putInHead(style, renderer as Document, css as Renderer2);
+  }
+}
+
+export function addLinkToHead(id: string, link: Link, renderer: Renderer2, document: Document): void;
+export function addLinkToHead(link: Link, renderer: Renderer2, document: Document): void;
+export function addLinkToHead(id: Link | string, link: Renderer2 | Link,
+                              renderer: Renderer2 | Document, document?: Document): void {
+  if (typeof id === 'string') {
+    link = link as Link
+    renderer = renderer as Renderer2
+    document = document as Document
+    link.id = id
+  } else {
+    document = renderer as Document
+    renderer = link as Renderer2
+    link = id as Link
+  }
+  if (!document.getElementById(link.id as string)) {
+    const linkElement = renderer.createElement('link') as HTMLLinkElement
+    linkElement.id = link.id as string
+    linkElement.href = link.href
+    linkElement.rel = link.rel
+    if (link.type) {
+      linkElement.type = link.type
+    }
+    if (link.integrity) {
+      linkElement.integrity = link.integrity
+    }
+    if (link.crossorigin) {
+      linkElement.crossOrigin = link.crossorigin
+    }
+    putInHead(linkElement, document, renderer)
   }
 
+}
+
+const putInHead = (element: HTMLElement, document: Document, renderer: Renderer2) => {
+  const head = document.getElementsByTagName('head').item(0) as HTMLHeadElement;
+  renderer.appendChild(head, element);
 }

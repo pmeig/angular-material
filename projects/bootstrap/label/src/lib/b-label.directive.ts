@@ -1,6 +1,7 @@
-import { booleanAttribute, Directive, effect, ElementRef, Input, input } from '@angular/core';
-import { BooleanAttribute, getDocument, TagDirective } from '@pmeig/ng-material-core';
+import { booleanAttribute, Directive, effect, ElementRef, Injectable, Input, input } from '@angular/core';
+import { BooleanAttribute, getDocument } from '@pmeig/ng-material-core';
 import { bLabelCss } from './b-label.css';
+import { BTagDirective } from '@pmeig/ngb-core';
 
 type LabelFor = Element & { placeholder?: string; type?: string };
 
@@ -17,11 +18,12 @@ interface LabelNextElement {
   htmlFor?: Element;
 }
 
+@Injectable({providedIn: 'root'})
 @Directive({
   selector: '[label], label',
   standalone: true
 })
-export class BLabelDirective extends TagDirective {
+export class BLabelDirective extends BTagDirective {
   classes = input<string>('', { alias: 'class' });
   style = input<string>('');
   private readonly htmlFor?: LabelFor;

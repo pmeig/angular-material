@@ -13,8 +13,9 @@ import { isNotBlank, Optional } from '@pmeig/ng-core';
 import { EventHandler } from '../helper/event-handler';
 import { extractElementAndAddStyle, styleToRecord } from '../helper/internal.helper';
 import { stylesCss } from '../helper/style.helper';
-import { addStyleToHead, Css, StyleElement } from '../helper/css.helper';
+import { addLinkToHead, addStyleToHead, Css, Link, StyleElement } from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { getDocument } from '../helper/browser.helper';
 
 
 export type Item = Optional<Element>;
@@ -41,9 +42,9 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       afterNextRender(
         () => {
           this.init(listenDOMInteraction);
+          console.log('afterViewInit');
           this.afterViewInit();
         });
-
     } else {
       this.init(listenDOMInteraction);
     }
@@ -70,13 +71,17 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
 
   }
 
+  protected insertLink(...links: Link[]) {
+    links.forEach(link => addLinkToHead(link, this.renderer, getDocument(this.element)));
+  }
+
   protected insertStyle(style: StyleElement): void;
   protected insertStyle(id: string, ...style: (string | Css)[]): void;
   protected insertStyle(id: string | StyleElement, ...style: (string | Css)[]) {
     if (typeof id === 'string') {
       id = { id, css: style } as StyleElement;
     }
-    addStyleToHead(id, this.renderer, this.element.ownerDocument);
+    addStyleToHead(id, this.renderer, getDocument(this.element));
   }
 
   protected overrideEvent(element: string, type: (event: Event) => void): void
