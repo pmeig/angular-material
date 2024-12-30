@@ -14,7 +14,6 @@ export class BInputDateDirective extends BInputDirective {
   constructor(
     dateParser: NgpDatePipe
   ) {
-    console.log('test');
     super(dateParser);
   }
 

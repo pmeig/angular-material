@@ -59,7 +59,6 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
     protected dateParser: NgpDatePipe
   ) {
     super();
-    console.log('input');
   }
 
   @Input()
@@ -117,7 +116,6 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
   }
 
   private refreshType() {
-    console.log('refresh');
     switch (this.element.type) {
       case 'checkbox':
       case 'radio':

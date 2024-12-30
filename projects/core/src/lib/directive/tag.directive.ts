@@ -42,7 +42,6 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       afterNextRender(
         () => {
           this.init(listenDOMInteraction);
-          console.log('afterViewInit');
           this.afterViewInit();
         });
     } else {
