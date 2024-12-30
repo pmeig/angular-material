@@ -42,6 +42,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       afterNextRender(
         () => {
           this.init(listenDOMInteraction);
+          console.log('after render')
           this.afterViewInit();
         });
     } else {
@@ -55,6 +56,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
 
   ngAfterViewInit(): void {
     if (this.isBrowser()) {
+      console.log('ngAfterView')
       this.afterViewInit();
     }
   }
@@ -209,6 +211,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   }
 
   protected onExecuted(): void {
+    console.log('executed')
     this.afterViewInit();
   }
 
@@ -295,6 +298,8 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       if (this.isOverride) {
         this.onOverride();
       } else this.onExecuted();
+    }, {
+      attributeFilter: ['override']
     });
     if (listenDOMInteraction) {
       this.onChange(
@@ -304,6 +309,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
             mutations
               ?.find((mutation) => this.foundElement(mutation.addedNodes))
           ) {
+            console.log('found');
             this.afterViewInit();
           } else if (mutations?.find((mutation) => this.foundElement(mutation.removedNodes))) {
             this.onRemove();

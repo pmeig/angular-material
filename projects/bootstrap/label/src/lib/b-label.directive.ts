@@ -224,11 +224,13 @@ export class BLabelDirective extends BTagDirective {
   }
 
   private removeParent() {
-    const parent = this.renderer.parentNode(this.elements!!.parent);
-    this.putElementParentOrNextSibling('htmlFor', parent);
-    this.putElementParentOrNextSibling('label', parent);
-    this.renderer.removeChild(parent, this.elements!!.parent);
-    this.elements = undefined;
+    if (this.elements?.parent) {
+      const parent = this.renderer.parentNode(this.elements!!.parent);
+      this.putElementParentOrNextSibling('htmlFor', parent);
+      this.putElementParentOrNextSibling('label', parent);
+      this.renderer.removeChild(parent, this.elements!!.parent);
+      this.elements = undefined;
+    }
   }
 
   private putElementParentOrNextSibling(
