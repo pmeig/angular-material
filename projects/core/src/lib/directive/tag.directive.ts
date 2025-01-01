@@ -42,6 +42,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       afterNextRender(
         () => {
           this.init(listenDOMInteraction);
+          this.onInit();
           this.afterViewInit();
         });
     } else {
@@ -50,7 +51,9 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   }
 
   ngOnInit(): void {
-    this.onInit();
+    if (this.isBrowser()) {
+      this.onInit();
+    }
   }
 
   ngAfterViewInit(): void {
