@@ -1,8 +1,10 @@
 import { booleanAttribute, computed, Directive, effect, Input, input, Optional } from '@angular/core';
 import { BooleanAttribute } from '@pmeig/ng-material-core';
 import { NoValidationCss } from './b-form.css';
-import { FormControl, FormControlName, FormGroupDirective } from '@angular/forms';
+import { FormControl, FormControlName } from '@angular/forms';
 import { BTagDirective } from '@pmeig/ngb-core';
+import { JsonPipe } from '@angular/common';
+import { isBlank } from '@pmeig/ng-core';
 
 interface ValidatorState {
   decorator: boolean;
@@ -17,7 +19,7 @@ interface ValidatorState {
 @Directive({
   selector: '[error], [valid], [decorator], [formControl], [formControlName]',
   standalone: true,
-  providers: [FormGroupDirective]
+  providers: [JsonPipe]
 })
 export class BValidatorDirective extends BTagDirective<
   Element & { setCustomValidity?: (message: string) => void }
@@ -25,43 +27,38 @@ export class BValidatorDirective extends BTagDirective<
   invalid = input<string>('', { alias: 'error' });
   valid = input<string>('');
   formControl = input<FormControl>();
+  private readonly control = computed(() => {
+    if (this.formControlName) {
+      return this.formControlName.control;
+    } else if (this.formControl()) {
+      return this.formControl();
+    } else {
+      return undefined;
+    }
+  })
+
   private state: ValidatorState = {
     decorator: true,
     classSuffixTemplate: '-feedback',
     messages: {}
   };
-  private readonly control = computed(() => {
-    if (this.formControlName) {
-      return (
-        this.formControlDirective.getControl(this.formControlName) ??
-        new FormControl()
-      );
-    }
-    return this.formControl() ?? new FormControl();
-  });
+  private lastObserveChange?: string;
+  private validate?: boolean;
 
   constructor(
-    private formControlDirective: FormGroupDirective,
+    private json: JsonPipe,
     @Optional() private formControlName?: FormControlName
   ) {
     super(true);
     effect(() => this.checkMessage('invalid'));
     effect(() => this.checkMessage('valid'));
-    this.addObservable(this.control().valueChanges, () => {
-      if (this.control().invalid) {
-        this.element.ariaInvalid = 'true';
-        this.putValidity(JSON.stringify(this.control().errors));
-      } else {
-        this.element.ariaInvalid = 'false';
-        this.putValidity('');
-      }
-    });
+    effect(() => this.initValidityChange());
   }
 
   @Input('is-valid')
   set isValid(isValid: BooleanAttribute) {
-    const validate = booleanAttribute(isValid);
-    if (validate) {
+    this.validate = booleanAttribute(isValid);
+    if (this.validate) {
       this.putValidity('');
     } else {
       this.putValidity('manual-invalid');
@@ -153,10 +150,28 @@ export class BValidatorDirective extends BTagDirective<
   }
 
   private putValidity(validity: string) {
-    const setterValidity = this.element.setCustomValidity
-      ? this.element.setCustomValidity.bind(this.element)
-      : () => {
-      };
-    setterValidity(validity);
+    if (this.element.setCustomValidity)
+      this.element.setCustomValidity(validity);
+  }
+
+  private observeValueChange(control: FormControl) {
+    if (this.lastObserveChange) {
+      this.clearSubscription(this.lastObserveChange)
+    }
+    this.lastObserveChange = this.addObservable(control.valueChanges, () => this.updateValidity(control));
+  }
+
+  private updateValidity(control: FormControl) {
+    if (isBlank(this.validate)) {
+      this.putValidity(control.invalid ? this.json.transform(control.errors) : '');
+    }
+  }
+
+  private initValidityChange() {
+    const control = this.control();
+    if (control) {
+      this.observeValueChange(control);
+      this.updateValidity(control);
+    }
   }
 }

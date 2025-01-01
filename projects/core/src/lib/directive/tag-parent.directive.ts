@@ -34,28 +34,24 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
   @Input()
   set ngStyleChild(styleChild: Record<string, string>) {
     this.css.ngStyles.after = this.styleSeparateByName(stylesCss(styleChild));
-    console.log('ngStyleChild')
     this.afterViewInit();
   }
 
   @Input()
   set styleChild(style: string | undefined) {
     this.css.styles.after = this.styleSeparateByName(style);
-    console.log('styleChild')
     this.afterViewInit();
   }
 
   @Input()
   set classChild(classes: string | undefined) {
     this.css.classes.after = (classes || '').split(' ');
-    console.log('classChild')
     this.afterViewInit();
   }
 
   @Input()
   set ngClassChild(classChild: Record<string, any>) {
     this.css.ngClasses.after = classesCss(classChild).split(' ');
-    console.log('ngClassChild')
     this.afterViewInit();
   }
 
