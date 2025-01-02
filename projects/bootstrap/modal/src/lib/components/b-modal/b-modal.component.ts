@@ -21,7 +21,7 @@ import {
 } from '@pmeig/ng-material-core';
 
 @Component({
-  selector: 'b-modal',
+  selector: 'modal',
   standalone: true,
   imports: [
     NgTemplateOutlet,
@@ -170,7 +170,7 @@ export class BModalComponent extends TagComponent implements Modal, OnInit {
   }
 
   open() {
-    // if (!this.visible.show) {
+    if (!this.visible.show) {
       this.visible.display = true
       this.clearTimeout(this.onStart.animation)
       this.onStart.animation = this.appendTimeout(170, () => this.visible.show = true).id
@@ -178,7 +178,7 @@ export class BModalComponent extends TagComponent implements Modal, OnInit {
       if (this.timeBeforeClose) {
         this.onStart.timeout = this.appendTimeout(this.timeBeforeClose, () => this.close()).id
       }
-    // }
+    }
   }
 
   get opened(): boolean {
