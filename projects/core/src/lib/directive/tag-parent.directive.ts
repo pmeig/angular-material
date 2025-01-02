@@ -1,4 +1,4 @@
-import { Directive, ElementRef, inject, Input } from '@angular/core';
+import { afterNextRender, Directive, ElementRef, inject, Input } from '@angular/core';
 import { classesCss, stylesCss } from '../helper/style.helper';
 import { Item, TagDirective } from './tag.directive';
 import { isNotBlank } from '@pmeig/ng-core';
@@ -29,6 +29,9 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
 
   protected constructor(element: ElementRef<T> | boolean = inject(ElementRef), listenDOMInteraction: boolean = true) {
     super(element, listenDOMInteraction);
+    if (this.isSSR()) {
+      afterNextRender(() => this.refreshCSSForChildren())
+    }
   }
 
   @Input()
@@ -55,30 +58,12 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
     this.afterViewInit();
   }
 
-  protected override afterViewInit() {
-    this.removeClassChildren(this.element, ...Object.keys(this.css.classes.before).concat(...Object.keys(this.css.ngClasses.before)));
-    this.removeStyleChildren(this.element, ...Object.keys(this.css.styles.before).concat(...Object.keys(this.css.ngStyles.before)));
-    this.putClassChildren(this.element, ...Object.keys(this.css.classes.after).concat(...Object.keys(this.css.ngClasses.after)));
-    this.putStyleChildren(Object.entries(this.css.styles.after).concat(...Object.entries(this.css.ngStyles.after))
-      .reduce((accumulator, [name, value]) => ({ ...accumulator, [name]: value }), {}));
-    this.css = {
-      styles: {
-        before: this.css.styles.after,
-        after: {}
-      },
-      classes: {
-        before: this.css.classes.after,
-        after: []
-      },
-      ngStyles: {
-        before: this.css.ngStyles.after,
-        after: {}
-      },
-      ngClasses: {
-        before: this.css.ngClasses.after,
-        after: []
-      }
-    };
+
+  override ngAfterViewInit() {
+    if (this.isBrowser()) {
+      this.refreshCSSForChildren();
+    }
+    super.ngAfterViewInit();
   }
 
   protected putClassChildren(element: Item | string, ...cssClass: string[]) {
@@ -125,6 +110,32 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
       elements.unshift(children[iterator]);
     }
     return elements;
+  }
+
+  private refreshCSSForChildren() {
+    this.removeClassChildren(this.element, ...(this.css.classes.after.concat(...this.css.ngClasses.after)));
+    this.removeStyleChildren(this.element, ...Object.keys(this.css.styles.before).concat(...Object.keys(this.css.ngStyles.before)));
+    this.putClassChildren(this.element, ...(this.css.classes.after.concat(...this.css.ngClasses.after)));
+    this.putStyleChildren(Object.entries(this.css.styles.after).concat(...Object.entries(this.css.ngStyles.after))
+      .reduce((accumulator, [name, value]) => ({ ...accumulator, [name]: value }), {}));
+    this.css = {
+      styles: {
+        before: this.css.styles.after,
+        after: {}
+      },
+      classes: {
+        before: this.css.classes.after,
+        after: []
+      },
+      ngStyles: {
+        before: this.css.ngStyles.after,
+        after: {}
+      },
+      ngClasses: {
+        before: this.css.ngClasses.after,
+        after: []
+      }
+    };
   }
 
   private executeChild(element: Item | string, classes: string[], apply: (element: Item, classes: string[]) => void): void {
