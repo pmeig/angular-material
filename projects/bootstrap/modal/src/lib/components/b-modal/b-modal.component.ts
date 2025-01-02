@@ -1,12 +1,4 @@
-import {
-  booleanAttribute,
-  ChangeDetectionStrategy,
-  Component,
-  ContentChild,
-  Input,
-  OnInit,
-  TemplateRef
-} from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Nullable, Timeout } from '@pmeig/ng-core';
 import { Modal } from '../../modal';
@@ -33,7 +25,7 @@ import { ButtonMaterial } from '@pmeig/ngb-btn';
   styleUrl: './b-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BModalComponent extends TagComponent implements Modal, OnInit {
+export class BModalComponent extends TagComponent implements Modal {
   @ContentChild('header') protected header?: TemplateRef<any> | any
   @ContentChild('body') protected body?: TemplateRef<any> | any
   @ContentChild('footer') protected footer?: TemplateRef<any> | any
@@ -138,7 +130,7 @@ export class BModalComponent extends TagComponent implements Modal, OnInit {
     super();
   }
 
-  ngOnInit(): void {
+  protected override afterViewInit(): void {
     if (this.onInitEnable) {
       this.open()
     }

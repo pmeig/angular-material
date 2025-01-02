@@ -1,12 +1,14 @@
-import { Component, computed, HostListener, Input } from '@angular/core';
+import { AfterViewInit, Component, computed, HostListener, inject, Input, PLATFORM_ID } from '@angular/core';
 import { ref, state } from '../annotation/signal.helper';
 import { Listener } from './listener';
 import { classesCss, stylesCss } from '../helper/style.helper';
+import { isPlatformServer } from '@angular/common';
 
 @Component({template: ''})
-export abstract class TagComponent extends Listener {
+export abstract class TagComponent extends Listener implements AfterViewInit {
   @Input()
   name = ref(this, 'name', '')
+  private platform = inject(PLATFORM_ID)
   protected isHovered = ref(this, 'isHovered', false)
   protected classes = ref(this, 'classes', computed(() =>  `${this.properties.classes} ${this.properties.ngClasses}`))
   protected styles = ref(this, 'styles', computed(() =>  `${this.properties.styles ? this.properties.styles + ';' : ''}${this.properties.ngStyles}`))
@@ -20,7 +22,18 @@ export abstract class TagComponent extends Listener {
 
   protected constructor() {
     super();
+    if (this.isServer) {
+      this.afterViewInit()
+    }
   }
+
+  ngAfterViewInit(): void {
+    if (this.isBrowser) {
+      this.afterViewInit()
+    }
+  }
+
+
 
   @Input('classes')
   set _classes(classes: string) {
@@ -50,5 +63,17 @@ export abstract class TagComponent extends Listener {
   @HostListener('mouseleave')
   leaveEvent() {
     this.isHovered = false
+  }
+
+  protected get isServer() {
+    return isPlatformServer(this.platform)
+  }
+
+  protected get isBrowser() {
+    return isPlatformServer(this.platform)
+  }
+
+  protected afterViewInit() {
+
   }
 }
