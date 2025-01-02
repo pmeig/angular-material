@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, computed, HostListener, inject, Input, PLATFORM_ID } from '@angular/core';
+import {
+  afterNextRender,
+  AfterViewInit,
+  Component,
+  computed,
+  HostListener,
+  inject,
+  Input,
+  PLATFORM_ID
+} from '@angular/core';
 import { ref, state } from '../annotation/signal.helper';
 import { Listener } from './listener';
 import { classesCss, stylesCss } from '../helper/style.helper';
@@ -22,8 +31,8 @@ export abstract class TagComponent extends Listener implements AfterViewInit {
 
   protected constructor() {
     super();
-    if (this.isServer) {
-      this.afterViewInit()
+    if (this.isSSR) {
+      afterNextRender(() => this.afterViewInit())
     }
   }
 
@@ -65,7 +74,7 @@ export abstract class TagComponent extends Listener implements AfterViewInit {
     this.isHovered = false
   }
 
-  protected get isServer() {
+  protected get isSSR() {
     return isPlatformServer(this.platform)
   }
 

@@ -9,15 +9,15 @@ import {
   isColor,
   rgbToString,
   Size,
-  TagDirective,
   toRGB
 } from '@pmeig/ng-material-core';
+import { BTagDirective } from '@pmeig/ngb-core';
 
 @Directive({
   selector: 'button, [btn]',
   standalone: true
 })
-export class BBtnDirective extends TagDirective implements OnInit {
+export class BBtnDirective extends BTagDirective implements OnInit {
   private state = {
     disabled: false,
     close: false,

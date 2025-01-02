@@ -2,7 +2,7 @@ import { afterNextRender, Directive, ElementRef, inject } from '@angular/core';
 import { TagParentDirective } from '@pmeig/ng-material-core';
 
 @Directive()
-export abstract class BTagParentDirective<T extends Element = Element> extends TagParentDirective {
+export abstract class BTagParentDirective<T extends Element = Element> extends TagParentDirective<T> {
 
   protected constructor(elementRef: ElementRef<T> | boolean = inject(ElementRef),
                         listenDOMInteraction: boolean = false) {
