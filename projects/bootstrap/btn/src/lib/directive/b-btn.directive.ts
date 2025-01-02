@@ -3,6 +3,9 @@ import {
   BooleanAttribute,
   ColorAttribute,
   colorToString,
+  Empty,
+  emptyBooleanAttribute,
+  EmptyBooleanAttribute,
   isColor,
   rgbToString,
   Size,
@@ -17,12 +20,25 @@ import {
 export class BBtnDirective extends TagDirective implements OnInit {
   private state = {
     disabled: false,
+    close: false,
     color: {
       classes: 'btn-primary',
       rgb: ''
     },
     size: ''
   };
+
+  @Input()
+  set btn(value: Empty<'close'>) {
+    this.state.close = value === 'close';
+    this.afterViewInit()
+  }
+
+  @Input()
+  set close(value: EmptyBooleanAttribute) {
+    this.state.close = emptyBooleanAttribute(value);
+    this.afterViewInit()
+  }
 
   constructor() {
     super();
@@ -72,10 +88,27 @@ export class BBtnDirective extends TagDirective implements OnInit {
   }
 
   protected override afterViewInit(): void {
-    this.putClass('btn');
-    this.refreshDisabled();
-    this.refreshSize();
-    this.refreshColor();
+    if (this.state.close) {
+      this.putClass('btn-close');
+      this.removeAttribute(this.element, 'disabled');
+      const removeClasses = []
+      if (this.state.size) {
+        removeClasses.push(`btn-${this.state.size}`);
+      }
+      if (this.state.color.classes) {
+        removeClasses.push(this.state.color.classes);
+      }
+      this.removeClass(...removeClasses);
+      if (this.state.color.rgb) {
+        this.removeStyle('color');
+      }
+    } else {
+      this.removeClass('btn-close')
+      this.putClass('btn');
+      this.refreshDisabled();
+      this.refreshSize();
+      this.refreshColor();
+    }
   }
 
   protected eventClick(event: Event) {
@@ -86,10 +119,8 @@ export class BBtnDirective extends TagDirective implements OnInit {
   }
 
   private refreshSize() {
-
-    const classes = [];
     if (this.state.size) {
-      classes.push(`btn-${this.state.size}`);
+      this.putClass(`btn-${this.state.size}`);
     }
   }
 

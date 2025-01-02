@@ -14,12 +14,12 @@
                 <div class="modal-title">{{ text.title }}</div>
               }
             </div>
-            <div b-btn-group>
+            <btn-group>
               <ng-content select="[btn]"></ng-content>
               @if (enabled.cross) {
-                <button [id]="name + '-close'" class="btn-close" (click)="close()"></button>
+                <button close [id]="name + '-close'" (click)="close()"></button>
               }
-            </div>
+            </btn-group>
           </div>
         }
         @if (enabled.body && body) {

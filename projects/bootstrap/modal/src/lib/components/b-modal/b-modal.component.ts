@@ -19,13 +19,15 @@ import {
   timeoutAttribute,
   TimeoutAttribute
 } from '@pmeig/ng-material-core';
+import { ButtonMaterial } from '@pmeig/ngb-btn';
 
 @Component({
   selector: 'modal',
   standalone: true,
   imports: [
     NgTemplateOutlet,
-    NgClass
+    NgClass,
+    ButtonMaterial
   ],
   templateUrl: './b-modal.component.html',
   styleUrl: './b-modal.component.scss',
