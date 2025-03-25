@@ -1,7 +1,12 @@
-import { BLabelDirective } from './b-label.directive';
 import { NgModule } from '@angular/core';
+import {
+  BLabelCheckButtonDirective,
+  BLabelCheckDirective,
+  BLabelDirective,
+  BLabelFloatingDirective
+} from './directive/public.directive';
 
-const LABEL_DIRECTIVES = [BLabelDirective];
+const LABEL_DIRECTIVES = [BLabelDirective, BLabelFloatingDirective, BLabelCheckDirective, BLabelCheckButtonDirective];
 
 @NgModule({
   imports: LABEL_DIRECTIVES,

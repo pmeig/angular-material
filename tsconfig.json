@@ -25,6 +25,9 @@
       "b-modal": [
         "./dist/b-modal"
       ],
+      "b-select": [
+        "./dist/b-select"
+      ],
       "button": [
         "./dist/button"
       ],

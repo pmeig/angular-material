@@ -10,7 +10,6 @@ export abstract class EventHandler {
   private subscriptions: ItemListener<Subscription>[] = [];
   private intervals: ItemListener<number>[] = [];
   private timeouts: ItemListener<number>[] = [];
-  private onChangeObservers: ItemListener<MutationObserver>[] = [];
 
   protected constructor() {
   }
@@ -105,46 +104,10 @@ export abstract class EventHandler {
       () => this.timeouts,
       item => clearTimeout(item.item)
     );
-    this.destroyList(() => this.onChangeObservers,
-      item => item.item.disconnect());
     this.onDestroy();
   }
 
   protected onDestroy(): void {
-  }
-
-  protected onChange(element: Element, onObserve: (mutations?: MutationRecord[]) => void): string;
-
-  protected onChange(
-    element: Element,
-    onObserve: (mutations?: MutationRecord[]) => void,
-    options: MutationObserverInit): string;
-
-  protected onChange(
-    element: Element,
-    onObserve: (mutations?: MutationRecord[]) => void,
-    name: string): string
-
-  protected onChange(
-    element: Element,
-    onObserve: (mutations?: MutationRecord[]) => void,
-    name: string,
-    options: MutationObserverInit): string;
-
-  protected onChange(element: Element, onObserve: (mutations?: MutationRecord[]) => void,
-                     name: MutationObserverInit | string = Math.random().toString(36),
-                     options: MutationObserverInit = {}) {
-    if (typeof name === 'object') {
-      options = name;
-      name = Math.random().toString(36);
-    }
-    const observer = new MutationObserver(onObserve);
-    observer.observe(element, {
-      attributes: true,
-      ...options
-    });
-    this.onChangeObservers.push({ id: name, item: observer });
-    return name;
   }
 
   private destroyList<T>(list: () => T[], handler: (item: T) => void) {

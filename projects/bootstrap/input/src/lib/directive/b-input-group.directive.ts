@@ -30,36 +30,23 @@ export class BInputGroupDirective extends BTagParentDirective {
     return this.sizeDirective ?? this.size();
   }
 
+
+  protected override onInit() {
+    super.onInit();
+    this.putAttribute('pmeig-parent', 'input-group');
+  }
+
   protected override afterViewInit(): void {
     this.refreshClasses();
-    let idInput = '';
     this.children((child) => {
       if (
-        !['input', 'textarea', 'select'].includes(
-          child?.localName ?? 'input'
-        ) &&
-        child?.className.indexOf('form-') === -1 &&
-        child?.className.indexOf('btn') === -1 &&
-        child?.className.indexOf('invalid-') === -1
+          ['form-', 'btn', 'valid-feedback', 'dropdown-menu'].every(regex => child?.className.indexOf(regex) === -1)
+        || child?.tagName === 'LABEL'
       ) {
-        this.putClass(child, 'input-group-text');
-      } else if (child?.localName === 'input') {
-        idInput = child.id;
-      }
-      if (child?.localName === 'label') {
-        this.putAttribute(
-          child,
-          'override',
-          'true');
+        this.removeClass(child, 'form-label', 'form-check-label')
+        this.putClass(child, 'input-group-text')
       }
     });
-    if (idInput) {
-      this.children((child) => {
-        if (child?.localName === 'label') {
-          child.setAttribute('for', idInput);
-        }
-      });
-    }
   }
 
   private refreshClasses() {

@@ -6,6 +6,7 @@ import {
   HostListener,
   inject,
   Input,
+  OnInit,
   PLATFORM_ID
 } from '@angular/core';
 import { ref, state } from '../annotation/signal.helper';
@@ -13,8 +14,9 @@ import { Listener } from './listener';
 import { classesCss, stylesCss } from '../helper/style.helper';
 import { isPlatformServer } from '@angular/common';
 
+
 @Component({template: ''})
-export abstract class TagComponent extends Listener implements AfterViewInit {
+export abstract class TagComponent extends Listener implements AfterViewInit, OnInit {
   @Input()
   name = ref(this, 'name', '')
   private platform = inject(PLATFORM_ID)
@@ -32,7 +34,13 @@ export abstract class TagComponent extends Listener implements AfterViewInit {
   protected constructor() {
     super();
     if (this.isSSR) {
-      afterNextRender(() => this.afterViewInit())
+      afterNextRender(() => this.onInit())
+    }
+  }
+
+  ngOnInit(): void {
+    if (this.isBrowser) {
+      this.onInit()
     }
   }
 
@@ -83,6 +91,10 @@ export abstract class TagComponent extends Listener implements AfterViewInit {
   }
 
   protected afterViewInit() {
+
+  }
+
+  protected onInit(): void {
 
   }
 }

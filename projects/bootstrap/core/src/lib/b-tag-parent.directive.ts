@@ -4,9 +4,8 @@ import { TagParentDirective } from '@pmeig/ng-material-core';
 @Directive()
 export abstract class BTagParentDirective<T extends Element = Element> extends TagParentDirective<T> {
 
-  protected constructor(elementRef: ElementRef<T> | boolean = inject(ElementRef),
-                        listenDOMInteraction: boolean = false) {
-    super(elementRef, listenDOMInteraction)
+  protected constructor(elementRef: ElementRef<T> = inject(ElementRef)) {
+    super(elementRef)
     if (this.isSSR()) {
       afterNextRender(() => this.insertLink({
         id: 'ngb-css',

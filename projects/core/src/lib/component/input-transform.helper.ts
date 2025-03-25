@@ -1,4 +1,4 @@
-import { EmptyBooleanAttribute, NumberAttribute, TimeoutAttribute } from './input.helper';
+import { EmptyBooleanAttribute, NumberAttribute, Position, TimeoutAttribute } from './input.helper';
 import { Nullable, Timeout, TimeoutUnit } from '@pmeig/ng-core';
 import { booleanAttribute } from '@angular/core';
 
@@ -26,3 +26,7 @@ export const timeoutAttribute = (timeout: TimeoutAttribute): Nullable<Timeout> =
 export const emptyBooleanAttribute = (value: EmptyBooleanAttribute) => {
   return value === '' || booleanAttribute(value);
 };
+
+export const positionAttribute = (value: Position) => {
+  return value || 'up'
+}

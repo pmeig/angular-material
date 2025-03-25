@@ -17,6 +17,12 @@ export class BInputDateDirective extends BInputDirective {
     super(dateParser);
   }
 
+
+  override set type(type: string) {
+    super.type = type;
+    this.valueType = (this.element.getAttribute('value-type') ?? undefined) as InputValueType
+  }
+
   @Input('value-type')
   set valueType(valueType: InputValueType | undefined) {
     this.mapper = findMapper(

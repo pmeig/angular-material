@@ -10,7 +10,9 @@ export abstract class BTagComponent extends TagComponent implements AfterViewIni
     super();
   }
 
-  protected override afterViewInit(): void {
+
+  protected override onInit() {
+    super.onInit();
     addLinkToHead({
       id: 'ngb-css',
       rel: 'stylesheet',
@@ -19,5 +21,4 @@ export abstract class BTagComponent extends TagComponent implements AfterViewIni
       href: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'
     }, inject(Renderer2), getDocument(this.elementRef.nativeElement))
   }
-
 }

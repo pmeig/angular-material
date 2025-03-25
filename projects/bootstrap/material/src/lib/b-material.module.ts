@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { FormMaterial } from '@pmeig/ngb-form';
-import { ButtonMaterial } from '@pmeig/ngb-btn';
-import { LabelMaterial } from '@pmeig/ngb-label';
 import { InputMaterial } from '@pmeig/ngb-input';
+import { LabelMaterial } from '@pmeig/ngb-label';
+import { ButtonMaterial } from '@pmeig/ngb-btn';
 
 const MATERIAL_DIRECTIVES = [InputMaterial, LabelMaterial, ButtonMaterial, FormMaterial];
 

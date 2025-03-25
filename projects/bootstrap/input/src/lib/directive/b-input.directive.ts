@@ -1,4 +1,15 @@
-import { booleanAttribute, Directive, EventEmitter, HostListener, Injectable, Input, Output } from '@angular/core';
+import {
+  booleanAttribute,
+  Directive,
+  EventEmitter,
+  HostListener,
+  inject,
+  Injectable,
+  INJECTOR,
+  Input,
+  Output,
+  TemplateRef
+} from '@angular/core';
 import { NgpDate, NgpDatePipe, NgpDateTime, NgpTime, Optional } from '@pmeig/ng-core';
 import { BooleanAttribute, RGB } from '@pmeig/ng-material-core';
 import { findMapper, InputMapper } from '../b-input.mapper';
@@ -26,6 +37,7 @@ export type InputValue =
 interface InputState {
   readonly: boolean;
   disabled: boolean;
+  describe?: HTMLElement;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -50,6 +62,7 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
     }
   };
 
+  private injector = inject(INJECTOR);
   private state: InputState = {
     readonly: false,
     disabled: false
@@ -64,7 +77,29 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
   @Input()
   set type(type: string) {
     this.element.type = type;
-    this.refreshType();
+    this.refresh(this.refreshType)
+  }
+
+  @Input()
+  set describe(value: string | TemplateRef<any>) {
+    this.refresh(() => {
+      if (this.state.describe) {
+        this.renderer.removeChild(this.removeParent(`input-describe-${this.element.id}`), this.state.describe);
+        this.state.describe = undefined;
+      }
+      if (value) {
+        if (typeof value === 'string') {
+          this.state.describe = this.renderer.createElement('span')
+          this.state.describe!!.innerHTML = value
+        } else {
+          this.state.describe = this.renderer.createElement('div')
+          value.createEmbeddedView({}, this.injector).rootNodes.forEach(node => this.renderer.appendChild(this.state.describe!, node))
+        }
+        if (this.ready) {
+          this.refreshDescribe()
+        }
+      }
+    })
   }
 
   @Input()
@@ -88,13 +123,15 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
     this.element.disabled = this.state.disabled;
   }
 
-  protected override afterViewInit(): void {
-    this.refreshType();
+
+  protected override onInit() {
+    super.onInit();
+    this.addAttribute('class-ignore', 'form-control form-check-input form-range')
   }
 
-
-  protected override onOverride() {
-    this.removeClass('form-control', 'form-check-input', 'form-range');
+  protected override afterViewInit(): void {
+    this.refreshType();
+    this.refreshDescribe()
   }
 
   @HostListener('input')
@@ -108,7 +145,7 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
 
   @HostListener('keydown', ['$event'])
   private onKeyDown(event: KeyboardEvent) {
-    if (this.state.disabled || this.state.readonly) {
+    if (this. state.disabled || this.state.readonly) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
@@ -116,11 +153,15 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
   }
 
   private refreshType() {
+    this.removeParent('form-check')
     switch (this.element.type) {
       case 'checkbox':
       case 'radio':
         this.removeClass('form-control', 'form-range');
-        this.putClass('form-check-input');
+        if (!this.element.classList.contains('btn-check')) {
+          this.insertParent('form-check')
+          this.putClass('form-check-input');
+        }
         break;
       case 'range':
         this.removeClass('form-control', 'form-check-input');
@@ -129,6 +170,14 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
       default:
         this.removeClass('form-check-input', 'form-range');
         this.putClass('form-control');
+    }
+  }
+
+  private refreshDescribe() {
+    if (this.state.describe) {
+      const parent = this.insertParent(`input-describe-${this.element.id}`)
+      this.putClass(this.state.describe, 'form-text')
+      this.renderer.appendChild(parent, this.state.describe)
     }
   }
 }

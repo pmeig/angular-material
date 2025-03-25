@@ -1,4 +1,4 @@
-import { booleanAttribute, computed, Directive, effect, Input, input, Optional } from '@angular/core';
+import { booleanAttribute, computed, Directive, effect, Host, Input, input, Optional } from '@angular/core';
 import { BooleanAttribute } from '@pmeig/ng-material-core';
 import { NoValidationCss } from './b-form.css';
 import { FormControl, FormControlName } from '@angular/forms';
@@ -24,9 +24,19 @@ interface ValidatorState {
 export class BValidatorDirective extends BTagDirective<
   Element & { setCustomValidity?: (message: string) => void }
 > {
+
+  private state: ValidatorState = {
+    decorator: true,
+    classSuffixTemplate: '-feedback',
+    messages: {}
+  };
+  private lastObserveChange?: string;
+  private validate?: boolean;
+
   invalid = input<string>('', { alias: 'error' });
   valid = input<string>('');
   formControl = input<FormControl>();
+
   private readonly control = computed(() => {
     if (this.formControlName) {
       return this.formControlName.control;
@@ -37,63 +47,45 @@ export class BValidatorDirective extends BTagDirective<
     }
   })
 
-  private state: ValidatorState = {
-    decorator: true,
-    classSuffixTemplate: '-feedback',
-    messages: {}
-  };
-  private lastObserveChange?: string;
-  private validate?: boolean;
-
   constructor(
     private json: JsonPipe,
-    @Optional() private formControlName?: FormControlName
+    @Host() @Optional() private formControlName?: FormControlName
   ) {
-    super(true);
-    effect(() => this.checkMessage('invalid'));
-    effect(() => this.checkMessage('valid'));
-    effect(() => this.initValidityChange());
+    super();
+    effect(() => this.refresh(() => this.checkMessage('invalid')));
+    effect(() => this.refresh(() => this.checkMessage('valid')));
+    effect(() => this.refresh(() => this.initValidityChange()));
   }
 
   @Input('is-valid')
   set isValid(isValid: BooleanAttribute) {
     this.validate = booleanAttribute(isValid);
-    if (this.validate) {
-      this.putValidity('');
-    } else {
-      this.putValidity('manual-invalid');
-    }
+    this.refresh(this.refreshValidate)
+
   }
 
   @Input()
   set decorator(decorator: BooleanAttribute | '') {
     this.state.decorator =
       decorator === '' ? true : booleanAttribute(decorator);
-    this.refreshDecorator();
+    this.refresh(this.refreshDecorator)
   }
 
   @Input()
   set tooltip(tooltip: BooleanAttribute | '') {
-    this.removeMessage('invalid');
-    this.removeMessage('valid');
+    this.refresh(this.removeLastClass)
     this.state.classSuffixTemplate =
       tooltip === '' || booleanAttribute(tooltip) ? '-tooltip' : '-feedback';
-    this.refreshMessageType();
+    this.refresh(this.refreshMessageType)
   }
 
   protected override onInit() {
     this.insertStyle(NoValidationCss);
-  }
-
-  protected override afterViewInit(): void {
     this.refreshDecorator();
     this.refreshMessageType();
   }
 
-
-  protected override onOverride() {
-    this.removeMessage('invalid');
-    this.removeMessage('valid');
+  protected override afterViewInit(): void {
   }
 
   protected override onRemove() {
@@ -106,47 +98,6 @@ export class BValidatorDirective extends BTagDirective<
   private refreshMessageType() {
     this.checkMessage('invalid');
     this.checkMessage('valid');
-  }
-
-  private checkMessage(id: 'valid' | 'invalid') {
-    this.removeMessage(id);
-    if (this[id]()) {
-      this.insertMessage(id);
-    }
-  }
-
-  private insertMessage(id: 'valid' | 'invalid') {
-    if (this.state.messages[id]) return;
-    const div = this.renderer.createElement('div') as HTMLDivElement;
-    const classname = `${id}${this.state.classSuffixTemplate}`;
-    div.innerHTML = this[id]();
-    div.id = `${this.element.id}-${classname}`;
-    this.state.messages[id] = div;
-    this.putClass(div, classname);
-    const parent = this.renderer.parentNode(this.element) as Element;
-    if (
-      ['form-check', 'form-floating'].find((classname) =>
-        parent.className.includes(classname)
-      )
-    ) {
-      this.renderer.appendChild(parent, div);
-    } else {
-      setTimeout(() =>
-        this.renderer.insertBefore(
-          this.element,
-          div,
-          this.renderer.nextSibling(this.element)
-        )
-      );
-    }
-  }
-
-  private removeMessage(id: 'valid' | 'invalid') {
-    const element = this.state.messages[id];
-    if (element) {
-      this.renderer.removeChild(this.renderer.parentNode(element), element);
-      this.state.messages[id] = undefined;
-    }
   }
 
   private putValidity(validity: string) {
@@ -172,6 +123,49 @@ export class BValidatorDirective extends BTagDirective<
     if (control) {
       this.observeValueChange(control);
       this.updateValidity(control);
+    }
+  }
+
+  private refreshValidate() {
+    if (this.validate) {
+      this.putValidity('');
+    } else {
+      this.putValidity('manual-invalid');
+    }
+  }
+
+  private checkMessage(key: 'valid' | 'invalid') {
+    const message = this[key]();
+    if (message) {
+      this.getOrCreateElement(key).innerHTML = message;
+    } else if (this.state.messages[key]) {
+      this.renderer.removeChild(this.renderer.parentNode(this.element), this.state.messages[key]);
+    }
+  }
+
+  private getOrCreateElement(key: 'valid' | 'invalid'): Element {
+    let element = this.state.messages[key];
+    if (!element) {
+      const classname = `${key}${this.state.classSuffixTemplate}`
+      element = this.renderer.createElement('div') as Element;
+      element.id = `${this.element.id}-${key}`;
+      this.putClass(element, classname);
+      const parent = this.insertParent('form-field-validator')
+      this.renderer.appendChild(parent, element);
+      this.state.messages[key] = element;
+    }
+    return element as Element;
+  }
+
+  private removeLastClass(key?: 'valid' | 'invalid') {
+    if (key) {
+      const element = this.state.messages[key];
+      if (element) {
+        this.removeClass(element, `${key}${this.state.classSuffixTemplate}`)
+      }
+    } else {
+      this.removeLastClass('valid')
+      this.removeLastClass('invalid')
     }
   }
 }

@@ -27,8 +27,8 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
     }
   };
 
-  protected constructor(element: ElementRef<T> | boolean = inject(ElementRef), listenDOMInteraction: boolean = true) {
-    super(element, listenDOMInteraction);
+  protected constructor(element: ElementRef<T> = inject(ElementRef)) {
+    super(element);
     if (this.isSSR()) {
       afterNextRender(() => this.refreshCSSForChildren())
     }

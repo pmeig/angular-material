@@ -41,15 +41,10 @@ export class BBtnGroupDirective extends BBtnToolbarDirective {
     this.refreshVertical();
   }
 
-
-  override set classChild(classes: string | undefined) {
-    super.classChild = classes;
-  }
-
   protected override onInit() {
     this.getChildren().forEach(child => {
-      this.putAttribute(child, 'override', 'true');
       if (child.tagName === 'INPUT') {
+        this.addAttribute(child, 'class-ignore', 'btn-check btn')
         switch (child.getAttribute('type')) {
           case 'radio':
           case 'checkbox':
@@ -58,10 +53,15 @@ export class BBtnGroupDirective extends BBtnToolbarDirective {
           default:
             this.putClass(child, 'btn');
         }
+        if (child.getAttribute('label')) {
+          this.putAttribute(child, 'label-type', 'btn')
+        }
+        this.removeClass(child, 'form-check-input', 'form-control', 'form-range')
       } else if (child.tagName === 'LABEL') {
         this.putClass(child, 'btn');
       }
     });
+    this.putAttribute('pmeig-parent', 'btn-group')
   }
 
   protected override afterViewInit() {
@@ -71,21 +71,15 @@ export class BBtnGroupDirective extends BBtnToolbarDirective {
   }
 
   protected override refreshGap() {
-    if (!this.isOverride) {
-      if (this.state.vertical) {
-        if (this.gap()) {
-          const elements = this.getChildren().slice(1);
-          elements.forEach(value => {
-            this.putStyle(value, { 'margin-top': this.gap()!! });
-            this.removeStyle(value, 'margin-left');
-          });
-        }
-      } else super.refreshGap();
-    } else {
-      this.getChildren().forEach(child => {
-        this.removeStyle(child, 'margin-top', 'margin-left');
-      });
-    }
+    if (this.state.vertical) {
+      if (this.gap()) {
+        const elements = this.getChildren().slice(1);
+        elements.forEach(value => {
+          this.putStyle(value, { 'margin-top': this.gap()!! });
+          this.removeStyle(value, 'margin-left');
+        });
+      }
+    } else super.refreshGap();
   }
 
   private refreshSize() {
