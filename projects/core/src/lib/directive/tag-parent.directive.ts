@@ -1,8 +1,9 @@
 import { afterNextRender, Directive, ElementRef, inject, Input } from '@angular/core';
 import { classesCss, stylesCss } from '../helper/style.helper';
-import { Item, TagDirective } from './tag.directive';
+import { TagDirective } from './tag.directive';
 import { isNotBlank } from '@pmeig/ng-core';
 import { extractElementAndAddStyle } from '../helper/internal.helper';
+import { Item } from '../helper/css.helper';
 
 type Handle = (child: Element | null, index: number) => void;
 

@@ -23,8 +23,11 @@ export const timeoutAttribute = (timeout: TimeoutAttribute): Nullable<Timeout> =
   return timeout;
 };
 
-export const emptyBooleanAttribute = (value: EmptyBooleanAttribute) => {
-  return value === '' || booleanAttribute(value);
+export const emptyBooleanAttribute = (value: EmptyBooleanAttribute, ifEmpty: boolean = true) => {
+  if (value === '') {
+    return ifEmpty;
+  }
+  return booleanAttribute(value);
 };
 
 export const positionAttribute = (value: Position) => {

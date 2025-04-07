@@ -3,14 +3,15 @@ import {
   AfterViewChecked,
   AfterViewInit,
   Directive,
-  ElementRef,
   inject,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
-  Renderer2
+  Renderer2,
+  TemplateRef,
+  ViewContainerRef
 } from '@angular/core';
-import { isNotBlank, Optional } from '@pmeig/ng-core';
+import { isNotBlank } from '@pmeig/ng-core';
 import { EventHandler } from '../helper/event-handler';
 import { extractElementAndAddStyle, styleToRecord } from '../helper/internal.helper';
 import {
@@ -30,48 +31,27 @@ import {
 } from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { getDocument } from '../helper/browser.helper';
-import { PrimitiveTypes } from '@angular/cli/src/analytics/analytics-parameters';
-
-
-export interface ParentExclude {
-  classes?: string[];
-  styles?: string[];
-}
-
-const tagParentName = ['div'];
-
-export type TagParent = typeof tagParentName[number]
 
 
 @Directive()
-export abstract class TagDirective<T extends Element = Element> extends EventHandler implements AfterViewInit, OnDestroy, OnInit, AfterViewChecked {
-  readonly element: T;
+export abstract class TagTemplateDirective extends EventHandler implements AfterViewInit, OnDestroy, OnInit, AfterViewChecked {
   protected renderer = inject(Renderer2);
+  protected viewContainerRef = inject(ViewContainerRef);
+  element: Element = this.renderer.createElement('div') as Element;
   protected ready = false
+  protected display = false;
   private platform = inject(PLATFORM_ID);
-  private attributes: {
-    class: string,
-    style: string
-  } = {
-    class: '',
-    style: ''
-  }
 
 
   protected constructor(
-    elementRef: ElementRef<T> = inject(ElementRef)
+    private readonly template: TemplateRef<any> = inject(TemplateRef<any>)
   ) {
     super();
-    this.element = elementRef.nativeElement;
     if (this.isSSR()) {
       afterNextRender(
         () => {
           this.init();
           this.onInit();
-          this.attributes = {
-            class: this.element.className,
-            style: this.element.getAttribute('style') ?? ''
-          }
         })
     }
   }
@@ -97,6 +77,18 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
 
   ngOnDestroy(): void {
     this.clearEvent();
+  }
+
+  protected show(context: any = {}) {
+    if (!this.display) {
+      this.element = this.viewContainerRef.createEmbeddedView(this.template, context).rootNodes[0] as Element;
+    }
+    this.display = true;
+  }
+
+  protected hide() {
+    this.viewContainerRef.clear();
+    this.display = false;
   }
 
   protected onInit() {
@@ -250,91 +242,6 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   }
 
 
-  protected insertParent(
-    excludes: ParentExclude, classes?: string, styles?: string): Element
-  protected insertParent(
-    classes: string, styles?: string): Element
-  protected insertParent(
-    tag: TagParent,
-    excludes?: ParentExclude, classes?: string, styles?: string): Element
-  protected insertParent(
-    tag: TagParent,
-    classes?: string, styles?: string): Element
-  protected insertParent(
-    tag: TagParent | ParentExclude | string = 'div',
-    excludes: ParentExclude | string = '',
-    classes: string | Record<string, Optional<PrimitiveTypes>> = {},
-    styles: string | Record<string, Optional<PrimitiveTypes>> = {}): Element {
-    if (typeof tag === 'string') {
-      if (!tagParentName.includes(tag)) {
-        styles = classes;
-        classes = excludes as string;
-        excludes = tag;
-        tag = 'div';
-      }
-    } else {
-      styles = classes;
-      classes = excludes as string;
-      excludes = tag;
-      tag = 'div';
-    }
-    if (typeof excludes === 'string') {
-      styles = classes;
-      classes = excludes as string;
-      excludes = {};
-    }
-
-    const parent = this.renderer.parentNode(this.element) as Element;
-    let element = this.renderer.createElement(tag) as HTMLElement;
-    let created = true;
-    const parentOf = parent.getAttribute('pmeig-parent');
-    if (parentOf) {
-      element = parent as HTMLElement;
-      created = false;
-    }
-    excludes.styles = [...(excludes.styles || []), ...this.getIgnored('style')];
-    excludes.classes = [...(excludes.classes || []), ...this.getDefaultClassname(), ...this.getIgnored('class')];
-
-    this.element.className.split(' ').filter(name => !excludes.classes!!.includes(name)).forEach(name => {
-      this.putClass(element, name)
-      this.removeClass(name)
-    });
-    this.element.getAttribute('style')?.split(';')?.map(style => style.trim().split(':').map(value => value.trim()))
-      ?.filter(([name]) => !excludes.styles!!.includes(name))?.forEach(([name, value]) => {
-        this.putStyle(element, `${name}=${value}`)
-      this.removeStyle(name)
-    });
-    this.putClass(element, ...(classes as string).split(' '));
-    this.putStyle(element, styleToRecord(styles as string));
-    if (created) {
-      this.renderer.insertBefore(parent, element, this.element);
-      this.renderer.removeChild(parent, this.element);
-      this.renderer.appendChild(element, this.element);
-      this.putAttribute(element, 'pmeig-parent', this.element.tagName);
-    }
-    return element;
-  }
-
-  protected removeParent(classes: string = '', styles: string = ''): Element {
-    const parent = this.renderer.parentNode(this.element) as Element;
-    if (parent && parent.getAttribute('pmeig-parent')) {
-      this.removeClass(parent, ...classes.split(' '))
-      this.removeStyle(parent, ...styles.split(' '))
-      if (!parent.getAttribute('class') && !parent.getAttribute('style')) {
-        const origin = this.renderer.parentNode(parent)
-        while (parent.childElementCount) {
-          const child = parent.children.item(0)!!
-          this.renderer.insertBefore(origin, child, parent)
-        }
-        this.renderer.removeChild(origin, parent);
-        this.putClass(...this.attributes.class.split(' '))
-        this.putStyle(this.attributes.style)
-        return origin
-      }
-    }
-    return parent
-  }
-
   protected refresh(action: () => void) {
     if (this.ready) {
       action.bind(this)()
@@ -342,24 +249,6 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   }
 
   private init() {
-    this.putClass(...this.getDefaultClassname());
     this.ready = true;
-  }
-
-  private getDefaultClassname() {
-    const classname = [`pmeig-${this.element.tagName.toLowerCase()}`];
-    const id = this.element.getAttribute('id');
-    if (id) {
-      classname.push(`${classname[0]}-${id}`);
-    }
-    return classname;
-  }
-
-  private getIgnored(type: 'style' | 'class') {
-    const ignored = this.element.getAttribute(`${type}-ignore`)
-    if (ignored) {
-      return ignored.split(' ');
-    }
-    return []
   }
 }

@@ -52,8 +52,10 @@ export abstract class EventHandler {
     });
   }
 
-  addTimeout(timeout: any): ItemListener<number> {
-    const item = { id: Math.random().toString(36), item: timeout as number };
+  addTimeout(timeout: () => void, millisecond: number | Timeout): ItemListener<number>;
+  addTimeout(timeout: any, millisecond?: number | Timeout): ItemListener<number> {
+    const item = { id: Math.random().toString(36), item: typeof timeout === 'function'
+        ? setTimeout(timeout, timeToMilliseconds(millisecond!!)) : timeout};
     this.timeouts.push(item);
     return item;
   }
@@ -65,8 +67,9 @@ export abstract class EventHandler {
     });
   }
 
-  addInterval(interval: any): any {
-    this.timeouts.push(interval);
+  addInterval(interval: () => void, millisecond: number | Timeout): ItemListener<number>;
+  addInterval(interval: any, millisecond?: number | Timeout): any {
+    this.intervals.push(typeof interval === 'function' ? setInterval(interval, timeToMilliseconds(millisecond!!)) : interval);
     return interval;
   }
 
@@ -75,20 +78,6 @@ export abstract class EventHandler {
       clearTimeout(this.intervals[index].item);
       this.intervals = this.intervals.splice(index, 1);
     });
-  }
-
-  appendTimeout(
-    timeout: Timeout | number,
-    execute: () => void
-  ): ItemListener<number> {
-    return this.addTimeout(setTimeout(execute, timeToMilliseconds(timeout)));
-  }
-
-  appendInterval(
-    timeout: Timeout,
-    execute: () => void
-  ): ItemListener<number> {
-    return this.addInterval(setInterval(execute, timeToMilliseconds(timeout)));
   }
 
   protected clearEvent(): void {

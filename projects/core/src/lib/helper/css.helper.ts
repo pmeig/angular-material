@@ -1,7 +1,10 @@
 import { Renderer2 } from '@angular/core';
 import { toSnakeKey } from './type.helper';
+import { Optional } from '@pmeig/ng-core';
+import { stylesCss } from './style.helper';
 
 
+export type Item = Optional<Element>;
 export type CssValue = Partial<Record<toSnakeKey<keyof CSSStyleDeclaration & string>, any>>;
 
 export interface Css {
@@ -22,6 +25,96 @@ export interface Link {
   id?: string;
   integrity?: string;
   crossorigin?: string;
+}
+
+
+export const putClass = (element: Item, renderer: Renderer2, classes: string[]) => {
+  if (element) {
+    const className = element.getAttribute('class')?.split(' ') ?? [];
+    const action = element.nodeType === Node.COMMENT_NODE
+      ? (value: string) => element.setAttribute('class', `${element.getAttribute('class')} ${value}`)
+      : (value: string) => renderer.addClass(element, value);
+    classes
+      .filter((value) => className.length === 0 || !className.includes(value))
+      .forEach((value) => action(value));
+  }
+}
+
+export const removeClass = (element: Item, renderer: Renderer2, classes: string[]) => {
+  if (element) {
+    const className = element.getAttribute('class')?.split(' ') ?? [];
+    const action = element.nodeType === Node.COMMENT_NODE
+      ? (value: string) => element.setAttribute('class', (element.getAttribute('class')?.split(value) ?? []).map(cssClass => cssClass.trim()).join(' '))
+      : (value: string) => renderer.removeClass(element, value);
+    classes
+      .filter((value) => className.includes(value))
+      .forEach((value) => action(value));
+  }
+}
+
+export const putStyle = (element: Item, renderer: Renderer2, styles: Record<string, string>) => {
+  if (element) {
+    if (element.nodeType === Node.COMMENT_NODE) {
+      element.setAttribute('style', stylesCss(styles));
+    } else {
+      Object.entries(styles).forEach(([name, value]) => renderer.setStyle(element, name, value));
+    }
+  }
+}
+
+export const removeStyle = (element: Item, renderer: Renderer2, cssStyles: string[]) => {
+  if (element) {
+    if (element.nodeType === Node.COMMENT_NODE) {
+      const styles = element.getAttribute('style')?.split(';')?.map(style => style.split(':').map(part => part.trim()))
+        .filter(([name]) => !cssStyles.includes(name))
+        .reduce((accumulator, [name, value]) => ({ ...accumulator, [name]: value }), {});
+      if (styles && Object.keys(styles).length > 0) {
+        element.setAttribute('style', stylesCss(styles));
+      } else {
+        element.removeAttribute('style');
+      }
+    } else {
+      cssStyles.forEach(value => renderer.removeStyle(element, value));
+    }
+  }
+}
+
+export const addAttribute = (element: Item, renderer: Renderer2, name: string, value?: any) => {
+  if (element) {
+    let attribute = element.getAttribute(name)
+    if (!attribute) {
+      attribute = '';
+    } else {
+      attribute = `${attribute} `;
+    }
+    putAttribute(element, renderer, name, `${attribute}${value ?? ''}`);
+  }
+}
+
+export const putAttribute = (element: Item, renderer: Renderer2, name: string, value?: any) => {
+  if (element) {
+    let action = {
+      put: () => renderer.setAttribute(element, name, value),
+      remove: () => renderer.removeAttribute(element, name)
+    };
+    if (element.nodeType === Node.COMMENT_NODE) {
+      action = {
+        put: () => element.setAttribute(name, value.toString()),
+        remove: () => element.removeAttribute(name)
+      };
+    }
+    if (value) {
+      action.put();
+    } else {
+      action.remove();
+    }
+  }
+}
+
+export const removeAttribute = (element: Item, renderer: Renderer2, names: string[]) => {
+  if (element) {
+    names.forEach(name => renderer.removeAttribute(element, name));
+  }
 }
 
 export const cssValueToCssFormat = (value: string | CssValue | undefined) => {
