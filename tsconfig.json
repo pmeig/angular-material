@@ -31,6 +31,9 @@
       "button": [
         "./dist/button"
       ],
+      "collapse": [
+        "./dist/collapse"
+      ],
       "core": [
         "./dist/core"
       ],
