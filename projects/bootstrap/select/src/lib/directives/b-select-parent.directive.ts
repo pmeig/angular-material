@@ -49,7 +49,7 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
 
 
   protected override onChange() {
-    super.onChange();
+    super.onChange()
     this.children((child, index) => {
       if (!child?.className?.split(' ')?.some(classname => classname === BSelectParentDirective.classnameChild)) {
         this.putClass(child, BSelectParentDirective.classnameChild);

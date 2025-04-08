@@ -1,12 +1,14 @@
-import { AfterViewInit, Component, ElementRef, inject, Renderer2 } from '@angular/core';
-import { addLinkToHead, getDocument, TagComponent } from '@pmeig/ng-material-core';
+import { Component, inject, Renderer2 } from '@angular/core';
+import { addLinkToHead, TagComponent } from '@pmeig/ng-material-core';
 import { bootstrapLink } from './b-tag.constant';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   template: '',
 })
-export abstract class BTagComponent extends TagComponent implements AfterViewInit {
-  private elementRef = inject(ElementRef);
+export abstract class BTagComponent extends TagComponent {
+  private readonly document = inject(DOCUMENT);
+  protected readonly renderer = inject(Renderer2);
   protected constructor() {
     super();
   }
@@ -14,6 +16,6 @@ export abstract class BTagComponent extends TagComponent implements AfterViewIni
 
   protected override onInit() {
     super.onInit();
-    addLinkToHead(bootstrapLink, inject(Renderer2), getDocument(this.elementRef.nativeElement))
+    addLinkToHead(bootstrapLink, this.renderer, this.document)
   }
 }

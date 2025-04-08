@@ -5,6 +5,7 @@ import {
   Directive,
   ElementRef,
   inject,
+  input,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
@@ -49,6 +50,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   protected renderer = inject(Renderer2);
   protected ready = false
   private platform = inject(PLATFORM_ID);
+  readonly ignore = input<'' | undefined>(undefined, {alias: 'pmeig-ignore'});
   private attributes: {
     class: string,
     style: string
@@ -66,31 +68,33 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
     if (this.isSSR()) {
       afterNextRender(
         () => {
-          this.init();
-          this.onInit();
-          this.attributes = {
-            class: this.element.className,
-            style: this.element.getAttribute('style') ?? ''
+          if (this.ignore() !== '') {
+            this.init();
+            this.onInit();
+            this.attributes = {
+              class: this.element.className,
+              style: this.element.getAttribute('style') ?? ''
+            }
           }
         })
     }
   }
 
   ngOnInit(): void {
-    if (this.isBrowser()) {
+    if (this.isBrowser() && this.ignore() !== '') {
       this.init();
       this.onInit();
     }
   }
 
   ngAfterViewInit(): void {
-    if (this.isBrowser()) {
+    if (this.isBrowser() && this.ignore() !== '') {
       this.afterViewInit();
     }
   }
 
   ngAfterViewChecked(): void {
-    if (this.isBrowser() || this.ready) {
+    if ((this.isBrowser() || this.ready) && this.ignore() !== '') {
       this.onChange();
     }
   }
@@ -336,7 +340,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   }
 
   protected refresh(action: () => void) {
-    if (this.ready) {
+    if (this.ready && this.ignore() !== '') {
       action.bind(this)()
     }
   }
