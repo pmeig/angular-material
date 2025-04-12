@@ -11,9 +11,9 @@ import {
   PLATFORM_ID,
   Renderer2
 } from '@angular/core';
-import { isNotBlank, Optional } from '@pmeig/ng-core';
+import { isNotBlank } from '@pmeig/ng-core';
 import { EventHandler } from '../helper/event-handler';
-import { extractElementAndAddStyle, styleToRecord } from '../helper/internal.helper';
+import { extractElementAndAddStyle, styleToRecord, tagParentName } from '../helper/internal.helper';
 import {
   addAttribute,
   addLinkToHead,
@@ -31,17 +31,7 @@ import {
 } from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { getDocument } from '../helper/browser.helper';
-import { PrimitiveTypes } from '@angular/cli/src/analytics/analytics-parameters';
-
-
-export interface ParentExclude {
-  classes?: string[];
-  styles?: string[];
-}
-
-const tagParentName = ['div'];
-
-export type TagParent = typeof tagParentName[number]
+import { insertParent, ParentExclude, removeParent, TagParent } from '../helper/component.helper';
 
 
 @Directive()
@@ -267,8 +257,8 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   protected insertParent(
     tag: TagParent | ParentExclude | string = 'div',
     excludes: ParentExclude | string = '',
-    classes: string | Record<string, Optional<PrimitiveTypes>> = {},
-    styles: string | Record<string, Optional<PrimitiveTypes>> = {}): Element {
+    classes: string = '',
+    styles: string = ''): Element {
     if (typeof tag === 'string') {
       if (!tagParentName.includes(tag)) {
         styles = classes;
@@ -287,56 +277,12 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       classes = excludes as string;
       excludes = {};
     }
-
-    const parent = this.renderer.parentNode(this.element) as Element;
-    let element = this.renderer.createElement(tag) as HTMLElement;
-    let created = true;
-    const parentOf = parent.getAttribute('pmeig-parent');
-    if (parentOf) {
-      element = parent as HTMLElement;
-      created = false;
-    }
-    excludes.styles = [...(excludes.styles || []), ...this.getIgnored('style')];
-    excludes.classes = [...(excludes.classes || []), ...this.getDefaultClassname(), ...this.getIgnored('class')];
-
-    this.element.className.split(' ').filter(name => !excludes.classes!!.includes(name)).forEach(name => {
-      this.putClass(element, name)
-      this.removeClass(name)
-    });
-    this.element.getAttribute('style')?.split(';')?.map(style => style.trim().split(':').map(value => value.trim()))
-      ?.filter(([name]) => !excludes.styles!!.includes(name))?.forEach(([name, value]) => {
-        this.putStyle(element, `${name}=${value}`)
-      this.removeStyle(name)
-    });
-    this.putClass(element, ...(classes as string).split(' '));
-    this.putStyle(element, styleToRecord(styles as string));
-    if (created) {
-      this.renderer.insertBefore(parent, element, this.element);
-      this.renderer.removeChild(parent, this.element);
-      this.renderer.appendChild(element, this.element);
-      this.putAttribute(element, 'pmeig-parent', this.element.tagName);
-    }
-    return element;
+    return insertParent(this.element, tag, this.renderer, excludes, styleToRecord(styles as string), ...(classes === '' ? [] : classes.split(' ')));
   }
 
   protected removeParent(classes: string = '', styles: string = ''): Element {
-    const parent = this.renderer.parentNode(this.element) as Element;
-    if (parent && parent.getAttribute('pmeig-parent')) {
-      this.removeClass(parent, ...classes.split(' '))
-      this.removeStyle(parent, ...styles.split(' '))
-      if (!parent.getAttribute('class') && !parent.getAttribute('style')) {
-        const origin = this.renderer.parentNode(parent)
-        while (parent.childElementCount) {
-          const child = parent.children.item(0)!!
-          this.renderer.insertBefore(origin, child, parent)
-        }
-        this.renderer.removeChild(origin, parent);
-        this.putClass(...this.attributes.class.split(' '))
-        this.putStyle(this.attributes.style)
-        return origin
-      }
-    }
-    return parent
+    return removeParent(this.element, this.renderer, this.attributes, styles.length > 0 ? styles.split(':') : [],
+      ...(classes === '' ? [] : classes.split(' ')));
   }
 
   protected refresh(action: () => void) {
@@ -357,13 +303,5 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       classname.push(`${classname[0]}-${id}`);
     }
     return classname;
-  }
-
-  private getIgnored(type: 'style' | 'class') {
-    const ignored = this.element.getAttribute(`${type}-ignore`)
-    if (ignored) {
-      return ignored.split(' ');
-    }
-    return []
   }
 }

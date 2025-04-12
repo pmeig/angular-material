@@ -1,0 +1,17 @@
+<div class="accordion-item">
+  <div class="accordion-header">
+    <button class="accordion-button" type="button" #accordionButton>
+      {{ header() }}
+      <ng-content select="[header]"></ng-content>
+    </button>
+  </div>
+  <div *collapse="accordionButton" class="accordion-collapse">
+    <div class="accordion-body">
+      @if (body) {
+        <ng-container *ngTemplateOutlet="body"></ng-container>
+      }
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>
+

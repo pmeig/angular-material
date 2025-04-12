@@ -22,7 +22,7 @@
             </btn-group>
           </div>
         }
-        @if (enabled.body && body) {
+        @if (enabled.body) {
           <div class="modal-body">
             <ng-container [ngTemplateOutlet]="templateOrContent"
                           [ngTemplateOutletContext]="{item: body}"></ng-container>

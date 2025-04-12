@@ -30,10 +30,10 @@
     },
     "@schematics/angular:library": {
       "standalone": true,
-      "prefix": "ngp"
+      "prefix": "@pmeig/"
     },
     "@schematics/angular:application": {
-      "prefix": "ngp",
+      "prefix": "",
       "standalone": true,
       "skipTests": true,
       "ssr": true,
@@ -44,10 +44,10 @@
     "@schematics/angular:directive": {
       "skipTests": true,
       "standalone": true,
-      "prefix": "ngp"
+      "prefix": ""
     },
     "@schematics/angular:component": {
-      "prefix": "ngp",
+      "prefix": "",
       "standalone": true,
       "skipTests": true,
       "style": "scss",
@@ -57,7 +57,7 @@
       "style": "scss",
       "skipTests": true,
       "standalone": true,
-      "prefix": "ngp",
+      "prefix": "@pmeig",
       "strict": true,
       "routing": true,
       "ssr": true,
@@ -393,6 +393,39 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/bootstrap/components/collapse/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-accordion": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/accordion",
+      "sourceRoot": "projects/bootstrap/components/accordion/src",
+      "prefix": "ngp",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/accordion/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/accordion/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/accordion/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/accordion/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

@@ -13,6 +13,8 @@ import {
 } from '@pmeig/ng-material-core';
 import { ButtonMaterial } from '@pmeig/ngb-btn';
 
+const TIMEOUT_ANIMATION = 170;
+
 @Component({
   selector: 'modal',
   standalone: true,
@@ -82,7 +84,7 @@ export class BModalComponent extends TagComponent implements Modal {
     this.timeBeforeClose = timeoutAttribute(timeout)
     if (this.onStart.timeout && this.timeBeforeClose) {
       this.clearTimeout(this.onStart.timeout)
-      this.onStart.timeout = this.appendTimeout(this.timeBeforeClose, () => this.close()).id
+      this.onStart.timeout = this.addTimeout(() => this.close(), this.timeBeforeClose).id
     }
   }
 
@@ -158,8 +160,8 @@ export class BModalComponent extends TagComponent implements Modal {
       this.onStart.timeout = undefined
       this.clearTimeout(this.onStart.animation)
       this.visible.show = false
-      setTimeout(() => this.visible.display = false, 170)
-      this.onStart.animation = this.appendTimeout(170, () => this.visible.display = false).id
+      setTimeout(() => this.visible.display = false, TIMEOUT_ANIMATION)
+      this.onStart.animation = this.addTimeout(() => this.visible.display = false, TIMEOUT_ANIMATION).id
     }
   }
 
@@ -167,10 +169,10 @@ export class BModalComponent extends TagComponent implements Modal {
     if (!this.visible.show) {
       this.visible.display = true
       this.clearTimeout(this.onStart.animation)
-      this.onStart.animation = this.appendTimeout(170, () => this.visible.show = true).id
-      setTimeout(() => this.visible.show = true, 170)
+      this.onStart.animation = this.addTimeout(() => this.visible.show = true, TIMEOUT_ANIMATION).id
+      setTimeout(() => this.visible.show = true, TIMEOUT_ANIMATION)
       if (this.timeBeforeClose) {
-        this.onStart.timeout = this.appendTimeout(this.timeBeforeClose, () => this.close()).id
+        this.onStart.timeout = this.addTimeout(() => this.close(), this.timeBeforeClose).id
       }
     }
   }
@@ -199,7 +201,7 @@ export class BModalComponent extends TagComponent implements Modal {
     let apply = () => {
       this.clearTimeout(this.onStart.static)
       this.animations.static = true
-      this.onStart.static = this.appendTimeout(170, () => this.animations.static = false).id
+      this.onStart.static = this.addTimeout(() => this.animations.static = false, TIMEOUT_ANIMATION).id
     }
     if (this.settings.closeOutside) {
       apply = () => this.close()

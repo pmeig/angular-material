@@ -4,6 +4,9 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
+      "b-accordion": [
+        "./dist/b-accordion"
+      ],
       "b-btn": [
         "./dist/b-btn"
       ],
@@ -28,11 +31,8 @@
       "b-select": [
         "./dist/b-select"
       ],
-      "button": [
-        "./dist/button"
-      ],
-      "collapse": [
-        "./dist/collapse"
+      "b-collapse": [
+        "./dist/b-collapse"
       ],
       "core": [
         "./dist/core"
