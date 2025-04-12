@@ -3,6 +3,7 @@ import {
   AfterViewChecked,
   AfterViewInit,
   Directive,
+  effect,
   inject,
   OnDestroy,
   OnInit,
@@ -79,16 +80,27 @@ export abstract class TagTemplateDirective extends EventHandler implements After
     this.clearEvent();
   }
 
+  protected onShow() {
+
+  }
+
+  protected onHide() {
+  }
+
   protected show(context: any = {}) {
     if (!this.display) {
       this.element = this.viewContainerRef.createEmbeddedView(this.template, context).rootNodes[0] as Element;
+      this.onShow()
     }
     this.display = true;
   }
 
   protected hide() {
-    this.viewContainerRef.clear();
-    this.display = false;
+    if (this.display) {
+      this.display = false;
+      this.onHide();
+      this.viewContainerRef.clear();
+    }
   }
 
   protected onInit() {
@@ -246,6 +258,10 @@ export abstract class TagTemplateDirective extends EventHandler implements After
     if (this.ready) {
       action.bind(this)()
     }
+  }
+
+  protected effect(action: () => void) {
+    effect(() => this.refresh(action))
   }
 
   private init() {

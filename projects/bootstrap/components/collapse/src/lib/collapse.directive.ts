@@ -1,6 +1,6 @@
 import { booleanAttribute, Directive, input, Input } from '@angular/core';
 import { BooleanAttribute } from '@pmeig/ng-material-core';
-import { BTagTemplateDirective } from '@pmeig/ngb-core';
+import { BOOTSTRAP_ANIMATION_TIMEOUT, BTagTemplateDirective } from '@pmeig/ngb-core';
 
 @Directive({
   selector: '[collapse]'
@@ -24,7 +24,6 @@ export class CollapseDirective extends BTagTemplateDirective {
       value = booleanAttribute(value)
       if (value) {
         this.show();
-        setTimeout(() => this.open());
       } else {
         this.close()
       }
@@ -35,17 +34,19 @@ export class CollapseDirective extends BTagTemplateDirective {
     super();
   }
 
-  private open() {
+  protected override onShow() {
+    console.log('open')
     const style = this.getConfig();
     this.removeClass(this.orchestrator, 'collapsed')
     this.removeClass('collapse')
     this.putClass('collapsing')
     this.putStyle({ [style.style]: `${this.findPixel(style.style)}px`})
 
+
     this.addTimeout(() => {
       this.putClass('collapse', 'show')
       this.removeClass('collapsing')
-    }, 350)
+    }, BOOTSTRAP_ANIMATION_TIMEOUT)
   }
 
   private close() {
@@ -55,7 +56,7 @@ export class CollapseDirective extends BTagTemplateDirective {
     this.removeStyle('height', 'width')
     this.addTimeout(() => {
       this.hide()
-    },350)
+    }, BOOTSTRAP_ANIMATION_TIMEOUT)
   }
 
   private getConfig():  { style: 'height' | 'width', start: 'Top' | 'Left', end: 'Bottom' | 'Right' } {

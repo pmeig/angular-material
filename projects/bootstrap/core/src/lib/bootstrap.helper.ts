@@ -1,0 +1,1 @@
+export const BOOTSTRAP_ANIMATION_TIMEOUT = 350

@@ -3,6 +3,7 @@ import {
   AfterViewChecked,
   AfterViewInit,
   Directive,
+  effect,
   ElementRef,
   inject,
   input,
@@ -59,12 +60,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       afterNextRender(
         () => {
           if (this.ignore() !== '') {
-            this.init();
-            this.onInit();
-            this.attributes = {
-              class: this.element.className,
-              style: this.element.getAttribute('style') ?? ''
-            }
+            this.applyInit()
           }
         })
     }
@@ -72,14 +68,13 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
 
   ngOnInit(): void {
     if (this.isBrowser() && this.ignore() !== '') {
-      this.init();
-      this.onInit();
+      this.applyInit()
     }
   }
 
   ngAfterViewInit(): void {
     if (this.isBrowser() && this.ignore() !== '') {
-      this.afterViewInit();
+      this.applyAfterViewInit()
     }
   }
 
@@ -102,6 +97,23 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
 
   protected onChange() {
 
+  }
+
+  protected applyAfterViewInit() {
+    this.afterViewInit()
+  }
+
+  protected applyInit() {
+    this.init();
+    this.onInit()
+    this.attributes = {
+      class: this.element.className,
+      style: this.element.getAttribute('style') ?? ''
+    }
+  }
+
+  protected effect(action: () => void) {
+    effect(() => this.refresh(action))
   }
 
   protected insertLink(...links: Link[]) {
