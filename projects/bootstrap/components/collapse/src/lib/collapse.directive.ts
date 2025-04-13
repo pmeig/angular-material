@@ -35,7 +35,6 @@ export class CollapseDirective extends BTagTemplateDirective {
   }
 
   protected override onShow() {
-    console.log('open')
     const style = this.getConfig();
     this.removeClass(this.orchestrator, 'collapsed')
     this.removeClass('collapse')
