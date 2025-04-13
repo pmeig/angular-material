@@ -10,6 +10,9 @@
       "b-alert": [
         "./dist/b-alert"
       ],
+      "b-badge": [
+        "./dist/b-badge"
+      ],
       "b-btn": [
         "./dist/b-btn"
       ],

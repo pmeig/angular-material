@@ -1,7 +1,7 @@
 import { isBlank, Nullable } from '@pmeig/ng-core';
 
 export type ColorAttribute = Nullable<Color | RGB | string>
-export type Color = 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'light' | 'dark';
+export type Color = 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'light' | 'dark' | 'secondary';
 export interface RGB {
   red: number;
   green: number;
@@ -11,7 +11,7 @@ export interface RGB {
 
 export const isColor = (color: ColorAttribute): color is Color => color === 'dark' || color === 'info'
   || color === 'light' || color === 'danger' || color === 'primary'
-  || color === 'success' || color === 'warning'
+  || color === 'success' || color === 'warning' || color === 'secondary';
 export const colorAttributeToString = (colorAttribute: ColorAttribute, prefix?: string) => {
   if (isBlank(colorAttribute)) {
     return ''
