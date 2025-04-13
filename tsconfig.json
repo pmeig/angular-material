@@ -7,6 +7,9 @@
       "b-accordion": [
         "./dist/b-accordion"
       ],
+      "b-alert": [
+        "./dist/b-alert"
+      ],
       "b-btn": [
         "./dist/b-btn"
       ],

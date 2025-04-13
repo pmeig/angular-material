@@ -16,7 +16,7 @@
       "functional": true
     },
     "@schematics/angular:interface": {
-      "prefix": "ngp"
+      "prefix": ""
     },
     "@schematics/angular:class": {
       "skipTests": true
@@ -30,7 +30,7 @@
     },
     "@schematics/angular:library": {
       "standalone": true,
-      "prefix": "@pmeig/"
+      "prefix": "pmeig"
     },
     "@schematics/angular:application": {
       "prefix": "",
@@ -426,6 +426,39 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/bootstrap/components/accordion/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-alert": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/alert",
+      "sourceRoot": "projects/bootstrap/components/alert/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/alert/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/alert/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/alert/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/alert/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
