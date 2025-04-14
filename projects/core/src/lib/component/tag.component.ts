@@ -9,22 +9,22 @@ import {
   OnInit,
   PLATFORM_ID
 } from '@angular/core';
-import { ref, state } from '../annotation/signal.helper';
 import { Listener } from './listener';
 import { classesCss, stylesCss } from '../helper/style.helper';
 import { isPlatformServer } from '@angular/common';
+import { ref } from '../helper/signal/signal.helper';
 
 
 @Component({template: ''})
 export abstract class TagComponent extends Listener implements AfterViewInit, OnInit {
   @Input()
-  name = ref(this, 'name', '')
+  name = ref('', this, 'name')
   private platform = inject(PLATFORM_ID)
-  protected isHovered = ref(this, 'isHovered', false)
-  protected classes = ref(this, 'classes', computed(() =>  `${this.properties.classes} ${this.properties.ngClasses}`))
-  protected styles = ref(this, 'styles', computed(() =>  `${this.properties.styles ? this.properties.styles + ';' : ''}${this.properties.ngStyles}`))
+  protected isHovered = ref(false)
+  protected classes = ref(computed(() =>  `${this.properties.classes} ${this.properties.ngClasses}`))
+  protected styles = ref(computed(() =>  `${this.properties.styles ? this.properties.styles + ';' : ''}${this.properties.ngStyles}`))
 
-  private properties = state({
+  private properties = ref({
     classes: '',
     styles: '',
     ngStyles: '',
