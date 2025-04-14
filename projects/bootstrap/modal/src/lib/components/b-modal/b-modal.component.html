@@ -1,34 +1,34 @@
-@if (visible.display) {
+@if (visible.display()) {
 <div [id]="name" [class]="'modal ' + classes" (click)="closeByClick(modalTemplate, $event)"
-     [ngClass]="{show: visible.show, 'd-block': visible.display, 'no-backdrop': !enabled.backdrop,
-      'modal-static': animations.static, zoom: animations.type === 'zoom', fade: animations.type === 'fade'}">
-    <div [class]="'modal-dialog ' + settings.size" [ngClass]="{'modal-dialog-centered': settings.center,
-    'modal-dialog-scrollable': settings.scrollable}">
+     [ngClass]="{show: visible.show(), 'd-block': visible.display(), 'no-backdrop': !enabled.backdrop(),
+      'modal-static': animations.static(), zoom: animations.type() === 'zoom', fade: animations.type() === 'fade'}">
+    <div [class]="'modal-dialog ' + settings.size()" [ngClass]="{'modal-dialog-centered': settings.center(),
+    'modal-dialog-scrollable': settings.scrollable()}">
       <div class="modal-content" #modalTemplate>
-        @if ((enabled.header && (header || text.title)) || enabled.cross) {
+        @if ((enabled.header() && (header || text.title())) || enabled.cross()) {
           <div class="modal-header">
             <div class="modal-content-header">
               <ng-container [ngTemplateOutlet]="templateOrContent"
                             [ngTemplateOutletContext]="{item: header, name: 'header'}"></ng-container>
-              @if (text.title) {
-                <div class="modal-title">{{ text.title }}</div>
+              @if (text.title()) {
+                <div class="modal-title">{{ text.title() }}</div>
               }
             </div>
             <btn-group>
               <ng-content select="[btn]"></ng-content>
-              @if (enabled.cross) {
+              @if (enabled.cross()) {
                 <button close [id]="name + '-close'" (click)="close()"></button>
               }
             </btn-group>
           </div>
         }
-        @if (enabled.body) {
+        @if (enabled.body() && body) {
           <div class="modal-body">
             <ng-container [ngTemplateOutlet]="templateOrContent"
                           [ngTemplateOutletContext]="{item: body}"></ng-container>
           </div>
         }
-        @if (enabled.footer && footer) {
+        @if (enabled.footer() && footer) {
           <div class="modal-footer">
             <ng-container [ngTemplateOutlet]="templateOrContent"
                           [ngTemplateOutletContext]="{item: footer, name: 'footer'}"></ng-container>
@@ -37,15 +37,15 @@
       </div>
     </div>
 </div>
-  @if (enabled.backdrop) {
-    <div class="modal-backdrop fade" [ngClass]="{show: visible.show, 'd-block': visible.display}">
+  @if (enabled.backdrop()) {
+    <div class="modal-backdrop fade" [ngClass]="{show: visible.show(), 'd-block': visible.display()}">
     </div>
   }
 }
 
 <ng-template #templateOrContent let-item="item" let-name="name">
   @if (item && isTemplate(item)) {
-    <ng-container [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{close: closing, open: opening}"></ng-container>
+    <ng-container [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{close: closing}"></ng-container>
   } @else if (name){
     <ng-content [select]="'[' + name + ']'"></ng-content>
   } @else {

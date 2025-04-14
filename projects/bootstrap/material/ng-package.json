@@ -8,6 +8,9 @@
     "@pmeig/ngb-btn",
     "@pmeig/ngb-form",
     "@pmeig/ngb-input",
-    "@pmeig/ngb-label"
+    "@pmeig/ngb-label",
+    "@pmeig/ngb-accordion",
+    "@pmeig/ngb-collapse",
+    "@pmeig/ngb-badge"
   ]
 }

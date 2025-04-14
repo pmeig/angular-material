@@ -5,26 +5,28 @@ import {
   computed,
   HostListener,
   inject,
+  input,
   Input,
   OnInit,
-  PLATFORM_ID
+  PLATFORM_ID,
+  signal
 } from '@angular/core';
 import { Listener } from './listener';
 import { classesCss, stylesCss } from '../helper/style.helper';
 import { isPlatformServer } from '@angular/common';
-import { ref } from '../helper/signal/signal.helper';
+import { signalRecord } from '../helper/signal/signal.helper';
 
 
 @Component({template: ''})
 export abstract class TagComponent extends Listener implements AfterViewInit, OnInit {
-  @Input()
-  name = ref('', this, 'name')
-  private platform = inject(PLATFORM_ID)
-  protected isHovered = ref(false)
-  protected classes = ref(computed(() =>  `${this.properties.classes} ${this.properties.ngClasses}`))
-  protected styles = ref(computed(() =>  `${this.properties.styles ? this.properties.styles + ';' : ''}${this.properties.ngStyles}`))
 
-  private properties = ref({
+  name = input('')
+  private platform = inject(PLATFORM_ID)
+  protected isHovered = signal(false)
+  protected classes = computed(() =>  `${this.properties.classes} ${this.properties.ngClasses}`)
+  protected styles = computed(() =>  `${this.properties.styles ? this.properties.styles + ';' : ''}${this.properties.ngStyles}`)
+
+  private properties = signalRecord({
     classes: '',
     styles: '',
     ngStyles: '',
@@ -54,32 +56,32 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
 
   @Input('classes')
   set _classes(classes: string) {
-    this.properties.classes = classes;
+    this.properties.classes.set(classes);
   }
 
   @Input('styles')
   set _styles(styles: string) {
-    this.properties.styles = styles;
+    this.properties.styles.set(styles);
   }
 
   @Input()
   set ngStyles(styles: Record<string, string>) {
-    this.properties.ngStyles = stylesCss(styles)
+    this.properties.ngStyles.set(stylesCss(styles))
   }
 
   @Input()
   set ngClasses(classes: Record<string, unknown>) {
-    this.properties.ngClasses = classesCss(classes)
+    this.properties.ngClasses.set(classesCss(classes))
   }
 
   @HostListener('mouseenter')
   hoverEvent() {
-    this.isHovered = true
+    this.isHovered.set(true)
   }
 
   @HostListener('mouseleave')
   leaveEvent() {
-    this.isHovered = false
+    this.isHovered.set(false)
   }
 
   protected get isSSR() {

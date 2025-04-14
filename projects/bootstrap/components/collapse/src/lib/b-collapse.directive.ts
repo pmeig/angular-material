@@ -5,7 +5,7 @@ import { BOOTSTRAP_ANIMATION_TIMEOUT, BTagTemplateDirective } from '@pmeig/ngb-c
 @Directive({
   selector: '[collapse]'
 })
-export class CollapseDirective extends BTagTemplateDirective {
+export class BCollapseDirective extends BTagTemplateDirective {
   private reset = () => {}
   private orchestrator: Element | undefined = undefined;
 
@@ -81,12 +81,19 @@ export class CollapseDirective extends BTagTemplateDirective {
 
       this.element.childNodes.forEach(child => {
         const element = child as Element
-        size += element.getBoundingClientRect().height
+        if (element.textContent)
+          size += 16
+        else
+          size += element.getBoundingClientRect()?.height ?? 0
       })
     } else {
       this.element.childNodes.forEach(child => {
         const element = child as Element
-        const width = element.getBoundingClientRect().width
+        let width: number
+        if (element.textContent)
+          width = size += element.textContent.length * 16
+        else
+          width = element.getBoundingClientRect()?.width ?? 0
         if (size < width) size = width
       })
     }

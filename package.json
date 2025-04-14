@@ -24,6 +24,7 @@
     "@pmeig/ng-core": "file:../angular/dist/core/pmeig-ng-core-0.0.1.tgz",
     "@pmeig/ng-material-core": "file:dist/core/pmeig-ng-material-core-0.0.1.tgz",
     "@pmeig/ngb-accordion": "file:dist/b-accordion/pmeig-ngb-accordion-0.0.1.tgz",
+    "@pmeig/ngb-badge": "file:dist/b-badge/pmeig-ngb-badge-0.0.1.tgz",
     "@pmeig/ngb-btn": "file:dist/b-btn/pmeig-ngb-btn-0.0.1.tgz",
     "@pmeig/ngb-collapse": "file:dist/b-collapse/pmeig-ngb-collapse-0.0.1.tgz",
     "@pmeig/ngb-core": "file:dist/b-core/pmeig-ngb-core-0.0.1.tgz",

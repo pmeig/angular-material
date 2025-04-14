@@ -10,7 +10,7 @@ import { BTagDirective } from '@pmeig/ngb-core';
 @Directive({
   selector: 'badge'
 })
-export class BadgeDirective extends BTagDirective {
+export class BBadgeDirective extends BTagDirective {
 
   private lastColor = colorAttributeToString('secondary', 'text-bg');
   private colorChanged = false

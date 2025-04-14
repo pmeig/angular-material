@@ -4,9 +4,9 @@ import { Nullable, Timeout } from '@pmeig/ng-core';
 import { Modal } from '../../modal';
 import {
   BooleanAttribute,
+  signalRecord,
   Size,
   SizeAttribute,
-  state,
   TagComponent,
   timeoutAttribute,
   TimeoutAttribute
@@ -32,7 +32,7 @@ export class BModalComponent extends TagComponent implements Modal {
   @ContentChild('body') protected body?: TemplateRef<any> | any
   @ContentChild('footer') protected footer?: TemplateRef<any> | any
 
-  private state = state({
+  private state = signalRecord({
     visible: {
       show: false,
       display: false,
@@ -70,7 +70,7 @@ export class BModalComponent extends TagComponent implements Modal {
 
   @Input('animation-type')
   set animationType(type: 'zoom' | 'fade') {
-    this.animations.type = type
+    this.animations.type.set(type)
   }
 
   @Input()
@@ -90,17 +90,17 @@ export class BModalComponent extends TagComponent implements Modal {
 
   @Input()
   set cross(cross: BooleanAttribute) {
-    this.enabled.cross = booleanAttribute(cross)
+    this.enabled.cross.set(booleanAttribute(cross))
   }
 
   @Input()
   set backdrop(backdrop: BooleanAttribute) {
-    this.enabled.backdrop = booleanAttribute(backdrop)
+    this.enabled.backdrop.set(booleanAttribute(backdrop))
   }
 
   @Input({alias: 'close-outside'})
   set closeOutsideEnabled(closeOutside: BooleanAttribute) {
-    this.settings.closeOutside = booleanAttribute(closeOutside)
+    this.settings.closeOutside.set(booleanAttribute(closeOutside))
   }
 
   @Input()
@@ -114,7 +114,7 @@ export class BModalComponent extends TagComponent implements Modal {
       template = this.isFullscreen ? 'modal-fullscreen' : ''
     }
     this.lastSize = size
-    this.settings.size = size ? template.replace('size', size) : template
+    this.settings.size.set(size ? template.replace('size', size) : template)
   }
 
   @Input()
@@ -125,7 +125,7 @@ export class BModalComponent extends TagComponent implements Modal {
 
   @Input()
   set title(title: string) {
-    this.text.title = title
+    this.text.title.set(title)
   }
 
   constructor() {
@@ -159,18 +159,16 @@ export class BModalComponent extends TagComponent implements Modal {
       this.clearTimeout(this.onStart.timeout)
       this.onStart.timeout = undefined
       this.clearTimeout(this.onStart.animation)
-      this.visible.show = false
-      setTimeout(() => this.visible.display = false, TIMEOUT_ANIMATION)
-      this.onStart.animation = this.addTimeout(() => this.visible.display = false, TIMEOUT_ANIMATION).id
+      this.visible.show.set(false)
+      this.onStart.animation = this.addTimeout(() => this.visible.display.set(false), TIMEOUT_ANIMATION).id
     }
   }
 
   open() {
     if (!this.visible.show) {
-      this.visible.display = true
+      this.visible.display.set(true)
       this.clearTimeout(this.onStart.animation)
-      this.onStart.animation = this.addTimeout(() => this.visible.show = true, TIMEOUT_ANIMATION).id
-      setTimeout(() => this.visible.show = true, TIMEOUT_ANIMATION)
+      this.onStart.animation = this.addTimeout(() => this.visible.show.set(true), TIMEOUT_ANIMATION).id
       if (this.timeBeforeClose) {
         this.onStart.timeout = this.addTimeout(() => this.close(), this.timeBeforeClose).id
       }
@@ -178,7 +176,7 @@ export class BModalComponent extends TagComponent implements Modal {
   }
 
   get opened(): boolean {
-    return this.visible.show;
+    return this.visible.show();
   }
 
   protected get visible() {
@@ -200,10 +198,10 @@ export class BModalComponent extends TagComponent implements Modal {
   protected closeByClick(modalTemplate: HTMLDivElement, event: MouseEvent) {
     let apply = () => {
       this.clearTimeout(this.onStart.static)
-      this.animations.static = true
-      this.onStart.static = this.addTimeout(() => this.animations.static = false, TIMEOUT_ANIMATION).id
+      this.animations.static.set(true)
+      this.onStart.static = this.addTimeout(() => this.animations.static.set(false), TIMEOUT_ANIMATION).id
     }
-    if (this.settings.closeOutside) {
+    if (this.settings.closeOutside()) {
       apply = () => this.close()
     }
     this.outside(modalTemplate, event, apply)

@@ -10,7 +10,9 @@
     "@pmeig/ngb-btn": "0.0.1",
     "@pmeig/ngb-form": "0.0.1",
     "@pmeig/ngb-input": "0.0.1",
-    "@pmeig/ngb-label": "0.0.1"
+    "@pmeig/ngb-label": "0.0.1",
+    "@pmeig/ngb-accordion": "0.0.1",
+    "@pmeig/ngb-badge": "0.0.1"
   },
   "sideEffects": false
 }
