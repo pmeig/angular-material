@@ -106,21 +106,21 @@
     },
     "b-modal": {
       "projectType": "library",
-      "root": "projects/bootstrap/modal",
-      "sourceRoot": "projects/bootstrap/modal/src",
+      "root": "projects/bootstrap/components/modal",
+      "sourceRoot": "projects/bootstrap/components/modal/src",
       "prefix": "ngp",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/bootstrap/modal/ng-package.json"
+            "project": "projects/bootstrap/components/modal/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/bootstrap/modal/tsconfig.lib.prod.json"
+              "tsConfig": "projects/bootstrap/components/modal/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/bootstrap/modal/tsconfig.lib.json"
+              "tsConfig": "projects/bootstrap/components/modal/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -128,7 +128,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/bootstrap/modal/tsconfig.spec.json",
+            "tsConfig": "projects/bootstrap/components/modal/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -137,23 +137,23 @@
         }
       }
     },
-    "b-btn": {
+    "b-button": {
       "projectType": "library",
-      "root": "projects/bootstrap/btn",
-      "sourceRoot": "projects/bootstrap/btn/src",
+      "root": "projects/bootstrap/button",
+      "sourceRoot": "projects/bootstrap/button/src",
       "prefix": "ngp",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/bootstrap/btn/ng-package.json"
+            "project": "projects/bootstrap/button/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/bootstrap/btn/tsconfig.lib.prod.json"
+              "tsConfig": "projects/bootstrap/button/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/bootstrap/btn/tsconfig.lib.json"
+              "tsConfig": "projects/bootstrap/button/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -161,7 +161,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/bootstrap/btn/tsconfig.spec.json",
+            "tsConfig": "projects/bootstrap/button/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

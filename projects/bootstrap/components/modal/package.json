@@ -6,7 +6,8 @@
     "@angular/core": "^19.0.5"
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@pmeig/ngb-button": "0.0.1"
   },
   "sideEffects": false
 }
