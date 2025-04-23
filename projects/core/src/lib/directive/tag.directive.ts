@@ -1,6 +1,5 @@
 import {
   afterNextRender,
-  AfterViewChecked,
   AfterViewInit,
   Directive,
   effect,
@@ -36,7 +35,7 @@ import { insertParent, ParentExclude, removeParent, TagParent } from '../helper/
 
 
 @Directive()
-export abstract class TagDirective<T extends Element = Element> extends EventHandler implements AfterViewInit, OnDestroy, OnInit, AfterViewChecked {
+export abstract class TagDirective<T extends Element = Element> extends EventHandler implements AfterViewInit, OnDestroy, OnInit {
   readonly element: T;
   protected renderer = inject(Renderer2);
   protected ready = false
@@ -78,12 +77,6 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
     }
   }
 
-  ngAfterViewChecked(): void {
-    if ((this.isBrowser() || this.ready) && this.ignore() !== '') {
-      this.onChange();
-    }
-  }
-
   ngOnDestroy(): void {
     this.clearEvent();
   }
@@ -92,10 +85,6 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   }
 
   protected afterViewInit() {
-
-  }
-
-  protected onChange() {
 
   }
 

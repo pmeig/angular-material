@@ -11,7 +11,8 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
   private lastValue = '';
 
 
-  readonly selection = output<T>();
+  readonly selection = input<T>()
+  readonly selectionChange = output<T>();
   readonly id = input<string>();
 
   @Input()
@@ -27,6 +28,7 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
 
   protected constructor(private readonly mapper: (selection: Item[]) => T) {
     super();
+    this.effect(() => this.selectOptions())
   }
 
   @HostListener('change', ['$event'])
@@ -41,23 +43,26 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
 
   protected override onInit() {
     super.onInit();
-    this.lastValue = this.element.value
     if (!this.id()) throw new Error('id is required for select');
     this.putClass('form-select');
-    this.onChange();
   }
 
 
-  protected override onChange() {
-    super.onChange()
+  protected override afterViewInit() {
+    super.afterViewInit();
     this.children((child, index) => {
       if (!child?.className?.split(' ')?.some(classname => classname === BSelectParentDirective.classnameChild)) {
         this.putClass(child, BSelectParentDirective.classnameChild);
         this.putAttribute(child, 'id', `${this.id()}-option-${index}`)
       }
     })
+    this.selectOptions();
+    this.lastValue = this.element.value
+  }
+
+  private onChange() {
     const numberSelected = this.element.selectedOptions.length;
-    this.selection.emit(this.mapper(this.getChildren().map((option, index) => {
+    this.selectionChange.emit(this.mapper(this.getChildren().map((option, index) => {
       let indexSelected = numberSelected;
       let found = false;
       while (!found && indexSelected-- > 0) {
@@ -67,6 +72,22 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
       return -1;
     }).filter(index => index !== -1).map(index => this.optionValues?.get(index)?.ngValue())))
     this.lastValue = this.element.value
+  }
+
+  private selectOptions() {
+    if (this.optionValues) {
+      const selection = this.selection();
+      let isSelected = (value: Item) => value === selection;
+      if (Array.isArray(selection)) {
+        isSelected = (value: Item) => selection.includes(value);
+      }
+      this.getChildren().forEach((option, index) => {
+        if (isSelected(this.optionValues?.get(index)?.ngValue())) {
+          const optionElement = option as HTMLOptionElement
+          optionElement.selected = true
+        }
+      })
+    }
 
   }
 }

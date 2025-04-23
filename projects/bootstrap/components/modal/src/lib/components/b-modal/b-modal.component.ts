@@ -19,9 +19,9 @@ import {
 } from '@pmeig/ng-material-core';
 import { Timeout } from '@pmeig/ng-core';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { Modal } from '../../modal';
 import { BTagComponent } from '@pmeig/ngb-core';
 import { ButtonMaterial } from '@pmeig/ngb-button';
+import { Modal } from '../../modal';
 
 const TIMEOUT_ANIMATION = 170;
 
