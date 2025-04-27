@@ -13,12 +13,17 @@ export class BCollapseDirective extends BTagTemplateDirective {
 
   @Input()
   set collapse(value: BooleanAttribute | Element) {
+    this.reset()
     if (!['boolean', 'string'].includes(typeof value)) {
-      this.reset()
       this.orchestrator = value as Element
-      this.reset = this.renderer.listen(this.orchestrator, 'click', () => {
+      this.orchestrator.ariaExpanded = 'false'
+      const resetListen = this.renderer.listen(this.orchestrator, 'click', () => {
         this.collapse = this.orchestrator!.classList.contains('collapsed')
       })
+      this.reset = () => {
+        resetListen()
+        this.removeAttribute(this.orchestrator, 'aria-expanded')
+      }
       setTimeout(() => this.collapse = this.orchestrator!.classList.contains('collapsed'))
     } else {
       value = booleanAttribute(value)
@@ -40,6 +45,17 @@ export class BCollapseDirective extends BTagTemplateDirective {
     this.removeClass('collapse')
     this.putClass('collapsing')
     this.putStyle({ [style.style]: `${this.findPixel(style.style)}px`})
+    if (this.orchestrator && this.element.id) {
+      let controls = this.orchestrator.getAttribute('aria-controls')
+      if (!controls) {
+        controls = ''
+      }
+      if (controls.split(' ').every(value => value !== this.element.id)) {
+        controls += ` ${this.element.id}`
+      }
+      this.putAttribute(this.orchestrator, 'aria-controls', controls)
+    }
+    this.putAttribute(this.orchestrator, 'aria-expanded', 'true')
 
 
     this.addTimeout(() => {
@@ -53,6 +69,7 @@ export class BCollapseDirective extends BTagTemplateDirective {
     this.removeClass('collapse', 'show')
     this.putClass('collapsing')
     this.removeStyle('height', 'width')
+    this.putAttribute(this.orchestrator, 'aria-expanded', 'false')
     this.addTimeout(() => {
       this.hide()
     }, BOOTSTRAP_ANIMATION_TIMEOUT)
