@@ -13,6 +13,9 @@
       "b-badge": [
         "./dist/b-badge"
       ],
+      "b-breadcrumb": [
+        "./dist/b-breadcrumb"
+      ],
       "b-btn": [
         "./dist/b-btn"
       ],
