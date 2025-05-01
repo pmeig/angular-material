@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { Listener } from './listener';
 import { classesCss, stylesCss } from '../helper/style.helper';
-import { isPlatformServer } from '@angular/common';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { signalRecord } from '../helper/signal/signal.helper';
 import { addLinkToHead, Link } from '../helper/css.helper';
 import { getDocument } from '../helper/browser.helper';
@@ -46,6 +46,7 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
     if (this.isSSR) {
       afterNextRender(() => {
         this.onInit()
+        this.afterViewInit()
       })
     }
   }
@@ -99,7 +100,7 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
   }
 
   protected get isBrowser() {
-    return isPlatformServer(this.platform)
+    return isPlatformBrowser(this.platform)
   }
 
   protected afterViewInit() {

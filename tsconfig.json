@@ -19,6 +19,9 @@
       "b-btn": [
         "./dist/b-btn"
       ],
+      "b-card": [
+        "./dist/b-card"
+      ],
       "b-core": [
         "./dist/b-core"
       ],

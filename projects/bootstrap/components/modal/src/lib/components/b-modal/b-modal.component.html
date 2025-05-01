@@ -6,7 +6,7 @@
       'modal-dialog-scrollable': settings.scrollable()}">
       <div class="modal-content" #modalTemplate>
         @if (display.content.header.active()) {
-          <div class="modal-header">
+          <div class="modal-header" #header>
             <div class="modal-content-header">
               <ng-content select="[header]"></ng-content>
               <ng-container [ngTemplateOutlet]="container" [ngTemplateOutletContext]="{templates: headers}"></ng-container>
@@ -23,18 +23,14 @@
             </btn-group>
           </div>
         }
-        @if (display.content.body()) {
-          <div class="modal-body">
-            <ng-content></ng-content>
-            <ng-container [ngTemplateOutlet]="container" [ngTemplateOutletContext]="{templates: bodies}"></ng-container>
-          </div>
-        }
-        @if (display.content.footer()) {
-          <div class="modal-footer">
-            <ng-content select="[footer]"></ng-content>
-            <ng-container [ngTemplateOutlet]="container" [ngTemplateOutletContext]="{templates: footers}"></ng-container>
-          </div>
-        }
+        <div class="modal-body" *hasChildren>
+          <ng-content></ng-content>
+          <ng-container [ngTemplateOutlet]="container" [ngTemplateOutletContext]="{templates: bodies}"></ng-container>
+        </div>
+        <div class="modal-footer" *hasChildren>
+          <ng-content select="[footer]"></ng-content>
+          <ng-container [ngTemplateOutlet]="container" [ngTemplateOutletContext]="{templates: footers}"></ng-container>
+        </div>
       </div>
     </div>
   </div>

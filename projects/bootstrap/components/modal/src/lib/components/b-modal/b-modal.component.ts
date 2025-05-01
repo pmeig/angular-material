@@ -4,10 +4,12 @@ import {
   Component,
   ContentChildren,
   effect,
+  ElementRef,
   Input,
   input,
   QueryList,
   TemplateRef,
+  ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {
@@ -17,7 +19,7 @@ import {
   timeoutAttribute,
   TimeoutAttribute
 } from '@pmeig/ng-material-core';
-import { Timeout } from '@pmeig/ng-core';
+import { HasChildrenDirective, Timeout } from '@pmeig/ng-core';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { BTagComponent } from '@pmeig/ngb-core';
 import { ButtonMaterial } from '@pmeig/ngb-button';
@@ -41,7 +43,8 @@ interface ModalTimeout {
   imports: [
     ButtonMaterial,
     NgClass,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    HasChildrenDirective
   ],
   templateUrl: './b-modal.component.html',
   styleUrl: './b-modal.component.scss',
@@ -70,8 +73,6 @@ export class BModalComponent extends BTagComponent implements Modal {
         active: true,
         cross: true
       },
-      body: true,
-      footer: true,
     }
   })
 
@@ -144,6 +145,15 @@ export class BModalComponent extends BTagComponent implements Modal {
   @ContentChildren('footer') protected footers!: QueryList<TemplateRef<any>>
   @ContentChildren(TemplateRef) private modalBodies!: QueryList<TemplateRef<any>>
   @ContentChildren('btn') protected buttons!: QueryList<TemplateRef<any>>
+
+  @ViewChild('header')
+  protected set header(header: ElementRef<HTMLDivElement>) {
+    if (header) {
+      const content = header.nativeElement.children.item(0);
+      const btnGroup = header.nativeElement.children.item(1);
+      this.display.content.header.active.set((content?.children?.length ?? 0) > 0 || (btnGroup?.children?.length ?? 0) > 0)
+    }
+  }
 
 
   constructor(private viewContainerRef: ViewContainerRef) {
