@@ -5,6 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "prettier": "prettier",
+    "format": "prettier --write \"projects/**/*.{ts,html,scss,json}\"",
+    "format:check": "prettier --check \"projects/**/*.{ts,html,scss,json}\"",
     "postbuild:all": "build.bat b-material",
     "build:all": "build.bat b-input b-form b-label b-button b-select b-collapse b-accordion b-card b-breadcrumb b-badge b-alert b-carousel",
     "prebuild:all": "build.bat core b-core",
@@ -54,6 +57,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^19.0.1",
+    "prettier": "^3.5.3",
     "typescript": "~5.5.2"
   }
 }
