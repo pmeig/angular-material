@@ -169,6 +169,7 @@ export class BModalComponent extends BTagComponent implements Modal {
       this.clearTimeout(this.timeout.animation.show)
       this.display.show.set(false)
       this.timeout.animation.show = this.addTimeout(() => this.display.container.set(false), TIMEOUT_ANIMATION).id
+      this.display.content.header.active.set(true)
     }
   }
 
