@@ -5,12 +5,18 @@
     "entryFile": "src/public-api.ts"
   },
   "allowedNonPeerDependencies": [
-    "@pmeig/ngb-btn",
+    "@pmeig/ngb-button",
     "@pmeig/ngb-form",
     "@pmeig/ngb-input",
+    "@pmeig/ngb-select",
     "@pmeig/ngb-label",
     "@pmeig/ngb-accordion",
     "@pmeig/ngb-collapse",
-    "@pmeig/ngb-badge"
+    "@pmeig/ngb-badge",
+    "@pmeig/ngb-alert",
+    "@pmeig/ngb-breadcrumb",
+    "@pmeig/ngb-card",
+    "@pmeig/ngb-carousel",
+    "@pmeig/ngb-collapse"
   ]
 }

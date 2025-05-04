@@ -7,12 +7,18 @@
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "@pmeig/ngb-btn": "0.0.1",
+    "@pmeig/ngb-button": "0.0.1",
     "@pmeig/ngb-form": "0.0.1",
     "@pmeig/ngb-input": "0.0.1",
     "@pmeig/ngb-label": "0.0.1",
+    "@pmeig/ngb-select": "0.0.1",
     "@pmeig/ngb-accordion": "0.0.1",
-    "@pmeig/ngb-badge": "0.0.1"
+    "@pmeig/ngb-badge": "0.0.1",
+    "@pmeig/ngb-alert": "0.0.1",
+    "@pmeig/ngb-breadcrumb": "0.0.1",
+    "@pmeig/ngb-card": "0.0.1",
+    "@pmeig/ngb-carousel": "0.0.1",
+    "@pmeig/ngb-collapse": "0.0.1"
   },
   "sideEffects": false
 }

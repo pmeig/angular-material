@@ -1,5 +1,5 @@
 {
-  "name": "@pmeig/ngb-select",
+  "name": "@pmeig/ngb-carousel",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^19.0.0",

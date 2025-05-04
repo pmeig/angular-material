@@ -1,5 +1,5 @@
 {
-  "name": "b-card",
+  "name": "@pmeig/ngb-card",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^19.0.0",

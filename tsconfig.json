@@ -22,6 +22,9 @@
       "b-card": [
         "./dist/b-card"
       ],
+      "b-carousel": [
+        "./dist/b-carousel"
+      ],
       "b-core": [
         "./dist/b-core"
       ],
