@@ -16,14 +16,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^19.0.5",
-    "@angular/common": "^19.0.5",
-    "@angular/compiler": "^19.0.5",
-    "@angular/core": "^19.0.5",
-    "@angular/forms": "^19.0.5",
-    "@angular/platform-browser": "^19.0.5",
-    "@angular/platform-browser-dynamic": "^19.0.5",
-    "@angular/router": "^19.0.5",
+    "@angular/animations": "^20.0.6",
+    "@angular/common": "^20.0.6",
+    "@angular/compiler": "^20.0.6",
+    "@angular/core": "^20.0.6",
+    "@angular/forms": "^20.0.6",
+    "@angular/platform-browser": "^20.0.6",
+    "@angular/platform-browser-dynamic": "^20.0.6",
+    "@angular/router": "^20.0.6",
     "@pmeig/ng-core": "file:../angular/dist/core/pmeig-ng-core-0.0.1.tgz",
     "@pmeig/ng-material-core": "file:dist/core/pmeig-ng-material-core-0.0.1.tgz",
     "@pmeig/ngb-accordion": "file:dist/b-accordion/pmeig-ngb-accordion-0.0.1.tgz",
@@ -48,9 +48,9 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^19.0.6",
-    "@angular/cli": "^19.0.6",
-    "@angular/compiler-cli": "^19.0.5",
+    "@angular/build": "^20.0.5",
+    "@angular/cli": "^20.0.5",
+    "@angular/compiler-cli": "^20.0.6",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
@@ -58,8 +58,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "ng-packagr": "^19.0.1",
+    "ng-packagr": "^20.0.1",
     "prettier": "^3.5.3",
-    "typescript": "~5.5.2"
+    "typescript": "~5.8.3"
   }
 }
