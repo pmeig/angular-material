@@ -43,6 +43,9 @@
       "b-material": [
         "./dist/b-material"
       ],
+      "b-list": [
+        "./dist/b-list"
+      ],
       "b-modal": [
         "./dist/b-modal"
       ],

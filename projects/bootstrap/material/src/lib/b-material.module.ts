@@ -12,6 +12,7 @@ import { BreadcrumbMaterial } from '@pmeig/ngb-breadcrumb';
 import { CardMaterial } from '@pmeig/ngb-card';
 import { CarouselMaterial } from '@pmeig/ngb-carousel';
 import { DropdownMaterial } from '@pmeig/ngb-dropdown';
+import { ListMaterial } from '@pmeig/ngb-list';
 
 const SIMPLE_MATERIAL_MODULES = [InputMaterial, LabelMaterial, ButtonMaterial, SelectMaterial]
 
@@ -21,7 +22,7 @@ const SIMPLE_MATERIAL_MODULES = [InputMaterial, LabelMaterial, ButtonMaterial, S
 })
 export class PmeigSimpleMaterial {}
 
-const MATERIAL_MODULES = [PmeigSimpleMaterial, FormMaterial,
+const MATERIAL_MODULES = [PmeigSimpleMaterial, FormMaterial, ListMaterial,
   AccordionMaterial, AlertMaterial,  BadgeMaterial, DropdownMaterial,
   BreadcrumbMaterial,  CollapseMaterial, CardMaterial, CarouselMaterial ];
 

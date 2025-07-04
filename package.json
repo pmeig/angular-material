@@ -39,6 +39,7 @@
     "@pmeig/ngb-form": "file:dist/b-form/pmeig-ngb-form-0.0.1.tgz",
     "@pmeig/ngb-input": "file:dist/b-input/pmeig-ngb-input-0.0.1.tgz",
     "@pmeig/ngb-label": "file:dist/b-label/pmeig-ngb-label-0.0.1.tgz",
+    "@pmeig/ngb-list": "file:dist/b-list/pmeig-ngb-list-0.0.1.tgz",
     "@pmeig/ngb-material": "file:dist/b-material/pmeig-ngb-material-0.0.1.tgz",
     "@pmeig/ngb-select": "file:dist/b-select/pmeig-ngb-select-0.0.1.tgz",
     "bootstrap": "^5.3.3",
