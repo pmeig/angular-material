@@ -18,7 +18,8 @@
     "@pmeig/ngb-breadcrumb": "0.0.1",
     "@pmeig/ngb-card": "0.0.1",
     "@pmeig/ngb-carousel": "0.0.1",
-    "@pmeig/ngb-collapse": "0.0.1"
+    "@pmeig/ngb-collapse": "0.0.1",
+    "@pmeig/ngb-dropdown": "0.0.1"
   },
   "sideEffects": false
 }

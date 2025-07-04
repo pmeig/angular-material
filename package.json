@@ -35,6 +35,7 @@
     "@pmeig/ngb-carousel": "file:dist/b-carousel/pmeig-ngb-carousel-0.0.1.tgz",
     "@pmeig/ngb-collapse": "file:dist/b-collapse/pmeig-ngb-collapse-0.0.1.tgz",
     "@pmeig/ngb-core": "file:dist/b-core/pmeig-ngb-core-0.0.1.tgz",
+    "@pmeig/ngb-dropdown": "file:dist/b-dropdown/pmeig-ngb-dropdown-0.0.1.tgz",
     "@pmeig/ngb-form": "file:dist/b-form/pmeig-ngb-form-0.0.1.tgz",
     "@pmeig/ngb-input": "file:dist/b-input/pmeig-ngb-input-0.0.1.tgz",
     "@pmeig/ngb-label": "file:dist/b-label/pmeig-ngb-label-0.0.1.tgz",

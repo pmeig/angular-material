@@ -1,0 +1,45 @@
+<btn-group [class]="'drop' + direction()">
+  @if (split()) {
+    <button type="button" [size]="size()" [color]="color()" (click)="sendAction()" #splitButton>
+      {{ label }}
+    </button>
+  }
+  <button type="button" #button class="dropdown-toggle" [size]="size()"
+          [color]="color()"
+          [ngClass]="{show: state.show(), 'dropdown-toggle-split': split()}"
+          data-bs-toggle="dropdown"
+          [attr.aria-expanded]="state.show()"
+          (click)="drop()">
+    @if (split()) {
+      <span class="visually-hidden">Toggle Dropdown</span>
+    } @else {
+      {{ label }}
+    }
+  </button>
+  <ng-content select="[buttons]"></ng-content>
+  @if (state.visible()) {
+    <!--suppress CssUnknownProperty -->
+    <ul class="dropdown-menu" #dropMenu
+        [style.--drop-button-width]="(button.clientWidth + (splitButton?.nativeElement?.clientWidth ?? 0)) + 'px'"
+        [style.--drop-button-height]="button.clientHeight + 'px'"
+        [style.--drop-menu-width]="dropMenuWidth(dropMenu) + 'px'"
+        [style.--drop-button-x]="button.getBoundingClientRect().x"
+        [style.--drop-button-y]="button.getBoundingClientRect().y"
+        [ngClass]="{'show': state.show(), center: directionOptions?.center() }">
+      @for (item of contents; track item.index) {
+        @if (item.isTemplate) {
+          <li (click)="select(item)" [active]="item.index === selected?.index">
+            <ng-container [ngTemplateOutlet]="item.template()"></ng-container>
+          </li>
+        } @else {
+          <li (click)="select(item)" [inside]="item.element()" [active]="item.index === selected?.index"></li>
+        }
+      }
+    </ul>
+  }
+</btn-group>
+
+
+<ng-template #content>
+  <ng-content></ng-content>
+</ng-template>

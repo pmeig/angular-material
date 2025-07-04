@@ -31,6 +31,9 @@
       "b-form": [
         "./dist/b-form"
       ],
+      "b-dropdown": [
+        "./dist/b-dropdown"
+      ],
       "b-input": [
         "./dist/b-input",
       ],
@@ -51,6 +54,9 @@
       ],
       "core": [
         "./dist/core"
+      ],
+      "dropdown": [
+        "./dist/dropdown"
       ],
       "form": [
         "./dist/form"

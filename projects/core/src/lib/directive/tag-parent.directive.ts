@@ -92,11 +92,13 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
 
   protected children(handle: Handle, element: Item = this.element) {
     if (element) {
-      let numberChild = element.childElementCount;
-      const children = element.children;
-      while (numberChild-- > 0) {
-        handle(children.item(numberChild), numberChild);
-      }
+      setTimeout(() => {
+        element.childNodes.forEach((child, index) => {
+          if (child instanceof Element) {
+            handle(child, index);
+          }
+        })
+      })
     }
   }
 

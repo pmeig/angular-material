@@ -17,6 +17,7 @@
     "@pmeig/ngb-breadcrumb",
     "@pmeig/ngb-card",
     "@pmeig/ngb-carousel",
-    "@pmeig/ngb-collapse"
+    "@pmeig/ngb-collapse",
+    "@pmeig/ngb-dropdown"
   ]
 }

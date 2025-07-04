@@ -52,7 +52,8 @@ export const removeClass = (element: Item, renderer: Renderer2, classes: string[
   }
 }
 
-export const putStyle = (element: Item, renderer: Renderer2, styles: Record<string, string>) => {
+export const
+  putStyle = (element: Item, renderer: Renderer2, styles: Record<string, string>) => {
   if (element) {
     if (element.nodeType === Node.COMMENT_NODE) {
       element.setAttribute('style', stylesCss(styles));
