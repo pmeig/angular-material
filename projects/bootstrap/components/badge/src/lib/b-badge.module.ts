@@ -6,6 +6,7 @@ const BADGE_DIRECTIVES = [BBadgeDirective];
 
 @NgModule({
   imports: BADGE_DIRECTIVES,
-  exports: BADGE_DIRECTIVES,
+  exports: BADGE_DIRECTIVES
 })
-export class BadgeMaterial { }
+export class BadgeMaterial {
+}

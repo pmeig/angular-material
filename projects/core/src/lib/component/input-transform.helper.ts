@@ -17,7 +17,7 @@ export const timeoutAttribute = (timeout: TimeoutAttribute): Nullable<Timeout> =
   if (typeof timeout === 'number') {
     timeout = {
       unit: TimeoutUnit.MILLISECOND,
-      value: timeout
+      value: timeout,
     };
   }
   return timeout;
@@ -31,5 +31,5 @@ export const emptyBooleanAttribute = (value: EmptyBooleanAttribute, ifEmpty: boo
 };
 
 export const positionAttribute = (value: Position) => {
-  return value || 'up'
-}
+  return value || 'up';
+};

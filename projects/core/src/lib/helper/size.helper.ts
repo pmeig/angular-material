@@ -8,5 +8,5 @@ export const sizeToString = (size: SizeAttribute, prefix?: string) => {
   if (!size) {
     return '';
   }
-  return `${prefix ? `${prefix}-` : ''}${size}`
-}
+  return `${prefix ? `${prefix}-` : ''}${size}`;
+};

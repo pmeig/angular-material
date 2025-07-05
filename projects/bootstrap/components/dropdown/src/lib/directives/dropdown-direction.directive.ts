@@ -4,12 +4,13 @@ import { emptyBooleanAttribute, EmptyBooleanAttribute } from '@pmeig/ng-material
 export type DropdownDirection = 'up' | 'down' | 'start' | 'end';
 
 @Directive({
-  selector: 'dropdown[direction=up], dropdown[direction=down], dropdown:not([direction])'
+  selector: 'dropdown[direction=up], dropdown[direction=down], dropdown:not([direction])',
 })
 export class DropdownDirectionDirective {
 
-  center = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute});
+  center = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute });
 
-  constructor() { }
+  constructor() {
+  }
 
 }

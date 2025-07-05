@@ -8,7 +8,7 @@ import {
   INJECTOR,
   Input,
   Output,
-  TemplateRef
+  TemplateRef,
 } from '@angular/core';
 import { NgpDate, NgpDatePipe, NgpDateTime, NgpTime, Optional } from '@pmeig/ng-core';
 import { BooleanAttribute, RGB } from '@pmeig/ng-material-core';
@@ -46,7 +46,7 @@ interface InputState {
     'input:not([type=date]):not([type=datetime-local]):not([type=month]):not([type=week]):not([type=time])' +
     ':not([type=datetime]):not([type=datetime-local])',
   exportAs: 'input',
-  providers: [NgpDatePipe]
+  providers: [NgpDatePipe],
 })
 export class BInputDirective extends BTagDirective<HTMLInputElement> {
   @Output() valueChange = new EventEmitter<Optional<InputValue>>();
@@ -59,17 +59,17 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
     value: () => {
       this.mapper = findMapper('ts-date', this.element, this.dateParser);
       return this.mapper.value();
-    }
+    },
   };
 
   private injector = inject(INJECTOR);
   private state: InputState = {
     readonly: false,
-    disabled: false
+    disabled: false,
   };
 
   constructor(
-    protected dateParser: NgpDatePipe
+    protected dateParser: NgpDatePipe,
   ) {
     super();
   }
@@ -77,7 +77,7 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
   @Input()
   set type(type: string) {
     this.element.type = type;
-    this.refresh(this.refreshType)
+    this.refresh(this.refreshType);
   }
 
   @Input()
@@ -89,17 +89,17 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
       }
       if (value) {
         if (typeof value === 'string') {
-          this.state.describe = this.renderer.createElement('span')
-          this.state.describe!!.innerHTML = value
+          this.state.describe = this.renderer.createElement('span');
+          this.state.describe!!.innerHTML = value;
         } else {
-          this.state.describe = this.renderer.createElement('div')
-          value.createEmbeddedView({}, this.injector).rootNodes.forEach(node => this.renderer.appendChild(this.state.describe!, node))
+          this.state.describe = this.renderer.createElement('div');
+          value.createEmbeddedView({}, this.injector).rootNodes.forEach(node => this.renderer.appendChild(this.state.describe!, node));
         }
         if (this.ready) {
-          this.refreshDescribe()
+          this.refreshDescribe();
         }
       }
-    })
+    });
   }
 
   @Input()
@@ -126,12 +126,12 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
 
   protected override onInit() {
     super.onInit();
-    this.addAttribute('class-ignore', 'form-control form-check-input form-range')
+    this.addAttribute('class-ignore', 'form-control form-check-input form-range');
   }
 
   protected override afterViewInit(): void {
     this.refreshType();
-    this.refreshDescribe()
+    this.refreshDescribe();
   }
 
   @HostListener('input')
@@ -145,7 +145,7 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
 
   @HostListener('keydown', ['$event'])
   private onKeyDown(event: KeyboardEvent) {
-    if (this. state.disabled || this.state.readonly) {
+    if (this.state.disabled || this.state.readonly) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
@@ -153,13 +153,13 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
   }
 
   private refreshType() {
-    this.removeParent('form-check')
+    this.removeParent('form-check');
     switch (this.element.type) {
       case 'checkbox':
       case 'radio':
         this.removeClass('form-control', 'form-range');
         if (!this.element.classList.contains('btn-check')) {
-          this.insertParent('form-check')
+          this.insertParent('form-check');
           this.putClass('form-check-input');
         }
         break;
@@ -175,9 +175,9 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
 
   private refreshDescribe() {
     if (this.state.describe) {
-      const parent = this.insertParent(`input-describe-${this.element.id}`)
-      this.putClass(this.state.describe, 'form-text')
-      this.renderer.appendChild(parent, this.state.describe)
+      const parent = this.insertParent(`input-describe-${this.element.id}`);
+      this.putClass(this.state.describe, 'form-text');
+      this.renderer.appendChild(parent, this.state.describe);
     }
   }
 }

@@ -9,13 +9,13 @@ import {
   isColor,
   rgbToString,
   Size,
-  toRGB
+  toRGB,
 } from '@pmeig/ng-material-core';
 import { BTagDirective } from '@pmeig/ngb-core';
 
 @Directive({
   selector: 'button, [btn]',
-  standalone: true
+  standalone: true,
 })
 export class BBtnDirective extends BTagDirective implements OnInit {
   private state = {
@@ -23,21 +23,21 @@ export class BBtnDirective extends BTagDirective implements OnInit {
     close: false,
     color: {
       classes: 'btn-primary',
-      rgb: ''
+      rgb: '',
     },
-    size: ''
+    size: '',
   };
 
   @Input()
   set btn(value: Empty<'close'>) {
     this.state.close = value === 'close';
-    this.afterViewInit()
+    this.afterViewInit();
   }
 
   @Input()
   set close(value: EmptyBooleanAttribute) {
     this.state.close = emptyBooleanAttribute(value);
-    this.afterViewInit()
+    this.afterViewInit();
   }
 
   constructor() {
@@ -91,7 +91,7 @@ export class BBtnDirective extends BTagDirective implements OnInit {
     if (this.state.close) {
       this.putClass('btn-close');
       this.removeAttribute(this.element, 'disabled');
-      const removeClasses = []
+      const removeClasses = [];
       if (this.state.size) {
         removeClasses.push(`btn-${this.state.size}`);
       }
@@ -103,7 +103,7 @@ export class BBtnDirective extends BTagDirective implements OnInit {
         this.removeStyle('color');
       }
     } else {
-      this.removeClass('btn-close')
+      this.removeClass('btn-close');
       this.putClass('btn');
       this.refreshDisabled();
       this.refreshSize();

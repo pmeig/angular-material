@@ -9,4 +9,5 @@ const ALERT_DIRECTIVES = [BAlertDirective, BAlertLinkDirective, BAlertHeaderDire
   imports: ALERT_DIRECTIVES,
   exports: ALERT_DIRECTIVES,
 })
-export class AlertMaterial { }
+export class AlertMaterial {
+}

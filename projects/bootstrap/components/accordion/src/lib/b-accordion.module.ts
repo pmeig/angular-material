@@ -6,6 +6,7 @@ const ACCORDION_DIRECTIVES = [BAccordionDirective, BAccordionItemComponent];
 
 @NgModule({
   imports: ACCORDION_DIRECTIVES,
-  exports: ACCORDION_DIRECTIVES
+  exports: ACCORDION_DIRECTIVES,
 })
-export class AccordionMaterial {}
+export class AccordionMaterial {
+}

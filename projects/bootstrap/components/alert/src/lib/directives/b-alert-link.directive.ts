@@ -14,7 +14,7 @@ export class BAlertLinkDirective implements AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.alert) {
-      putClass(this.link.nativeElement, this.renderer, ['alert-link'])
+      putClass(this.link.nativeElement, this.renderer, ['alert-link']);
     }
   }
 }

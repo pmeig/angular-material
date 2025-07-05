@@ -8,7 +8,7 @@ import {
   SignalRecord,
   signalRecord,
   timeoutAttribute,
-  TimeoutAttribute
+  TimeoutAttribute,
 } from '@pmeig/ng-material-core';
 import { findDirection, SlideDirection } from '../animation.helper';
 import { NavigatorService } from '../services/navigator.service';
@@ -24,28 +24,28 @@ import { BCarouselAutoOptionsDirective } from './options/b-carousel-auto.options
   standalone: true,
 })
 export class BCarouselDirective extends BTagDirective {
-  id = input<string>('')
-  fade = input<boolean, BooleanAttribute>(false, {transform: booleanAttribute})
-  loop = input<boolean, BooleanAttribute>(true, {transform: booleanAttribute})
-  index = input<number>(0)
+  id = input<string>('');
+  fade = input<boolean, BooleanAttribute>(false, { transform: booleanAttribute });
+  loop = input<boolean, BooleanAttribute>(true, { transform: booleanAttribute });
+  index = input<number>(0);
   indexChange = output<number>();
 
-  auto = input<Timeout, TimeoutAttribute>(undefined, {transform: timeoutAttribute})
+  auto = input<Timeout, TimeoutAttribute>(undefined, { transform: timeoutAttribute });
   private autoId?: string;
 
   @Input()
   set prev(value: BooleanAttribute) {
-    this.insertNavigator(this.navigator.prev, value)
+    this.insertNavigator(this.navigator.prev, value);
   }
 
   @Input()
   set next(value: BooleanAttribute) {
-    this.insertNavigator(this.navigator.next, value)
+    this.insertNavigator(this.navigator.next, value);
   }
 
   @Input()
   set indicators(value: BooleanAttribute) {
-    this.insertNavigator(this.navigator.indicators, value)
+    this.insertNavigator(this.navigator.indicators, value);
   }
 
   @ContentChildren(BCarouselItemTemplate) protected templates!: QueryList<BCarouselItemTemplate> | BCarouselItemTemplate[];
@@ -53,17 +53,17 @@ export class BCarouselDirective extends BTagDirective {
   private navigator = signalRecord({
     next: {
       origin: 'default',
-      value: true
+      value: true,
     },
     prev: {
       origin: 'default',
-      value: true
+      value: true,
     },
     indicators: {
       origin: 'default',
-      value: false
+      value: false,
     },
-  })
+  });
   private innerCarousel: HTMLDivElement = this.createInnerCarousel();
   private currentSlide?: {
     controller: BCarouselItem,
@@ -71,13 +71,14 @@ export class BCarouselDirective extends BTagDirective {
     element: Element
     indicator: HTMLButtonElement
   };
-  private items: BCarouselItem[] = []
+  private items: BCarouselItem[] = [];
   private buttons: {
     next: HTMLButtonElement,
     prev: HTMLButtonElement,
     indicators: HTMLDivElement
-  }
-  private restoreButtons = () => {};
+  };
+  private restoreButtons = () => {
+  };
   private instantiate = false;
 
   constructor(navigatorService: NavigatorService,
@@ -89,205 +90,208 @@ export class BCarouselDirective extends BTagDirective {
     this.buttons = {
       next: navigatorService.createButton('next', this.id(), _ => this.showItem(this.currentIndex + 1)),
       prev: navigatorService.createButton('prev', this.id(), _ => this.showItem(this.currentIndex - 1)),
-      indicators: this.indicatorService.createIndicators()
-    }
+      indicators: this.indicatorService.createIndicators(),
+    };
 
-    this.effect(() => this.restorePrev())
-    this.effect(() => this.restoreNext())
-    this.effect(() => this.restoreIndicator())
-    this.effect(() => this.restoreWhenLoopChange())
-    this.effect(() => this.applyAutoSlide())
-    this.effect(() => this.fadeAnimation())
+    this.effect(() => this.restorePrev());
+    this.effect(() => this.restoreNext());
+    this.effect(() => this.restoreIndicator());
+    this.effect(() => this.restoreWhenLoopChange());
+    this.effect(() => this.applyAutoSlide());
+    this.effect(() => this.fadeAnimation());
   }
 
 
   protected override onInit() {
     super.onInit();
-    this.putClass('carousel', 'slide')
+    this.putClass('carousel', 'slide');
   }
 
   protected override afterViewInit() {
     super.afterViewInit();
 
-    this.templates = this.templates.filter(template => template.carousel === this)
-    const removeThem: Element[] = []
+    this.templates = this.templates.filter(template => template.carousel === this);
+    const removeThem: Element[] = [];
     this.element.childNodes.forEach(child => {
       let item!: BCarouselItem;
       if (child instanceof Element) {
-        item = new BCarouselItemElementDirective(child as Element, this.renderer)
-        removeThem.push(child)
+        item = new BCarouselItemElementDirective(child as Element, this.renderer);
+        removeThem.push(child);
       } else {
-        item = (this.templates as BCarouselItemTemplate[]).shift()!
+        item = (this.templates as BCarouselItemTemplate[]).shift()!;
       }
-      item.parent = this.innerCarousel
-      this.items.push(item)
-    })
-    removeThem.forEach(item => this.renderer.removeChild(this.element, item))
-    this.indicatorService.fillIndicators(this.id(), this.buttons.indicators, this.items, index => this.showItem(index!))
-    this.renderer.appendChild(this.element, this.buttons.indicators)
-    this.renderer.appendChild(this.element, this.innerCarousel)
-    this.renderer.appendChild(this.element, this.buttons.prev)
-    this.renderer.appendChild(this.element, this.buttons.next)
-    this.instantiate = true
-    this.restoreNext()
-    this.restorePrev()
-    this.restoreIndicator()
+      item.parent = this.innerCarousel;
+      this.items.push(item);
+    });
+    removeThem.forEach(item => this.renderer.removeChild(this.element, item));
+    this.indicatorService.fillIndicators(this.id(), this.buttons.indicators, this.items, index => this.showItem(index!));
+    this.renderer.appendChild(this.element, this.buttons.indicators);
+    this.renderer.appendChild(this.element, this.innerCarousel);
+    this.renderer.appendChild(this.element, this.buttons.prev);
+    this.renderer.appendChild(this.element, this.buttons.next);
+    this.instantiate = true;
+    this.restoreNext();
+    this.restorePrev();
+    this.restoreIndicator();
     if (this.index() >= 0 && this.index() < this.items.length) {
-      this.showItem(this.index())
+      this.showItem(this.index());
     }
   }
 
   private showItem(index: number, moveDirection?: SlideDirection) {
     if (this.currentSlide) {
-      const direction = moveDirection ?? findDirection(this.loop() && !!this.loopOptions?.shortcut(), this.currentIndex, index, this.items.length)
+      const direction = moveDirection ?? findDirection(this.loop() && !!this.loopOptions?.shortcut(), this.currentIndex, index, this.items.length);
       if (direction) {
         if (this.loop()) {
-          const indexMax = this.items.length - 1
+          const indexMax = this.items.length - 1;
           if (index < 0) {
-            index = indexMax
+            index = indexMax;
           } else if (index > indexMax) {
-            index = 0
+            index = 0;
           }
         }
         const oldSlide = this.currentSlide.controller;
-        const oldIndicator = this.currentSlide.indicator
+        const oldIndicator = this.currentSlide.indicator;
         this.currentSlide = {
           ...this.items[index]!.show(direction),
           indicator: this.buttons.indicators.children.item(index)! as HTMLButtonElement,
-          index
-        }
-        oldSlide.hide(direction)
-        this.indicatorService.switchIndicator(oldIndicator, this.currentSlide.indicator)
+          index,
+        };
+        oldSlide.hide(direction);
+        this.indicatorService.switchIndicator(oldIndicator, this.currentSlide.indicator);
       }
     } else {
       this.currentSlide = {
         ...this.items[index]!.show(),
         indicator: this.buttons.indicators.children.item(index)! as HTMLButtonElement,
-        index
-      }
-      this.indicatorService.activeIndicator(this.currentSlide.indicator)
+        index,
+      };
+      this.indicatorService.activeIndicator(this.currentSlide.indicator);
     }
-    this.removeButtonWhenNoLoop(index)
+    this.removeButtonWhenNoLoop(index);
   }
 
   private get currentIndex() {
-    return this.currentSlide!.index
+    return this.currentSlide!.index;
   }
 
   private restorePrev() {
-    this.restoreElement(this.navigator.prev.value(), this.buttons.prev, this.buttons.next)
+    this.restoreElement(this.navigator.prev.value(), this.buttons.prev, this.buttons.next);
   }
 
   private restoreNext() {
-    console.log('restoreNext')
-    this.restoreElement(this.navigator.next.value(), this.buttons.next)
+    console.log('restoreNext');
+    this.restoreElement(this.navigator.next.value(), this.buttons.next);
   }
 
   private restoreElement(restore: boolean, element: Element, nextSibling?: Element | null) {
     if (this.instantiate) {
-      const isPresent = this.element.contains(element)
+      const isPresent = this.element.contains(element);
       if (restore) {
         if (!isPresent) {
           try {
-            this.renderer.insertBefore(this.element, element, nextSibling)
+            this.renderer.insertBefore(this.element, element, nextSibling);
           } catch (error) {
-            this.renderer.appendChild(this.element, element)
+            this.renderer.appendChild(this.element, element);
           }
         }
       } else if (isPresent) {
-        this.renderer.removeChild(this.element, element)
+        this.renderer.removeChild(this.element, element);
       }
     }
 
   }
 
   private removeButtonWhenNoLoop(index: number) {
-    const buttonConfig = this.findButtonToRemove(index)
-    this.restoreButtons()
+    const buttonConfig = this.findButtonToRemove(index);
+    this.restoreButtons();
     if (buttonConfig) {
-      const parent = this.renderer.parentNode(buttonConfig.button)
-      this.renderer.removeChild(parent, buttonConfig.button)
+      const parent = this.renderer.parentNode(buttonConfig.button);
+      this.renderer.removeChild(parent, buttonConfig.button);
       this.restoreButtons = () => {
-        this.renderer.insertBefore(parent, buttonConfig.button, buttonConfig.nextSibling)
-        this.restoreButtons = () => {}
-      }
+        this.renderer.insertBefore(parent, buttonConfig.button, buttonConfig.nextSibling);
+        this.restoreButtons = () => {
+        };
+      };
     }
   }
 
   private findButtonToRemove(index: number) {
     if (!this.loop()) {
       if (0 === index) {
-        return { button: this.buttons.prev, nextSibling: this.buttons.next }
+        return { button: this.buttons.prev, nextSibling: this.buttons.next };
       }
       if (this.items.length - 1 === index) {
-        return {button: this.buttons.next, nextSibling: null}
+        return { button: this.buttons.next, nextSibling: null };
       }
     }
-    return null
+    return null;
   }
 
   private restoreIndicator() {
-    this.restoreElement(this.navigator.indicators.value(), this.buttons.indicators, this.element.firstElementChild)
+    this.restoreElement(this.navigator.indicators.value(), this.buttons.indicators, this.element.firstElementChild);
   }
-
 
 
   private createInnerCarousel() {
     const div = this.renderer.createElement('div') as HTMLDivElement;
-    this.putClass(div, 'carousel-inner')
+    this.putClass(div, 'carousel-inner');
     return div;
   }
 
   private fadeAnimation() {
-    let action = this.removeClass
+    let action = this.removeClass;
     if (this.fade()) {
-      action = this.putClass
+      action = this.putClass;
     }
-    action.bind(this)('carousel-fade')
+    action.bind(this)('carousel-fade');
   }
 
   private insertNavigator(item: SignalRecord<{ origin: string; value: boolean }>, value: BooleanAttribute) {
-    item.value.set(booleanAttribute(value))
-    item.origin.set('input')
+    item.value.set(booleanAttribute(value));
+    item.origin.set('input');
   }
 
   private applyAutoSlide() {
-    const timeout = this.auto()
+    const timeout = this.auto();
     if (timeout) {
       if (!this.autoId) {
-        this.removeNavigator()
+        this.removeNavigator();
         this.autoId = this.addInterval(() => {
-          const direction = this.autoOptions?.direction()!
-          this.showItem(this.currentIndex + (direction === 'next' ? 1 : -1), direction)
-        }, timeout).id
+          const direction = this.autoOptions?.direction()!;
+          this.showItem(this.currentIndex + (direction === 'next' ? 1 : -1), direction);
+        }, timeout).id;
       }
     } else {
-      this.restoreNavigator()
-      this.clearInterval(this.autoId)
-      this.autoId = undefined
+      this.restoreNavigator();
+      this.clearInterval(this.autoId);
+      this.autoId = undefined;
     }
   }
 
   private removeNavigator(navigator?: SignalRecord<{ origin: string; value: boolean }>) {
     if (!navigator) {
-      [this.navigator.prev, this.navigator.next, this.navigator.indicators].forEach(item => this.removeNavigator(item))
+      [this.navigator.prev, this.navigator.next, this.navigator.indicators].forEach(item => this.removeNavigator(item));
     } else if (navigator.origin() === 'default') {
-      navigator.value.set(false)
+      navigator.value.set(false);
     }
   }
 
-  private restoreNavigator(key?: keyof typeof this.navigator, navigator?: SignalRecord<{ origin: string; value: boolean }>) {
+  private restoreNavigator(key?: keyof typeof this.navigator, navigator?: SignalRecord<{
+    origin: string;
+    value: boolean
+  }>) {
     if (!navigator) {
-      Object.entries(this.navigator).forEach(([key, value]) => this.restoreNavigator(key as keyof typeof this.navigator, value))
+      Object.entries(this.navigator).forEach(([key, value]) => this.restoreNavigator(key as keyof typeof this.navigator, value));
     } else if (navigator.origin() === 'default') {
-      navigator.value.set(['prev', 'next'].includes(key!))
+      navigator.value.set(['prev', 'next'].includes(key!));
     }
   }
 
   private restoreWhenLoopChange() {
-    this.loop()
+    this.loop();
     if (this.instantiate) {
-      this.removeButtonWhenNoLoop(this.currentIndex)
+      this.removeButtonWhenNoLoop(this.currentIndex);
     }
   }
 }

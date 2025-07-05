@@ -19,7 +19,7 @@ interface ValidatorState {
 @Directive({
   selector: '[error], [valid], [decorator], [formControl], [formControlName]',
   standalone: true,
-  providers: [JsonPipe]
+  providers: [JsonPipe],
 })
 export class BValidatorDirective extends BTagDirective<
   Element & { setCustomValidity?: (message: string) => void }
@@ -28,7 +28,7 @@ export class BValidatorDirective extends BTagDirective<
   private state: ValidatorState = {
     decorator: true,
     classSuffixTemplate: '-feedback',
-    messages: {}
+    messages: {},
   };
   private lastObserveChange?: string;
   private validate?: boolean;
@@ -45,11 +45,11 @@ export class BValidatorDirective extends BTagDirective<
     } else {
       return undefined;
     }
-  })
+  });
 
   constructor(
     private json: JsonPipe,
-    @Host() @Optional() private formControlName?: FormControlName
+    @Host() @Optional() private formControlName?: FormControlName,
   ) {
     super();
     effect(() => this.refresh(() => this.checkMessage('invalid')));
@@ -60,7 +60,7 @@ export class BValidatorDirective extends BTagDirective<
   @Input('is-valid')
   set isValid(isValid: BooleanAttribute) {
     this.validate = booleanAttribute(isValid);
-    this.refresh(this.refreshValidate)
+    this.refresh(this.refreshValidate);
 
   }
 
@@ -68,15 +68,15 @@ export class BValidatorDirective extends BTagDirective<
   set decorator(decorator: BooleanAttribute | '') {
     this.state.decorator =
       decorator === '' ? true : booleanAttribute(decorator);
-    this.refresh(this.refreshDecorator)
+    this.refresh(this.refreshDecorator);
   }
 
   @Input()
   set tooltip(tooltip: BooleanAttribute | '') {
-    this.refresh(this.removeLastClass)
+    this.refresh(this.removeLastClass);
     this.state.classSuffixTemplate =
       tooltip === '' || booleanAttribute(tooltip) ? '-tooltip' : '-feedback';
-    this.refresh(this.refreshMessageType)
+    this.refresh(this.refreshMessageType);
   }
 
   protected override onInit() {
@@ -107,7 +107,7 @@ export class BValidatorDirective extends BTagDirective<
 
   private observeValueChange(control: FormControl) {
     if (this.lastObserveChange) {
-      this.clearSubscription(this.lastObserveChange)
+      this.clearSubscription(this.lastObserveChange);
     }
     this.lastObserveChange = this.addObservable(control.valueChanges, () => this.updateValidity(control));
   }
@@ -146,11 +146,11 @@ export class BValidatorDirective extends BTagDirective<
   private getOrCreateElement(key: 'valid' | 'invalid'): Element {
     let element = this.state.messages[key];
     if (!element) {
-      const classname = `${key}${this.state.classSuffixTemplate}`
+      const classname = `${key}${this.state.classSuffixTemplate}`;
       element = this.renderer.createElement('div') as Element;
       element.id = `${this.element.id}-${key}`;
       this.putClass(element, classname);
-      const parent = this.insertParent('form-field-validator')
+      const parent = this.insertParent('form-field-validator');
       this.renderer.appendChild(parent, element);
       this.state.messages[key] = element;
     }
@@ -161,11 +161,11 @@ export class BValidatorDirective extends BTagDirective<
     if (key) {
       const element = this.state.messages[key];
       if (element) {
-        this.removeClass(element, `${key}${this.state.classSuffixTemplate}`)
+        this.removeClass(element, `${key}${this.state.classSuffixTemplate}`);
       }
     } else {
-      this.removeLastClass('valid')
-      this.removeLastClass('invalid')
+      this.removeLastClass('valid');
+      this.removeLastClass('invalid');
     }
   }
 }

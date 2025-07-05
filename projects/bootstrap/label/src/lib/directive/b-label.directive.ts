@@ -8,7 +8,7 @@ type LabelFor = Element & { placeholder?: string; type?: string };
 
 @Directive({
   selector: 'label[for]',
-  standalone: true
+  standalone: true,
 })
 export class BLabelDirective extends BTagDirective {
   private htmlFor: LabelFor;
@@ -18,7 +18,7 @@ export class BLabelDirective extends BTagDirective {
   set for(value: LabelFor) {
     this.htmlFor = value;
     if (this.ready) {
-      this.putClassByInputType()
+      this.putClassByInputType();
     }
   }
 
@@ -44,19 +44,19 @@ export class BLabelDirective extends BTagDirective {
   }
 
   private putClassByInputType() {
-    let classAdded = 'form-label'
+    let classAdded = 'form-label';
     const input = this.htmlFor;
     switch (input.type) {
       case 'checkbox':
       case 'radio':
         this.removeClass(this.label, 'form-label');
         this.putClass(this.label, 'form-check-label');
-        classAdded='form-check-label';
+        classAdded = 'form-check-label';
         break;
       default:
         this.removeClass(this.label, 'form-check-label');
         this.putClass(this.label, 'form-label');
     }
-    return classAdded
+    return classAdded;
   }
 }

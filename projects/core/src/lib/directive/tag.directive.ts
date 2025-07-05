@@ -9,7 +9,7 @@ import {
   OnDestroy,
   OnInit,
   PLATFORM_ID,
-  Renderer2
+  Renderer2,
 } from '@angular/core';
 import { isNotBlank } from '@pmeig/ng-core';
 import { EventHandler } from '../helper/event-handler';
@@ -27,7 +27,7 @@ import {
   removeAttribute,
   removeClass,
   removeStyle,
-  StyleElement
+  StyleElement,
 } from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { getDocument } from '../helper/browser.helper';
@@ -38,20 +38,20 @@ import { insertParent, ParentExclude, removeParent, TagParent } from '../helper/
 export abstract class TagDirective<T extends Element = Element> extends EventHandler implements AfterViewInit, OnDestroy, OnInit {
   readonly element: T;
   protected renderer = inject(Renderer2);
-  protected ready = false
+  protected ready = false;
   private platform = inject(PLATFORM_ID);
-  readonly ignore = input<'' | undefined>(undefined, {alias: 'pmeig-ignore'});
+  readonly ignore = input<'' | undefined>(undefined, { alias: 'pmeig-ignore' });
   private attributes: {
     class: string,
     style: string
   } = {
     class: '',
-    style: ''
-  }
+    style: '',
+  };
 
 
   protected constructor(
-    elementRef: ElementRef<T> = inject(ElementRef)
+    elementRef: ElementRef<T> = inject(ElementRef),
   ) {
     super();
     this.element = elementRef.nativeElement;
@@ -59,21 +59,21 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       afterNextRender(
         () => {
           if (this.ignore() !== '') {
-            this.applyInit()
+            this.applyInit();
           }
-        })
+        });
     }
   }
 
   ngOnInit(): void {
     if (this.isBrowser() && this.ignore() !== '') {
-      this.applyInit()
+      this.applyInit();
     }
   }
 
   ngAfterViewInit(): void {
     if (this.isBrowser() && this.ignore() !== '') {
-      this.applyAfterViewInit()
+      this.applyAfterViewInit();
     }
   }
 
@@ -89,20 +89,20 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   }
 
   protected applyAfterViewInit() {
-    this.afterViewInit()
+    this.afterViewInit();
   }
 
   protected applyInit() {
     this.init();
-    this.onInit()
+    this.onInit();
     this.attributes = {
       class: this.element.className,
-      style: this.element.getAttribute('style') ?? ''
-    }
+      style: this.element.getAttribute('style') ?? '',
+    };
   }
 
   protected effect(action: () => void) {
-    effect(() => this.refresh(action))
+    effect(() => this.refresh(action));
   }
 
   protected insertLink(...links: Link[]) {
@@ -200,7 +200,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       names.unshift(element);
       element = this.element;
     }
-   removeAttribute(element, this.renderer, names);
+    removeAttribute(element, this.renderer, names);
   }
 
   protected onRemove() {
@@ -231,7 +231,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
 
   private removeCSSClasses(
     element: Item,
-    classes: string[]
+    classes: string[],
   ) {
     removeClass(element, this.renderer, classes);
   }
@@ -288,7 +288,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
 
   protected refresh(action: () => void) {
     if (this.ready && this.ignore() !== '') {
-      action.bind(this)()
+      action.bind(this)();
     }
   }
 

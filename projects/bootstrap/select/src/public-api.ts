@@ -1,1 +1,2 @@
-export * from './lib/directives/public.directive'; export * from './lib/b-select.module';
+export * from './lib/directives/public.directive';
+export * from './lib/b-select.module';

@@ -9,14 +9,15 @@ import { CollapseMaterial } from '@pmeig/ngb-collapse';
   styleUrl: './b-accordion-item.component.scss',
   imports: [
     CollapseMaterial,
-    NgTemplateOutlet
+    NgTemplateOutlet,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BAccordionItemComponent extends BTagComponent {
   readonly header = input<string>();
   @ContentChild(TemplateRef) body?: TemplateRef<any>;
+
   constructor() {
-    super()
+    super();
   }
 }

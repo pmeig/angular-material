@@ -2,7 +2,7 @@ import { Directive } from '@angular/core';
 import { BSelectParentDirective } from './b-select-parent.directive';
 
 @Directive({
-  selector: 'select:not([multiple])'
+  selector: 'select:not([multiple])',
 })
 export class BSelectDirective<T extends any> extends BSelectParentDirective<T | undefined> {
 

@@ -7,32 +7,31 @@ export type SignalRecord<T extends TypescriptObject> = T extends Record<string, 
 } : T extends any[] ? (T[number] extends TypescriptObject ? SignalRecord<T[number]> : WritableSignal<T[number]>)[] : never;
 
 
-const putMergeSignalRecord = ( origin: Signal<any> | SignalRecord<any>, update: SignalRecord<any> | Signal<any> | any) => {
+const putMergeSignalRecord = (origin: Signal<any> | SignalRecord<any>, update: SignalRecord<any> | Signal<any> | any) => {
   if (isSignal(origin)) {
     if ('set' in origin) {
-      let newValue = update
+      let newValue = update;
       if (isSignal(newValue)) {
-        newValue = newValue()
+        newValue = newValue();
       }
-      (origin as WritableSignal<any>).set(newValue)
+      (origin as WritableSignal<any>).set(newValue);
     }
   } else {
-    mergeSignalRecord(origin as SignalRecord<any>, update)
+    mergeSignalRecord(origin as SignalRecord<any>, update);
   }
-}
+};
 
-export const mergeSignalRecord = <T extends TypescriptObject>( origin: SignalRecord<T>, update: SignalRecord<T> | T ) => {
+export const mergeSignalRecord = <T extends TypescriptObject>(origin: SignalRecord<T>, update: SignalRecord<T> | T) => {
   if (Array.isArray(update) && Array.isArray(origin)) {
     update.forEach((item, index) => {
-      putMergeSignalRecord(origin[index], item)
-    })
+      putMergeSignalRecord(origin[index], item);
+    });
   } else {
     Object.entries(update).forEach(([key, value]) => {
-      putMergeSignalRecord((origin as Record<string, any>)[key], value)
-    })
+      putMergeSignalRecord((origin as Record<string, any>)[key], value);
+    });
   }
-}
-
+};
 
 
 export function signalRecord<T extends TypescriptObject>(obj: T[]): SignalRecord<T>[];
@@ -47,10 +46,10 @@ export function signalRecord<T extends TypescriptObject>(obj: T): SignalRecord<T
   }
   return Object.entries(obj).reduce((acc, [key, value]) => {
     if (typeof value === 'object' && !('new' in value)) {
-      value = signalRecord(value)
+      value = signalRecord(value);
     } else {
       if (!isSignal(value)) {
-        value = signal(value)
+        value = signal(value);
       }
     }
     acc[key] = value;

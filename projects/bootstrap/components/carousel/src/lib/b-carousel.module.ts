@@ -8,6 +8,7 @@ const CAROUSEL_EXPORTS = [BCarouselDirective, BCarouselItemTemplate, BCarouselLo
 
 @NgModule({
   imports: CAROUSEL_EXPORTS,
-  exports: CAROUSEL_EXPORTS
+  exports: CAROUSEL_EXPORTS,
 })
-export class CarouselMaterial {}
+export class CarouselMaterial {
+}

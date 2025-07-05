@@ -4,7 +4,7 @@ import { BTagDirective } from '@pmeig/ngb-core';
 
 @Directive({
   selector: 'form:not([formGroup]), [formGroup]',
-  standalone: true
+  standalone: true,
 })
 export class BFormDirective extends BTagDirective<HTMLFormElement> {
   unvalidated = input<boolean>(false);

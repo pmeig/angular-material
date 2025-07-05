@@ -6,6 +6,7 @@ const FORM_DIRECTIVES = [BFormDirective, BValidatorDirective];
 
 @NgModule({
   imports: FORM_DIRECTIVES,
-  exports: FORM_DIRECTIVES
+  exports: FORM_DIRECTIVES,
 })
-export class FormMaterial {}
+export class FormMaterial {
+}

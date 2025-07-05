@@ -8,7 +8,7 @@ export class BCarouselItemElementDirective extends BCarouselItem {
   }
 
   protected createElement(): Element {
-    putClass(this.myRef, this.renderer, ['carousel-item'])
+    putClass(this.myRef, this.renderer, ['carousel-item']);
     this.renderer.appendChild(this.parent, this.myRef);
     return this.myRef;
   }

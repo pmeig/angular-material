@@ -6,7 +6,7 @@ import { bootstrapLink } from '../b-tag.constant';
 export abstract class BTagParentDirective<T extends Element = Element> extends TagParentDirective<T> {
 
   protected constructor(elementRef: ElementRef<T> = inject(ElementRef)) {
-    super(elementRef)
+    super(elementRef);
   }
 
 

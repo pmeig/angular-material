@@ -3,7 +3,7 @@ import { BCardComponent } from '../b-card/b-card.component';
 import { TagDirective } from '@pmeig/ng-material-core';
 
 @Directive({
-  selector: 'nav, .nav'
+  selector: 'nav, .nav',
 })
 export class BCardTabDirective extends TagDirective {
 
@@ -16,7 +16,7 @@ export class BCardTabDirective extends TagDirective {
     super.afterViewInit();
     if (this.card && this.renderer.parentNode(this.element).classList.contains('card-header')) {
       const suffix = this.element.classList.contains('nav-pills') ? 'pills' : 'tabs';
-      this.putClass(`card-header-${suffix}`)
+      this.putClass(`card-header-${suffix}`);
     }
   }
 }

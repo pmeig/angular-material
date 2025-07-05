@@ -4,12 +4,15 @@
 
 .zoom {
   transition: transform .5s;
+
   &:not(.show) {
     transform: scale(0);
   }
+
   &.show {
     transform: scale(1);
   }
+
   &:not(:focus).modal-static {
     transform: scale(1.1);
   }

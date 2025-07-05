@@ -5,7 +5,7 @@ import { BLabelParentDirective } from './b-label-parent.directive';
 @Directive({
   selector: 'input[label]:not([type=checkbox]):not([type=radio]):not([type=range]), ' +
     'textarea[label], ' +
-    'select[label]'
+    'select[label]',
 })
 export class BLabelFloatingDirective extends BLabelParentDirective {
 
@@ -24,7 +24,7 @@ export class BLabelFloatingDirective extends BLabelParentDirective {
   @Input('label-position')
   set position(position: 'start' | 'end') {
     this.state['position'] = position;
-    if (this.ready && !this.state['floating']) this.refreshPosition()
+    if (this.ready && !this.state['floating']) this.refreshPosition();
   }
 
 
@@ -38,22 +38,22 @@ export class BLabelFloatingDirective extends BLabelParentDirective {
     this.state['position'] = this.state['position'] || 'start';
     this.state['floating'] = typeof this.state['floating'] === 'undefined' ? true : this.state['floating'];
     if (!this.state['floating']) {
-      this.refreshPosition()
+      this.refreshPosition();
     }
-    this.state.label.htmlFor = this.element.getAttribute('id') ?? ''
+    this.state.label.htmlFor = this.element.getAttribute('id') ?? '';
   }
 
   private refreshPosition() {
-    const parent = this.refreshParent('floating', false)
+    const parent = this.refreshParent('floating', false);
     if (this.state['position'] === 'start') {
       if (parent.contains(this.state.label)) {
         this.renderer.removeChild(parent, this.state.label);
       }
-      this.renderer.insertBefore(parent, this.state.label, this.element)
+      this.renderer.insertBefore(parent, this.state.label, this.element);
     } else {
       if (parent.contains(this.state.label)) {
         this.renderer.removeChild(parent, this.element);
-        this.renderer.insertBefore(parent, this.element, this.state.label)
+        this.renderer.insertBefore(parent, this.element, this.state.label);
       } else {
         this.renderer.insertBefore(parent, this.state.label, this.renderer.nextSibling(this.element));
       }

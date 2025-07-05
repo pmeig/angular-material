@@ -1,2 +1,2 @@
 export * from './lib/b-carousel.module';
-export * from './lib/directives/public.directives'
+export * from './lib/directives/public.directives';

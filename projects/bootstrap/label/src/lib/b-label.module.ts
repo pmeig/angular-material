@@ -3,13 +3,14 @@ import {
   BLabelCheckButtonDirective,
   BLabelCheckDirective,
   BLabelDirective,
-  BLabelFloatingDirective
+  BLabelFloatingDirective,
 } from './directive/public.directive';
 
 const LABEL_DIRECTIVES = [BLabelDirective, BLabelFloatingDirective, BLabelCheckDirective, BLabelCheckButtonDirective];
 
 @NgModule({
   imports: LABEL_DIRECTIVES,
-  exports: LABEL_DIRECTIVES
+  exports: LABEL_DIRECTIVES,
 })
-export class LabelMaterial {}
+export class LabelMaterial {
+}

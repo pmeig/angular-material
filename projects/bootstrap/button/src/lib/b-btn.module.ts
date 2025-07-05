@@ -7,6 +7,7 @@ const BTN_DIRECTIVES = [BBtnDirective, BBtnGroupDirective, BBtnToolbarDirective]
 
 @NgModule({
   imports: BTN_DIRECTIVES,
-  exports: BTN_DIRECTIVES
+  exports: BTN_DIRECTIVES,
 })
-export class ButtonMaterial {}
+export class ButtonMaterial {
+}

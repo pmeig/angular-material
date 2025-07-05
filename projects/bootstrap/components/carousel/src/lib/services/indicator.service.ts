@@ -4,7 +4,7 @@ import { BCarouselItem } from '../b-carousel-item';
 import { AnimationExecutor } from '../animation.helper';
 
 
-const ARIA_LABEL_INDICATOR_PREFIX = 'Slide'
+const ARIA_LABEL_INDICATOR_PREFIX = 'Slide';
 
 @Injectable()
 export class IndicatorService {
@@ -29,7 +29,7 @@ export class IndicatorService {
   }
 
   switchIndicator(indicator: HTMLButtonElement, newIndicator: HTMLButtonElement) {
-    this.activeIndicator(newIndicator)
+    this.activeIndicator(newIndicator);
     removeClass(indicator, this.renderer, ['active']);
     removeAttribute(indicator, this.renderer, ['aria-current']);
   }
@@ -44,7 +44,7 @@ export class IndicatorService {
     putAttribute(button, this.renderer, 'id', `${id}-indicator-${index}`);
     putAttribute(button, this.renderer, 'aria-label', `${ARIA_LABEL_INDICATOR_PREFIX} ${index}`);
     putAttribute(button, this.renderer, 'type', 'button');
-    putAttribute(button, this.renderer, 'data-bs-target', ' ')
-    return button
+    putAttribute(button, this.renderer, 'data-bs-target', ' ');
+    return button;
   }
 }

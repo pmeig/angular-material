@@ -3,7 +3,7 @@ import { TagDirective } from '@pmeig/ng-material-core';
 import { BListGroupDirective } from './b-list-group.directive';
 
 @Directive({
-  selector: 'button, a'
+  selector: 'button, a',
 })
 export class ListGroupActionDirective extends TagDirective {
 
@@ -12,24 +12,24 @@ export class ListGroupActionDirective extends TagDirective {
   }
 
   @HostListener('click')
-  private onClick( ) {
+  private onClick() {
     if (this.element.classList.contains('active')) {
-      this.removeClass('active')
-    } else  this.putClass('active')
+      this.removeClass('active');
+    } else this.putClass('active');
   }
 
   protected override afterViewInit() {
     if (this.listGroup) {
-      this.putClass('list-group-item-action')
+      this.putClass('list-group-item-action');
       setTimeout(() => {
-        this.removeClass('btn')
+        this.removeClass('btn');
         this.element.classList.forEach(value => {
           if (value.startsWith('btn-')) {
-            this.removeClass(value)
+            this.removeClass(value);
           }
-        })
-      })
+        });
+      });
     }
-    super.afterViewInit()
+    super.afterViewInit();
   }
 }

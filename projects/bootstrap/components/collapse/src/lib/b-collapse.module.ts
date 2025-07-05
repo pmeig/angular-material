@@ -8,4 +8,5 @@ const COLLAPSE_DIRECTIVES = [BCollapseDirective];
   imports: COLLAPSE_DIRECTIVES,
   exports: COLLAPSE_DIRECTIVES,
 })
-export class CollapseMaterial { }
+export class CollapseMaterial {
+}

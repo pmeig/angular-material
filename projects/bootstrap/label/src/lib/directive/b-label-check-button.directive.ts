@@ -10,51 +10,51 @@ export class BLabelCheckButtonDirective extends BLabelCheckDirective {
   @Input('label-btn-outline')
   set outline(value: ColorAttribute) {
     this.inputColorHandler(() => {
-      this.state['prefix'] = value ? 'btn-outline' : 'btn'
-      this.color = value
-    })
+      this.state['prefix'] = value ? 'btn-outline' : 'btn';
+      this.color = value;
+    });
   }
 
   @Input('label-btn-color')
   set color(value: ColorAttribute) {
-    this.inputColorHandler(() => this.state['color'] = value)
+    this.inputColorHandler(() => this.state['color'] = value);
   }
 
   constructor() {
-    super()
+    super();
   }
 
 
   protected override onInit() {
     super.onInit();
     this.state['prefix'] = this.state['prefix'] || 'btn';
-    this.removeClass(this.state.label, 'form-check-label')
-    this.removeClass('form-check-input')
-    this.putClass('btn-check')
-    this.putClass(this.state.label, 'btn')
-    this.refreshColor()
+    this.removeClass(this.state.label, 'form-check-label');
+    this.removeClass('form-check-input');
+    this.putClass('btn-check');
+    this.putClass(this.state.label, 'btn');
+    this.refreshColor();
   }
 
   private refreshColor(add: boolean = true) {
     const action = (add ? this.putClass : this.removeClass).bind(this);
     if (this.state['color']) {
-      const color = colorAttributeToString(this.state['color'], this.state['prefix'])
+      const color = colorAttributeToString(this.state['color'], this.state['prefix']);
       if (isColor(this.state['color'])) {
-        action(this.state.label, color)
+        action(this.state.label, color);
       } else {
-        action(this.state.label, this.state['prefix'])
+        action(this.state.label, this.state['prefix']);
         const styleAction = (add ? this.putStyle : this.removeStyle).bind(this);
         if (this.state['prefix'] === 'btn') {
-          styleAction(this.state.label, 'background-color', color)
+          styleAction(this.state.label, 'background-color', color);
         }
-        styleAction(this.state.label, 'border-color', color)
+        styleAction(this.state.label, 'border-color', color);
       }
     }
   }
 
   private inputColorHandler(handler: () => void) {
-    this.refresh(() => this.refreshColor(false))
-    handler()
-    this.refresh(this.refreshColor)
+    this.refresh(() => this.refreshColor(false));
+    handler();
+    this.refresh(this.refreshColor);
   }
 }

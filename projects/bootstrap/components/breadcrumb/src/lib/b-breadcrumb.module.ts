@@ -7,4 +7,5 @@ const BREADCRUMB_MODULE = [BBreadcrumbDirective];
   imports: BREADCRUMB_MODULE,
   exports: BREADCRUMB_MODULE
 })
-export class BreadcrumbMaterial {}
+export class BreadcrumbMaterial {
+}

@@ -3,7 +3,7 @@ import { BCarouselItem } from '../b-carousel-item';
 import { BCarouselDirective } from './b-carousel.directive';
 
 @Directive({
-  selector: 'ng-template'
+  selector: 'ng-template',
 })
 export class BCarouselItemTemplate extends BCarouselItem {
 

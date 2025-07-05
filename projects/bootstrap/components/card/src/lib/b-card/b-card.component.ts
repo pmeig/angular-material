@@ -10,26 +10,26 @@ import { HasChildrenDirective } from '@pmeig/ng-core';
   standalone: true,
   imports: [
     HasChildrenDirective,
-    NgClass
+    NgClass,
   ],
-  styleUrl: './b-card.component.scss'
+  styleUrl: './b-card.component.scss',
 })
 export class BCardComponent extends BTagComponent {
   protected enabled = signalRecord({
     header: true,
     footer: true,
-    body: true
-  })
+    body: true,
+  });
 
-  overlay = input<BooleanAttribute, boolean>(false, {transform: booleanAttribute})
+  overlay = input<BooleanAttribute, boolean>(false, { transform: booleanAttribute });
 
   constructor() {
-    super()
+    super();
     effect(() => {
       if (this.overlay()) {
-        putClass(this.element, this.renderer, ['text-bg-dark'])
-      } else removeClass(this.element, this.renderer, ['text-bg-dark'])
-    })
+        putClass(this.element, this.renderer, ['text-bg-dark']);
+      } else removeClass(this.element, this.renderer, ['text-bg-dark']);
+    });
   }
 
 

@@ -9,11 +9,11 @@ interface BtnState {
 
 @Directive({
   standalone: true,
-  selector: 'btn-group, [btn-group]'
+  selector: 'btn-group, [btn-group]',
 })
 export class BBtnGroupDirective extends BBtnToolbarDirective {
   private state: BtnState = {
-    vertical: false
+    vertical: false,
   };
 
   constructor() {
@@ -44,7 +44,7 @@ export class BBtnGroupDirective extends BBtnToolbarDirective {
   protected override onInit() {
     this.getChildren().forEach(child => {
       if (child.tagName === 'INPUT') {
-        this.addAttribute(child, 'class-ignore', 'btn-check btn')
+        this.addAttribute(child, 'class-ignore', 'btn-check btn');
         switch (child.getAttribute('type')) {
           case 'radio':
           case 'checkbox':
@@ -54,14 +54,14 @@ export class BBtnGroupDirective extends BBtnToolbarDirective {
             this.putClass(child, 'btn');
         }
         if (child.getAttribute('label')) {
-          this.putAttribute(child, 'label-type', 'btn')
+          this.putAttribute(child, 'label-type', 'btn');
         }
-        this.removeClass(child, 'form-check-input', 'form-control', 'form-range')
+        this.removeClass(child, 'form-check-input', 'form-control', 'form-range');
       } else if (child.tagName === 'LABEL') {
         this.putClass(child, 'btn');
       }
     });
-    this.putAttribute('pmeig-parent', 'btn-group')
+    this.putAttribute('pmeig-parent', 'btn-group');
   }
 
   protected override afterViewInit() {

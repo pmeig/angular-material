@@ -16,7 +16,7 @@ export abstract class EventHandler {
 
   addSubscription(
     subscription?: Subscription,
-    name: string = Math.random().toString(36)
+    name: string = Math.random().toString(36),
   ): string | undefined {
     let id = undefined;
     if (subscription) {
@@ -31,7 +31,7 @@ export abstract class EventHandler {
     subscription: (event: T) => void,
     error?: (error: V) => Observable<T>,
     complete?: () => void,
-    name: string = Math.random().toString(36)
+    name: string = Math.random().toString(36),
   ): string | undefined {
     if (observable) {
       if (!error) {
@@ -39,7 +39,7 @@ export abstract class EventHandler {
       }
       return this.addSubscription(
         subscribe(observable, subscription, error, complete),
-        name
+        name,
       );
     }
     return undefined;
@@ -54,8 +54,10 @@ export abstract class EventHandler {
 
   addTimeout(timeout: () => void, millisecond: number | Timeout): ItemListener<number>;
   addTimeout(timeout: any, millisecond?: number | Timeout): ItemListener<number> {
-    const item = { id: Math.random().toString(36), item: typeof timeout === 'function'
-        ? setTimeout(timeout, timeToMilliseconds(millisecond!!)) : timeout};
+    const item = {
+      id: Math.random().toString(36), item: typeof timeout === 'function'
+        ? setTimeout(timeout, timeToMilliseconds(millisecond!!)) : timeout,
+    };
     this.timeouts.push(item);
     return item;
   }
@@ -83,15 +85,15 @@ export abstract class EventHandler {
   protected clearEvent(): void {
     this.destroyList(
       () => this.subscriptions,
-      item => item.item.unsubscribe()
+      item => item.item.unsubscribe(),
     );
     this.destroyList(
       () => this.intervals,
-      item => clearInterval(item.item)
+      item => clearInterval(item.item),
     );
     this.destroyList(
       () => this.timeouts,
-      item => clearTimeout(item.item)
+      item => clearTimeout(item.item),
     );
     this.onDestroy();
   }
@@ -111,11 +113,11 @@ export abstract class EventHandler {
   private clear<T extends Subscription | number>(
     items: ItemListener<T>[],
     key: Subscription | number | string | undefined,
-    clearable: (index: number) => void
+    clearable: (index: number) => void,
   ) {
     if (key) {
       const getField: (
-        item: ItemListener<T>
+        item: ItemListener<T>,
       ) => string | number | Subscription =
         typeof key === 'string' ? item => item.id : item => item.item;
       const index = items.findIndex(value => getField(value) === key);

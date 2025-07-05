@@ -14,28 +14,28 @@ export class BLabelCheckDirective extends BLabelParentDirective {
 
   @Input()
   set switch(value: EmptyBooleanAttribute) {
-   this.state['switch'] = emptyBooleanAttribute(value)
-    this.refresh(this.refreshTypeCheckbox)
+    this.state['switch'] = emptyBooleanAttribute(value);
+    this.refresh(this.refreshTypeCheckbox);
   }
 
   constructor() {
     super();
-    this.state['switch'] = false
+    this.state['switch'] = false;
   }
 
 
   protected override onInit() {
     super.onInit();
-    this.refreshParent('check')
-    this.refreshTypeCheckbox()
-    this.putClass(this.state.label, 'form-check-label')
+    this.refreshParent('check');
+    this.refreshTypeCheckbox();
+    this.putClass(this.state.label, 'form-check-label');
   }
 
   private refreshTypeCheckbox() {
     if (this.state['switch']) {
-      this.insertParent('form-switch')
+      this.insertParent('form-switch');
     } else {
-      this.removeParent('form-switch')
+      this.removeParent('form-switch');
     }
   }
 }

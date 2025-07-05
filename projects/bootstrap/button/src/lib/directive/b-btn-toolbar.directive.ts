@@ -2,7 +2,7 @@ import { Directive, effect, input } from '@angular/core';
 import { TagParentDirective } from '@pmeig/ng-material-core';
 
 @Directive({
-  selector: '[btn-toolbar], btn-toolbar'
+  selector: '[btn-toolbar], btn-toolbar',
 })
 export class BBtnToolbarDirective extends TagParentDirective {
   gap = input<string>();
@@ -19,7 +19,7 @@ export class BBtnToolbarDirective extends TagParentDirective {
   }
 
   protected override afterViewInit(): void {
-    super.afterViewInit()
+    super.afterViewInit();
     this.refreshGap();
   }
 

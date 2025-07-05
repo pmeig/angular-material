@@ -31,7 +31,7 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
   protected constructor(element: ElementRef<T> = inject(ElementRef)) {
     super(element);
     if (this.isSSR()) {
-      afterNextRender(() => this.refreshCSSForChildren())
+      afterNextRender(() => this.refreshCSSForChildren());
     }
   }
 
@@ -97,8 +97,8 @@ export abstract class TagParentDirective<T extends Element = Element> extends Ta
           if (child instanceof Element) {
             handle(child, index);
           }
-        })
-      })
+        });
+      });
     }
   }
 

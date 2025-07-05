@@ -2,7 +2,7 @@ import { Directive, input } from '@angular/core';
 import { TagDirective } from '@pmeig/ng-material-core';
 
 @Directive({
-  selector: 'li'
+  selector: 'li',
 })
 export class DropdownLiDirective extends TagDirective {
 
@@ -10,19 +10,19 @@ export class DropdownLiDirective extends TagDirective {
 
   constructor() {
     super();
-    this.effect(() => this.refreshActive(this.active()))
+    this.effect(() => this.refreshActive(this.active()));
   }
 
 
   protected override afterViewInit() {
-    const classes = ['dropdown-item']
+    const classes = ['dropdown-item'];
     if (this.active()) {
-      classes.push('active')
+      classes.push('active');
     }
-    this.putStyle('cursor', 'pointer')
+    this.putStyle('cursor', 'pointer');
     this.element.childNodes.forEach(child => {
       if (child?.nodeType !== Node.ELEMENT_NODE) {
-        this.renderer.removeChild(this.element, child)
+        this.renderer.removeChild(this.element, child);
         const span = this.renderer.createElement('span');
         this.putClass(span, ...classes);
         this.renderer.appendChild(span, child);
@@ -30,17 +30,17 @@ export class DropdownLiDirective extends TagDirective {
       } else {
         this.putClass(child as Element, ...classes);
       }
-    })
+    });
     super.afterViewInit();
   }
 
   private refreshActive(active: boolean) {
     let action: (element: Element, ...classes: string[]) => void = this.removeClass.bind(this);
     if (active) {
-      action = this.putClass.bind(this)
+      action = this.putClass.bind(this);
     }
     let element: Element | null = null;
-    const nodes = this.element.childNodes
+    const nodes = this.element.childNodes;
     let index = nodes.length;
     while (!element && index-- > 0) {
       const child = nodes[index];
@@ -49,7 +49,7 @@ export class DropdownLiDirective extends TagDirective {
       }
     }
     if (element) {
-      action(element, 'active')
+      action(element, 'active');
     }
   }
 }

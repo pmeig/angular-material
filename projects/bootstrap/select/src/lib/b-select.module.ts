@@ -7,6 +7,7 @@ const SELECT_DIRECTIVES = [BSelectDirective, BSelectMultipleDirective, BOptionDi
 
 @NgModule({
   exports: SELECT_DIRECTIVES,
-  imports: SELECT_DIRECTIVES
+  imports: SELECT_DIRECTIVES,
 })
-export class SelectMaterial {}
+export class SelectMaterial {
+}

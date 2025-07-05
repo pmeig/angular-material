@@ -16,7 +16,7 @@ export const createElementItem = (value: ElementItem['value'], index: number) =>
     template: () => record.isTemplate ? value : null,
     element: () => record.isTemplate ? null : value,
     index,
-    isTemplate: value instanceof TemplateRef
+    isTemplate: value instanceof TemplateRef,
   } as ElementItem;
   return record;
 };

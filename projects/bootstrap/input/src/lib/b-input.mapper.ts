@@ -138,7 +138,7 @@ const mapperForWeek = (
     valueType === 'ts-date'
       ? (date: Date) => date
       : (date: Date) =>
-          dateParser.transform(date, 'struct=ngp-date', 'type=date');
+        dateParser.transform(date, 'struct=ngp-date', 'type=date');
   return {
     input,
     value: () => {

@@ -6,7 +6,7 @@ export type InputGroupSize = 'md' | 'lg' | 'sm';
 
 @Directive({
   selector: 'input-group, [input-group],',
-  standalone: true
+  standalone: true,
 })
 export class BInputGroupDirective extends BTagParentDirective {
   size = input<InputGroupSize>('md');
@@ -40,11 +40,11 @@ export class BInputGroupDirective extends BTagParentDirective {
     this.refreshClasses();
     this.children((child) => {
       if (
-          ['form-', 'btn', 'valid-feedback', 'dropdown-menu'].every(regex => child?.className.indexOf(regex) === -1)
+        ['form-', 'btn', 'valid-feedback', 'dropdown-menu'].every(regex => child?.className.indexOf(regex) === -1)
         || child?.tagName === 'LABEL'
       ) {
-        this.removeClass(child, 'form-label', 'form-check-label')
-        this.putClass(child, 'input-group-text')
+        this.removeClass(child, 'form-label', 'form-check-label');
+        this.putClass(child, 'input-group-text');
       }
     });
   }

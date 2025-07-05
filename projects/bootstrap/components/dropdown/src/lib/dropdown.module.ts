@@ -6,6 +6,7 @@ const DROPDOWN_EXPOSES = [BDropdownComponent, DropdownDirectionDirective];
 
 @NgModule({
   imports: DROPDOWN_EXPOSES,
-  exports: DROPDOWN_EXPOSES
+  exports: DROPDOWN_EXPOSES,
 })
-export class DropdownMaterial {}
+export class DropdownMaterial {
+}

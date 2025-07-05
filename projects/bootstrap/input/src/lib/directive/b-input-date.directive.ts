@@ -8,11 +8,11 @@ import { NgpDatePipe } from '@pmeig/ng-core';
   selector:
     'input[type=date], input[type=datetime-local], input[type=month], input[type=week], input[type=time], input[type=datetime], input[type=datetime-local]',
   standalone: true,
-  providers: [NgpDatePipe]
+  providers: [NgpDatePipe],
 })
 export class BInputDateDirective extends BInputDirective {
   constructor(
-    dateParser: NgpDatePipe
+    dateParser: NgpDatePipe,
   ) {
     super(dateParser);
   }
@@ -20,7 +20,7 @@ export class BInputDateDirective extends BInputDirective {
 
   override set type(type: string) {
     super.type = type;
-    this.valueType = (this.element.getAttribute('value-type') ?? undefined) as InputValueType
+    this.valueType = (this.element.getAttribute('value-type') ?? undefined) as InputValueType;
   }
 
   @Input('value-type')
@@ -28,7 +28,7 @@ export class BInputDateDirective extends BInputDirective {
     this.mapper = findMapper(
       valueType || 'ts-date',
       this.element,
-      this.dateParser
+      this.dateParser,
     );
   }
 }

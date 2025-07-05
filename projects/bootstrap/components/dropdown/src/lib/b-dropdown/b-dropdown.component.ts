@@ -40,10 +40,10 @@ import { DropdownDirection, DropdownDirectionDirective } from '../directives/dro
     DropdownLiDirective,
     ButtonMaterial,
   ],
-  standalone: true
+  standalone: true,
 })
 export class BDropdownComponent extends BTagComponent {
-  protected selected?: ElementItem
+  protected selected?: ElementItem;
   protected state = signalRecord({
     show: false,
     visible: false,
@@ -51,39 +51,39 @@ export class BDropdownComponent extends BTagComponent {
       label: {
         value: '',
         mutable: true,
-      }
-    }
-  })
+      },
+    },
+  });
   protected contents: ElementItem[] = [];
   @ContentChildren(TemplateRef) private templates!: QueryList<TemplateRef<any>>;
-  @ViewChild('content') private templateContent!: TemplateRef<any>
-  @ViewChild('splitButton') protected splitButton!: ElementRef<HTMLButtonElement>
+  @ViewChild('content') private templateContent!: TemplateRef<any>;
+  @ViewChild('splitButton') protected splitButton!: ElementRef<HTMLButtonElement>;
 
-  selection = output<ElementItem>()
-  action = output<ElementItem>()
-  render = input<(item: ElementItem) => string>(item => this.defaultRenderLabel(item))
-  split = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute})
+  selection = output<ElementItem>();
+  action = output<ElementItem>();
+  render = input<(item: ElementItem) => string>(item => this.defaultRenderLabel(item));
+  split = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute });
 
-  color = input<ColorAttribute>('primary')
-  size = input<SizeAttribute>()
+  color = input<ColorAttribute>('primary');
+  size = input<SizeAttribute>();
 
-  direction = input<DropdownDirection>('down')
+  direction = input<DropdownDirection>('down');
 
-  autoClose = input<AutoClose>('outside')
+  autoClose = input<AutoClose>('outside');
 
-  protected menuWidth = signal(0)
+  protected menuWidth = signal(0);
 
 
   @Input()
   set text(value: string) {
-    this.state.content.label.value.set(value)
-    this.state.content.label.mutable.set(false)
+    this.state.content.label.value.set(value);
+    this.state.content.label.mutable.set(false);
   }
 
   @HostListener('document:click', ['$event'])
   private whenDocumentClick(event: MouseEvent) {
     if (this.state.visible()) {
-      const isInside = this.element.contains(event.target as Node)
+      const isInside = this.element.contains(event.target as Node);
       if (this.autoClose() === 'both' ||
         (this.autoClose() === 'outside' && !isInside) ||
         (this.autoClose() === 'inside' && isInside)) {
@@ -94,87 +94,87 @@ export class BDropdownComponent extends BTagComponent {
 
 
   constructor(private readonly viewContentRef: ViewContainerRef,
-              @Optional() @Host() protected readonly directionOptions?: DropdownDirectionDirective ) {
-    super()
+              @Optional() @Host() protected readonly directionOptions?: DropdownDirectionDirective) {
+    super();
   }
 
 
   protected override afterViewInit() {
     super.afterViewInit();
-    this.initContent()
+    this.initContent();
   }
 
   protected select(item: ElementItem) {
-    this.selection.emit(item)
-    this.selected = item
-    this.state.content.label.value.set(this.render()(item))
+    this.selection.emit(item);
+    this.selected = item;
+    this.state.content.label.value.set(this.render()(item));
     if (!this.split()) {
-      this.action.emit(item)
+      this.action.emit(item);
     }
-    this.drop()
+    this.drop();
   }
 
   protected drop() {
     if (this.state.show()) {
-      this.state.show.set(false)
-      setTimeout(() => this.state.visible.set(false))
+      this.state.show.set(false);
+      setTimeout(() => this.state.visible.set(false));
     } else {
-      this.state.visible.set(true)
-      setTimeout(() => this.state.show.set(true))
+      this.state.visible.set(true);
+      setTimeout(() => this.state.show.set(true));
     }
   }
 
   protected sendAction() {
-    this.action.emit(this.selected!)
+    this.action.emit(this.selected!);
   }
 
   private initContent() {
     let ref = this.viewContentRef.createEmbeddedView(this.templateContent);
-    let indexTemplate = 0
+    let indexTemplate = 0;
     ref.rootNodes.forEach((node: Node, index) => {
       this.contents.push(createElementItem(Node.COMMENT_NODE === node.nodeType
         ? this.templates.get(indexTemplate++)!
-        : node as Element, index))
-    })
-    ref.destroy()
-    this.selected = this.contents[0]
+        : node as Element, index));
+    });
+    ref.destroy();
+    this.selected = this.contents[0];
   }
 
   protected get label() {
-    let label = this.state.content.label.value()
+    let label = this.state.content.label.value();
     if (!this.state.content.label.mutable()) {
-      return label
+      return label;
     }
     if (!this.selected) {
-      return label
+      return label;
     }
-    return this.render()(this.selected)
+    return this.render()(this.selected);
   }
 
   private defaultRenderLabel(item: ElementItem) {
-    let label!: string
+    let label!: string;
     if (item.isTemplate) {
-      const ref = this.viewContentRef.createEmbeddedView(item.template())
-      label = this.getLabel(ref.rootNodes[0] as Element)
-      ref.destroy()
+      const ref = this.viewContentRef.createEmbeddedView(item.template());
+      label = this.getLabel(ref.rootNodes[0] as Element);
+      ref.destroy();
     } else {
-      label = this.getLabel(item.element() as Element)
+      label = this.getLabel(item.element() as Element);
     }
-    return label
+    return label;
   }
 
   private getLabel(element: Element) {
     if (this.renderer.parentNode(element).tagName === 'UL') {
-      element = element.firstChild as Element
+      element = element.firstChild as Element;
     }
-    console.log(element.tagName, element.textContent, element.innerHTML)
-    return element.textContent ?? element.innerHTML
+    console.log(element.tagName, element.textContent, element.innerHTML);
+    return element.textContent ?? element.innerHTML;
   }
 
   dropMenuWidth(dropMenu: HTMLUListElement) {
     setTimeout(() => {
-      this.menuWidth.set(dropMenu.getBoundingClientRect().width)
-    })
-    return this.menuWidth()
+      this.menuWidth.set(dropMenu.getBoundingClientRect().width);
+    });
+    return this.menuWidth();
   }
 }

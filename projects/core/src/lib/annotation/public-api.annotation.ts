@@ -1,1 +1,1 @@
-export * from './signal.annotation'
+export * from './signal.annotation';

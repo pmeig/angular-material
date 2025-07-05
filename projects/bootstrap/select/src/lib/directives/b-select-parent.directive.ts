@@ -6,12 +6,12 @@ import { BOptionDirective } from './b-option.directive';
 @Directive()
 export class BSelectParentDirective<Item extends any, T extends Item | Item[] | undefined = Item | undefined> extends BTagParentDirective<HTMLSelectElement> {
   private static classnameChild = 'form-select-option';
-  @ContentChildren(BOptionDirective, {descendants: true}) optionValues?: QueryList<BOptionDirective>;
+  @ContentChildren(BOptionDirective, { descendants: true }) optionValues?: QueryList<BOptionDirective>;
   private _disabled = false;
   private lastValue = '';
 
 
-  readonly selection = input<T>()
+  readonly selection = input<T>();
   readonly selectionChange = output<T>();
   readonly id = input<string>();
 
@@ -28,7 +28,7 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
 
   protected constructor(private readonly mapper: (selection: Item[]) => T) {
     super();
-    this.effect(() => this.selectOptions())
+    this.effect(() => this.selectOptions());
   }
 
   @HostListener('change', ['$event'])
@@ -53,11 +53,11 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
     this.children((child, index) => {
       if (!child?.className?.split(' ')?.some(classname => classname === BSelectParentDirective.classnameChild)) {
         this.putClass(child, BSelectParentDirective.classnameChild);
-        this.putAttribute(child, 'id', `${this.id()}-option-${index}`)
+        this.putAttribute(child, 'id', `${this.id()}-option-${index}`);
       }
-    })
+    });
     this.selectOptions();
-    this.lastValue = this.element.value
+    this.lastValue = this.element.value;
   }
 
   private onChange() {
@@ -68,10 +68,10 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
       while (!found && indexSelected-- > 0) {
         found = this.element.selectedOptions.item(indexSelected)!!.id === option.id;
       }
-      if (found) return index
+      if (found) return index;
       return -1;
-    }).filter(index => index !== -1).map(index => this.optionValues?.get(index)?.ngValue())))
-    this.lastValue = this.element.value
+    }).filter(index => index !== -1).map(index => this.optionValues?.get(index)?.ngValue())));
+    this.lastValue = this.element.value;
   }
 
   private selectOptions() {
@@ -83,10 +83,10 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
       }
       this.getChildren().forEach((option, index) => {
         if (isSelected(this.optionValues?.get(index)?.ngValue())) {
-          const optionElement = option as HTMLOptionElement
-          optionElement.selected = true
+          const optionElement = option as HTMLOptionElement;
+          optionElement.selected = true;
         }
-      })
+      });
     }
 
   }

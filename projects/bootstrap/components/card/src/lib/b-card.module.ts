@@ -7,6 +7,7 @@ const CARD_EXPORTS = [BCardComponent, BCardTabDirective, BCardImgTopDirective];
 
 @NgModule({
   imports: CARD_EXPORTS,
-  exports: CARD_EXPORTS
+  exports: CARD_EXPORTS,
 })
-export class CardMaterial {}
+export class CardMaterial {
+}

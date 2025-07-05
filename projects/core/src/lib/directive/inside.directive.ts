@@ -5,29 +5,31 @@ import { TagDirective } from './tag.directive';
   selector: '[inside]'
 })
 export class InsideDirective extends TagDirective {
-  inside = input<ElementRef | Element>()
-  private removeLast = () => {}
+  inside = input<ElementRef | Element>();
+  private removeLast = () => {
+  };
 
   constructor() {
     super();
-    this.effect(() => this.resetInside(this.inside()))
+    this.effect(() => this.resetInside(this.inside()));
   }
 
 
   protected override afterViewInit() {
     super.afterViewInit();
-    this.resetInside(this.inside())
+    this.resetInside(this.inside());
   }
 
   private resetInside(element?: ElementRef | Element) {
-    this.removeLast()
+    this.removeLast();
     if (element) {
       let insert = element;
       if (element instanceof ElementRef) {
-        insert = element.nativeElement
+        insert = element.nativeElement;
       }
-      this.removeLast = () => this.renderer.removeChild(this.element, insert)
-      this.renderer.appendChild(this.element, insert)
-    } else this.removeLast = () => {}
+      this.removeLast = () => this.renderer.removeChild(this.element, insert);
+      this.renderer.appendChild(this.element, insert);
+    } else this.removeLast = () => {
+    };
   }
 }

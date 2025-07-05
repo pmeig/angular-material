@@ -6,7 +6,7 @@ import { Optional } from '@pmeig/ng-core';
 export class BLabelParentDirective extends BTagDirective {
   protected injector = inject(INJECTOR);
   protected state: Record<string, any> & { label: HTMLLabelElement } = {
-    label: this.renderer.createElement('label') as HTMLLabelElement
+    label: this.renderer.createElement('label') as HTMLLabelElement,
   };
 
   @Input()
@@ -27,25 +27,25 @@ export class BLabelParentDirective extends BTagDirective {
 
   protected override onInit() {
     super.onInit();
-    this.state.label.htmlFor = this.element.id
+    this.state.label.htmlFor = this.element.id;
   }
 
   protected refreshParent(classname: 'floating' | 'check', add: boolean = true) {
-    const formClassname = `form-${classname}`
-    let parent
+    const formClassname = `form-${classname}`;
+    let parent;
     if (add) {
-      parent = this.insertParent(formClassname)
-      this.removeClass(parent, classname === 'floating' ? 'form-check' : 'form-floating')
-      this.removeClass(this.state.label, 'form-label')
-      this.renderer.insertBefore(parent, this.state.label, this.renderer.nextSibling(this.element))
+      parent = this.insertParent(formClassname);
+      this.removeClass(parent, classname === 'floating' ? 'form-check' : 'form-floating');
+      this.removeClass(this.state.label, 'form-label');
+      this.renderer.insertBefore(parent, this.state.label, this.renderer.nextSibling(this.element));
       if (!this.element.getAttribute('placeholder')) {
-        this.putAttribute('placeholder', ' ')
+        this.putAttribute('placeholder', ' ');
       }
     } else {
       parent = this.removeParent(formClassname);
-      this.putClass(this.state.label, 'form-label')
-      this.renderer.removeChild(parent, this.state.label)
-      this.renderer.insertBefore(parent, this.state.label, this.element)
+      this.putClass(this.state.label, 'form-label');
+      this.renderer.removeChild(parent, this.state.label);
+      this.renderer.insertBefore(parent, this.state.label, this.element);
     }
     return parent;
   }

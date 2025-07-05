@@ -10,7 +10,7 @@ import {
   PLATFORM_ID,
   Renderer2,
   TemplateRef,
-  ViewContainerRef
+  ViewContainerRef,
 } from '@angular/core';
 import { isNotBlank } from '@pmeig/ng-core';
 import { EventHandler } from '../helper/event-handler';
@@ -28,7 +28,7 @@ import {
   removeAttribute,
   removeClass,
   removeStyle,
-  StyleElement
+  StyleElement,
 } from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { getDocument } from '../helper/browser.helper';
@@ -39,13 +39,13 @@ export abstract class TagTemplateDirective extends EventHandler implements After
   protected renderer = inject(Renderer2);
   protected viewContainerRef = inject(ViewContainerRef);
   element: Element = this.renderer.createElement('div') as Element;
-  protected ready = false
+  protected ready = false;
   protected display = false;
   private platform = inject(PLATFORM_ID);
 
 
   protected constructor(
-    private readonly template: TemplateRef<any> = inject(TemplateRef<any>)
+    private readonly template: TemplateRef<any> = inject(TemplateRef<any>),
   ) {
     super();
     if (this.isSSR()) {
@@ -53,7 +53,7 @@ export abstract class TagTemplateDirective extends EventHandler implements After
         () => {
           this.init();
           this.onInit();
-        })
+        });
     }
   }
 
@@ -90,7 +90,7 @@ export abstract class TagTemplateDirective extends EventHandler implements After
   protected show(context: any = {}) {
     if (!this.display) {
       this.element = this.viewContainerRef.createEmbeddedView(this.template, context).rootNodes[0] as Element;
-      this.onShow()
+      this.onShow();
     }
     this.display = true;
   }
@@ -209,7 +209,7 @@ export abstract class TagTemplateDirective extends EventHandler implements After
       names.unshift(element);
       element = this.element;
     }
-   removeAttribute(element, this.renderer, names);
+    removeAttribute(element, this.renderer, names);
   }
 
   protected onRemove() {
@@ -240,7 +240,7 @@ export abstract class TagTemplateDirective extends EventHandler implements After
 
   private removeCSSClasses(
     element: Item,
-    classes: string[]
+    classes: string[],
   ) {
     removeClass(element, this.renderer, classes);
   }
@@ -256,12 +256,12 @@ export abstract class TagTemplateDirective extends EventHandler implements After
 
   protected refresh(action: () => void) {
     if (this.ready) {
-      action.bind(this)()
+      action.bind(this)();
     }
   }
 
   protected effect(action: () => void) {
-    effect(() => this.refresh(action))
+    effect(() => this.refresh(action));
   }
 
   private init() {

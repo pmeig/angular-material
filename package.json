@@ -9,7 +9,7 @@
     "format": "prettier --write \"projects/**/*.{ts,html,scss,json}\"",
     "format:check": "prettier --check \"projects/**/*.{ts,html,scss,json}\"",
     "postbuild:all": "build.bat b-material",
-    "build:all": "build.bat b-input b-form b-label b-button b-select b-collapse b-accordion b-card b-breadcrumb b-badge b-alert b-carousel",
+    "build:all": "build.bat b-input b-form b-label b-button b-select b-collapse b-accordion b-card b-breadcrumb b-badge b-alert b-carousel b-dropdown b-list",
     "prebuild:all": "build.bat core b-core",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

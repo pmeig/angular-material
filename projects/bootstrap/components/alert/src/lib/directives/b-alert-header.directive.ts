@@ -9,11 +9,12 @@ export class BAlertHeaderDirective implements AfterViewInit {
 
   constructor(private readonly element: ElementRef<Element>,
               private readonly renderer: Renderer2,
-              @Host() @Optional() private readonly host?: BAlertDirective) { }
+              @Host() @Optional() private readonly host?: BAlertDirective) {
+  }
 
   ngAfterViewInit(): void {
     if (this.host) {
-      putClass(this.element.nativeElement, this.renderer, ['alert-heading'])
+      putClass(this.element.nativeElement, this.renderer, ['alert-heading']);
     }
   }
 
