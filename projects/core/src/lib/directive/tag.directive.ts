@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { isNotBlank } from '@pmeig/ng-core';
 import { EventHandler } from '../helper/event-handler';
-import { extractElementAndAddStyle, styleToRecord, tagParentName } from '../helper/internal.helper';
+import { extractElementAndAddStyle, styleToRecord } from '../helper/internal.helper';
 import {
   addAttribute,
   addLinkToHead,
@@ -31,7 +31,7 @@ import {
 } from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { getDocument } from '../helper/browser.helper';
-import { insertParent, ParentExclude, removeParent, TagParent } from '../helper/component.helper';
+import { insertParent, isTag, ParentExclude, removeParent, TagParent } from '../helper/component.helper';
 
 
 @Directive()
@@ -246,6 +246,18 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
 
 
   protected insertParent(
+    element: Element, excludes: ParentExclude, classes?: string, styles?: string): Element
+  protected insertParent( element: Element,
+    classes: string, styles?: string): Element
+  protected insertParent(
+    element: Element,
+    tag: TagParent,
+    excludes?: ParentExclude, classes?: string, styles?: string): Element
+  protected insertParent(
+    element: Element,
+    tag: TagParent,
+    classes?: string, styles?: string): Element
+  protected insertParent(
     excludes: ParentExclude, classes?: string, styles?: string): Element
   protected insertParent(
     classes: string, styles?: string): Element
@@ -256,12 +268,20 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
     tag: TagParent,
     classes?: string, styles?: string): Element
   protected insertParent(
-    tag: TagParent | ParentExclude | string = 'div',
+    element: TagParent | ParentExclude | string | Element = this.element,
+    tag: TagParent | ParentExclude | string = '',
     excludes: ParentExclude | string = '',
     classes: string = '',
     styles: string = ''): Element {
+    if (!(element instanceof Element)) {
+      styles = classes;
+      classes = excludes as string;
+      excludes = tag;
+      tag = element;
+      element = this.element;
+    }
     if (typeof tag === 'string') {
-      if (!tagParentName.includes(tag)) {
+      if (!isTag(tag)) {
         styles = classes;
         classes = excludes as string;
         excludes = tag;
@@ -278,7 +298,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       classes = excludes as string;
       excludes = {};
     }
-    return insertParent(this.element, tag, this.renderer, excludes, styleToRecord(styles as string), ...(classes === '' ? [] : classes.split(' ')));
+    return insertParent(element, tag as TagParent, this.renderer, excludes, styleToRecord(styles as string), ...(classes === '' ? [] : classes.split(' ')));
   }
 
   protected removeParent(classes: string = '', styles: string = ''): Element {

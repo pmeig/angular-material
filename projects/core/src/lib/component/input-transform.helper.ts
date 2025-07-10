@@ -1,6 +1,7 @@
 import { EmptyBooleanAttribute, NumberAttribute, Position, TimeoutAttribute } from './input.helper';
 import { Nullable, Timeout, TimeoutUnit } from '@pmeig/ng-core';
 import { booleanAttribute } from '@angular/core';
+import { CssSize, CssSizeAttribute } from '../helper/css.helper';
 
 export const numberAttribute = (value: NumberAttribute) => {
   const number = Number(value);
@@ -32,4 +33,8 @@ export const emptyBooleanAttribute = (value: EmptyBooleanAttribute, ifEmpty: boo
 
 export const positionAttribute = (value: Position) => {
   return value || 'up';
+};
+
+export const cssSizeAttribute = (value: CssSizeAttribute): Nullable<CssSize> => {
+  return typeof value === 'number' ? `${value}px` : value;
 };

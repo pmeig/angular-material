@@ -1,11 +1,18 @@
 import { Renderer2 } from '@angular/core';
 import { toSnakeKey } from './type.helper';
-import { Optional } from '@pmeig/ng-core';
+import { Nullable, Optional } from '@pmeig/ng-core';
 import { stylesCss } from './style.helper';
 
 
 export type Item = Optional<Element>;
 export type CssValue = Partial<Record<toSnakeKey<keyof CSSStyleDeclaration & string>, any>>;
+export type CssSizeUnit = 'px' | 'cm' | 'mm' | 'in' | 'pt' | 'pc' | 'em'
+  | 'rem' | '%' | 'vw' | 'vh' | 'vmin' | 'vmax' | 'ex' | 'ch' | 'lh' | 'rlh'
+  | 'vb' | 'vi' | 'svw' | 'svh' | 'lvw' | 'lvh' | 'dvw' | 'dvh'
+
+export type CssSize = `${number}${CssSizeUnit}`
+export type CssSizeAttribute = Nullable<CssSize | number>;
+
 
 export interface Css {
   name: string;

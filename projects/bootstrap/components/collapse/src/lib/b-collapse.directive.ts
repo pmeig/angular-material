@@ -3,7 +3,7 @@ import { BooleanAttribute } from '@pmeig/ng-material-core';
 import { BOOTSTRAP_ANIMATION_TIMEOUT, BTagTemplateDirective } from '@pmeig/ngb-core';
 
 @Directive({
-  selector: '[collapse]',
+  selector: '[collapse]'
 })
 export class BCollapseDirective extends BTagTemplateDirective {
   private reset = () => {
@@ -19,20 +19,18 @@ export class BCollapseDirective extends BTagTemplateDirective {
       this.orchestrator = value as Element;
       this.orchestrator.ariaExpanded = 'false';
       const resetListen = this.renderer.listen(this.orchestrator, 'click', () => {
-        this.collapse = this.orchestrator!.classList.contains('collapsed');
+        this.executeAnimation(this.orchestrator!.classList.contains('collapsed'));
       });
       this.reset = () => {
         resetListen();
         this.removeAttribute(this.orchestrator, 'aria-expanded');
       };
-      setTimeout(() => this.collapse = this.orchestrator!.classList.contains('collapsed'));
+      setTimeout(() => this.executeAnimation(this.orchestrator!.classList.contains('collapsed')));
     } else {
       value = booleanAttribute(value);
-      if (value) {
-        this.show();
-      } else {
-        this.close();
-      }
+      this.executeAnimation(value);
+      this.reset = () => {
+      };
     }
   }
 
@@ -65,6 +63,14 @@ export class BCollapseDirective extends BTagTemplateDirective {
     }, BOOTSTRAP_ANIMATION_TIMEOUT);
   }
 
+  private executeAnimation(onShow: boolean) {
+    if (onShow) {
+      this.show();
+    } else {
+      this.close();
+    }
+  }
+
   private close() {
     this.putClass(this.orchestrator, 'collapsed');
     this.removeClass('collapse', 'show');
@@ -82,37 +88,30 @@ export class BCollapseDirective extends BTagTemplateDirective {
       return {
         style: 'height',
         start: 'Top',
-        end: 'Bottom',
+        end: 'Bottom'
       };
     }
     this.putClass('collapse-horizontal');
     return {
       style: 'width',
       start: 'Left',
-      end: 'Right',
+      end: 'Right'
     };
   }
 
   private findPixel(style: 'height' | 'width') {
     let size = 0;
     if (style === 'height') {
-
       this.element.childNodes.forEach(child => {
         const element = child as Element;
-        if (element.textContent)
-          size += 16;
-        else
+        if (element instanceof HTMLElement)
           size += element.getBoundingClientRect()?.height ?? 0;
       });
     } else {
       this.element.childNodes.forEach(child => {
         const element = child as Element;
-        let width: number;
-        if (element.textContent)
-          width = size += element.textContent.length * 16;
-        else
-          width = element.getBoundingClientRect()?.width ?? 0;
-        if (size < width) size = width;
+        if (element instanceof HTMLElement)
+          size = element.getBoundingClientRect()?.width ?? 0;
       });
     }
     return size;

@@ -10,7 +10,7 @@ import {
   PLATFORM_ID,
   Renderer2,
   TemplateRef,
-  ViewContainerRef,
+  ViewContainerRef
 } from '@angular/core';
 import { isNotBlank } from '@pmeig/ng-core';
 import { EventHandler } from '../helper/event-handler';
@@ -28,7 +28,7 @@ import {
   removeAttribute,
   removeClass,
   removeStyle,
-  StyleElement,
+  StyleElement
 } from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { getDocument } from '../helper/browser.helper';
@@ -90,7 +90,7 @@ export abstract class TagTemplateDirective extends EventHandler implements After
   protected show(context: any = {}) {
     if (!this.display) {
       this.element = this.viewContainerRef.createEmbeddedView(this.template, context).rootNodes[0] as Element;
-      this.onShow();
+      setTimeout(() => this.onShow());
     }
     this.display = true;
   }

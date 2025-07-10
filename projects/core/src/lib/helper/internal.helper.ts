@@ -1,7 +1,5 @@
 import { Nullable } from '@pmeig/ng-core';
 
-export const tagParentName = ['div'];
-
 export const extractElementAndAddStyle = (element: Element | string | Record<string, string>,
                                           value: Nullable<string | Record<string, string>>,
                                           cssStyles: Record<string, string>): Nullable<Element> => {
