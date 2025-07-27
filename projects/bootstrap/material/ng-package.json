@@ -19,6 +19,8 @@
     "@pmeig/ngb-carousel",
     "@pmeig/ngb-collapse",
     "@pmeig/ngb-dropdown",
-    "@pmeig/ngb-list"
+    "@pmeig/ngb-list",
+    "@pmeig/ngb-offcanvas",
+    "@pmeig/ngb-navbar"
   ]
 }
