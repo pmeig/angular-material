@@ -1,14 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  input,
-  Optional,
-  output,
-  OutputRefSubscription,
-  signal,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, HostListener, input, Optional, output, signal, ViewChild } from '@angular/core';
 import { BTagComponent } from '@pmeig/ngb-core';
 import {
   CssSize,
@@ -18,7 +8,7 @@ import {
   EmptyBooleanAttribute,
   Size,
   SizeAttribute,
-  sizeToString,
+  sizeToString
 } from '@pmeig/ng-material-core';
 import { NavMenuDirective } from '../../directives/nav-menu.directive';
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
@@ -35,11 +25,6 @@ import { BNavOffcanvasOptionsDirective } from '../../directives/b-nav-offcanvas.
   styleUrl: './b-navbar.component.scss'
 })
 export class BNavbarComponent extends BTagComponent {
-
-  private subscription: OutputRefSubscription = new class implements OutputRefSubscription {
-    unsubscribe(): void {
-    }
-  }
 
   offcanvas = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute});
   brand = input<string>();
@@ -92,14 +77,5 @@ export class BNavbarComponent extends BTagComponent {
 
   protected override onInit() {
     super.onInit();
-    this.subscription = this.togglerClicked.subscribe(() => {
-      this.togglerState.update(value => !value);
-    })
-  }
-
-
-  protected override onDestroy() {
-    super.onDestroy();
-    this.subscription.unsubscribe();
   }
 }
