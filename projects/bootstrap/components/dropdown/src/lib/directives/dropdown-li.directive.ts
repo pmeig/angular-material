@@ -2,7 +2,7 @@ import { Directive, input } from '@angular/core';
 import { TagDirective } from '@pmeig/ng-material-core';
 
 @Directive({
-  selector: 'li',
+  selector: '[dropdown-li]'
 })
 export class DropdownLiDirective extends TagDirective {
 

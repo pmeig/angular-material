@@ -28,11 +28,11 @@
         [ngClass]="{'show': state.show(), center: directionOptions?.center() }">
       @for (item of contents; track item.index) {
         @if (item.isTemplate) {
-          <li (click)="select(item)" [active]="item.index === selected?.index">
+          <li (click)="select(item)" dropdown-li [active]="item.index === selected?.index">
             <ng-container [ngTemplateOutlet]="item.template()"></ng-container>
           </li>
         } @else {
-          <li (click)="select(item)" [inside]="item.element()" [active]="item.index === selected?.index"></li>
+          <li (click)="select(item)" dropdown-li [inside]="item.element()" [active]="item.index === selected?.index"></li>
         }
       }
     </ul>
