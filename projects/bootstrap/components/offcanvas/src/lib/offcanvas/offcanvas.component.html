@@ -1,0 +1,15 @@
+@if (state.dom()) {
+  <div class="offcanvas-header" *hasChildren>
+    @if (title(); as title) {
+      <h5 class="offcanvas-title">{{ title }}</h5>
+    }
+    @if (close()) {
+      <button (click)="open(false)" [id]="name() + '-offcanvas-close'" type="button" class="btn-close"
+              aria-label="canvas-close"></button>
+    }
+    <ng-content select="[header]"></ng-content>
+  </div>
+  <div class="offcanvas-body" *hasChildren>
+    <ng-content></ng-content>
+  </div>
+}

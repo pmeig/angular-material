@@ -52,6 +52,12 @@
       "b-select": [
         "./dist/b-select"
       ],
+      "b-navbar": [
+        "./dist/b-navbar"
+      ],
+      "b-offcanvas": [
+        "./dist/b-offcanvas"
+      ],
       "b-collapse": [
         "./dist/b-collapse"
       ],
@@ -90,5 +96,19 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [
+    {
+      "path": "./projects/bootstrap/components/navbar/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/navbar/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/offcanvas/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/offcanvas/tsconfig.spec.json"
+    }
+  ]
 }

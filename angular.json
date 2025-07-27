@@ -674,6 +674,66 @@
           }
         }
       }
+    },
+    "b-navbar": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/navbar",
+      "sourceRoot": "projects/bootstrap/components/navbar/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/navbar/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/navbar/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/navbar/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-offcanvas": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/offcanvas",
+      "sourceRoot": "projects/bootstrap/components/offcanvas/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/offcanvas/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/offcanvas/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/offcanvas/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   }
 }

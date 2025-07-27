@@ -1,0 +1,52 @@
+<div class="container-fluid">
+  @if (brand(); as brandText) {
+    <a [id]="'nav-brand-' + name()" class="navbar-brand" href="#">{{ brandText }}</a>
+  }
+  <div class="navbar-brand" *hasChildren>
+    <ng-content select="[brand]"></ng-content>
+  </div>
+  @if (toggler()) {
+    <button [id]="'navbar-toggler-' + name()" class="navbar-toggler" type="button" (click)="togglerClicked.emit()" #button>
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    @if (offcanvas()) {
+      <offcanvas [active]="button"
+                 [name]="name() + '-navbar'"
+                 [backdrop]="offcanvasOption?.backdrop() ?? true"
+                 [scrollable]="offcanvasOption?.scrollable() ?? false"
+                 [static]="offcanvasOption?.static() ?? false"
+
+      [close]="offcanvasOption?.close()" [position]="offcanvasOption?.position() ?? 'end'">
+        <ng-container header>
+          <ng-content select="[header]"></ng-content>
+        </ng-container>
+        <ng-template [ngTemplateOutlet]="container"></ng-template>
+      </offcanvas>
+    } @else {
+      <div class="navbar-collapse collapse" *collapse="orchestrator()" [id]="'navbar-collapse-' + name()">
+        <ng-template [ngTemplateOutlet]="container"></ng-template>
+      </div>
+    }
+  } @else {
+    <div class="d-flex gap-2 navbar-start" *hasChildren>
+      <ng-container [ngTemplateOutlet]="content"></ng-container>
+    </div>
+    <ng-container [ngTemplateOutlet]="next"></ng-container>
+  }
+</div>
+
+<ng-template #container>
+  <ul class="navbar-nav me-auto pb-2 navbar-start navbar-nav-scroll" nav-menu [name]="name()" [ngStyle]="{'--bs-scroll-height': scroll()}" *hasChildren>
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  </ul>
+  <ng-container [ngTemplateOutlet]="next"></ng-container>
+</ng-template>
+
+
+<ng-template #next>
+  <ng-content select="[next]"></ng-content>
+</ng-template>
+
+<ng-template #content>
+  <ng-content></ng-content>
+</ng-template>
