@@ -15,6 +15,7 @@ import { DropdownMaterial } from '@pmeig/ngb-dropdown';
 import { ListMaterial } from '@pmeig/ngb-list';
 import { OffCanvasMaterial } from '@pmeig/ngb-offcanvas';
 import { NavbarMaterial } from '@pmeig/ngb-navbar';
+import { PaginationMaterial } from '@pmeig/ngb-pagination';
 
 const excludeModule = <T>(excludes: T[], modules: T[]) => {
   const imports = modules.filter(module => !excludes.includes(module));
@@ -46,9 +47,9 @@ export class PmeigFormsMaterial {
   }
 }
 
-type NAVIGATION_EXCLUDES = NavbarMaterial | CollapseMaterial | OffCanvasMaterial | BreadcrumbMaterial;
+type NAVIGATION_EXCLUDES = NavbarMaterial | CollapseMaterial | OffCanvasMaterial | BreadcrumbMaterial | PaginationMaterial;
 const NAVIGATION_MATERIAL_MODULES = [PmeigSimpleMaterial, NavbarMaterial, CollapseMaterial,
-  OffCanvasMaterial, BreadcrumbMaterial];
+  OffCanvasMaterial, BreadcrumbMaterial, PaginationMaterial];
 
 @NgModule({
   imports: NAVIGATION_MATERIAL_MODULES,

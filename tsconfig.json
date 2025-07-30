@@ -58,6 +58,9 @@
       "b-offcanvas": [
         "./dist/b-offcanvas"
       ],
+      "b-pagination": [
+        "./dist/b-pagination"
+      ],
       "b-collapse": [
         "./dist/b-collapse"
       ],
@@ -109,6 +112,12 @@
     },
     {
       "path": "./projects/bootstrap/components/offcanvas/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/pagination/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/pagination/tsconfig.spec.json"
     }
   ]
 }

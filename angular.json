@@ -734,6 +734,36 @@
           }
         }
       }
+    },
+    "b-pagination": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/pagination",
+      "sourceRoot": "projects/bootstrap/components/pagination/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/pagination/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/pagination/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/pagination/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   }
 }

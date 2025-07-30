@@ -21,6 +21,7 @@
     "@pmeig/ngb-dropdown",
     "@pmeig/ngb-list",
     "@pmeig/ngb-offcanvas",
-    "@pmeig/ngb-navbar"
+    "@pmeig/ngb-navbar",
+    "@pmeig/ngb-pagination"
   ]
 }

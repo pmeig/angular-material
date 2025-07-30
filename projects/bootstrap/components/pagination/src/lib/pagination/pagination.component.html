@@ -1,0 +1,35 @@
+<ng-container [ngTemplateOutlet]="navigationTemplate" [ngTemplateOutletContext]="{icon: '&laquo;', label: 'previous', accumulator: -1}"></ng-container>
+@for (page of pages.previous; track $index) {
+  <ng-container [ngTemplateOutlet]="link" [ngTemplateOutletContext]="{page: page}">
+  </ng-container>
+}
+@if (between().previous > 0 && pages.previous[pages.previous.length - 1] + 1 !== pages.next[0]) {
+  <div class="page-item">
+    <a class="page-link" (click)="onDotClick()">...</a>
+  </div>
+}
+@for (page of pages.next; track page) {
+  <ng-container [ngTemplateOutlet]="link" [ngTemplateOutletContext]="{page: page}">
+  </ng-container>
+}
+<ng-container [ngTemplateOutlet]="navigationTemplate" [ngTemplateOutletContext]="{icon: '&raquo;', label: 'next', accumulator: 1}"></ng-container>
+
+<ng-template #link let-page="page">
+  <div class="page-item">
+    <a class="page-link" (click)="changePage(page)" [ngClass]="{active: currentPage === page, disabled: disabled().includes(page)}">{{ page }}</a>
+  </div>
+</ng-template>
+
+<ng-template #navigationTemplate let-icon="icon" let-label="label" let-accumulator="accumulator">
+  @if (navigation(); as navigation) {
+    <div class="page-item">
+      <a class="page-link" (click)="navigatorChange(accumulator)">
+        @if (navigation === 'icons') {
+          <span aria-hidden="true">{{ icon }}</span>
+        } @else {
+          {{ navigation.transform('pagination.navigation.' + label) }}
+        }
+      </a>
+    </div>
+  }
+</ng-template>
