@@ -764,6 +764,36 @@
           }
         }
       }
+    },
+    "b-progress": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/progress",
+      "sourceRoot": "projects/bootstrap/components/progress/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/progress/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/progress/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/progress/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   }
 }

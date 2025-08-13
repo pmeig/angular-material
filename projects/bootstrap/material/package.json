@@ -23,7 +23,8 @@
     "@pmeig/ngb-list": "0.0.1",
     "@pmeig/ngb-offcanvas": "0.0.1",
     "@pmeig/ngb-navbar": "0.0.1",
-    "@pmeig/ngb-pagination": "0.0.1"
+    "@pmeig/ngb-pagination": "0.0.1",
+    "@pmeig/ngb-progress": "0.0.1"
   },
   "sideEffects": false
 }

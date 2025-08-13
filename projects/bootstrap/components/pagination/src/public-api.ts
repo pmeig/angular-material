@@ -3,4 +3,4 @@
  */
 
 export * from './lib/pagination/pagination.component';
-export * from './lib/pagination-material.module';
+export * from './lib/pagination.material';

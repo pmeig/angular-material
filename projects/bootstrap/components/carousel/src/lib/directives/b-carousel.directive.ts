@@ -180,7 +180,6 @@ export class BCarouselDirective extends BTagDirective {
   }
 
   private restoreNext() {
-    console.log('restoreNext');
     this.restoreElement(this.navigator.next.value(), this.buttons.next);
   }
 

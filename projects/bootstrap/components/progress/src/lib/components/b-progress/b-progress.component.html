@@ -1,0 +1,9 @@
+@if (backgroundColor()(Number(progress().replace('%', ''))); as colorConfig) {
+  <div [class]="'pmeig-progress-bar progress-bar ' + (colorConfig.color ?? '')" [ngClass]="progressForm()"
+       [style.background-color]="colorConfig.rgb ?? colorConfig.color ? '' : colorConfig.style"
+       [style.width]="progress()">
+    @if (label()) {
+      {{ progress() }}
+    }
+  </div>
+}

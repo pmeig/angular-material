@@ -61,6 +61,9 @@
       "b-pagination": [
         "./dist/b-pagination"
       ],
+      "b-progress": [
+        "./dist/b-progress"
+      ],
       "b-collapse": [
         "./dist/b-collapse"
       ],
@@ -118,6 +121,12 @@
     },
     {
       "path": "./projects/bootstrap/components/pagination/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/progress/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/progress/tsconfig.spec.json"
     }
   ]
 }

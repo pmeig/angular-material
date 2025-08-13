@@ -167,7 +167,6 @@ export class BDropdownComponent extends BTagComponent {
     if (this.renderer.parentNode(element).tagName === 'UL') {
       element = element.firstChild as Element;
     }
-    console.log(element.tagName, element.textContent, element.innerHTML);
     return element.textContent ?? element.innerHTML;
   }
 
