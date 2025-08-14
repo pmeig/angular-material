@@ -17,6 +17,7 @@ import { OffCanvasMaterial } from '@pmeig/ngb-offcanvas';
 import { NavbarMaterial } from '@pmeig/ngb-navbar';
 import { PaginationMaterial } from '@pmeig/ngb-pagination';
 import { ProgressMaterial } from '@pmeig/ngb-progress';
+import { Popover, Tooltip } from '@pmeig/ngb-tooltip';
 
 const excludeModule = <T>(excludes: T[], modules: T[]) => {
   const imports = modules.filter(module => !excludes.includes(module));
@@ -35,8 +36,8 @@ const SIMPLE_MATERIAL_MODULES = [InputMaterial, LabelMaterial, ButtonMaterial, S
 export class PmeigSimpleMaterial {
 }
 
-type FORM_EXCLUDES = FormMaterial | AlertMaterial | DropdownMaterial | ProgressMaterial;
-const FORMS_MATERIAL_MODULES = [PmeigSimpleMaterial, FormMaterial, AlertMaterial, DropdownMaterial, ProgressMaterial];
+type FORM_EXCLUDES = FormMaterial | AlertMaterial | DropdownMaterial | ProgressMaterial | Tooltip | Popover;
+const FORMS_MATERIAL_MODULES = [PmeigSimpleMaterial, FormMaterial, AlertMaterial, DropdownMaterial, ProgressMaterial, Tooltip, Popover];
 
 @NgModule({
   imports: FORMS_MATERIAL_MODULES,

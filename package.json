@@ -9,7 +9,7 @@
     "format": "prettier --write \"projects/**/*.{ts,html,scss,json}\"",
     "format:check": "prettier --check \"projects/**/*.{ts,html,scss,json}\"",
     "postbuild:bootstrap": "build.bat b-material",
-    "build:bootstrap": "build.bat b-input b-form b-label b-button b-select b-collapse b-accordion b-card b-breadcrumb b-badge b-alert b-carousel b-dropdown b-list b-offcanvas b-navbar b-pagination",
+    "build:bootstrap": "build.bat b-input b-form b-label b-button b-select b-collapse b-accordion b-card b-breadcrumb b-badge b-alert b-carousel b-dropdown b-list b-offcanvas b-navbar b-pagination b-progress b-tooltip",
     "prebuild:bootstrap": "build.bat core b-core",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -46,6 +46,7 @@
     "@pmeig/ngb-pagination": "file:dist/b-pagination/pmeig-ngb-pagination-0.0.1.tgz",
     "@pmeig/ngb-progress": "file:dist/b-progress/pmeig-ngb-progress-0.0.1.tgz",
     "@pmeig/ngb-select": "file:dist/b-select/pmeig-ngb-select-0.0.1.tgz",
+    "@pmeig/ngb-tooltip": "file:dist/b-tooltip/pmeig-ngb-tooltip-0.0.1.tgz",
     "bootstrap": "^5.3.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

@@ -794,6 +794,36 @@
           }
         }
       }
+    },
+    "b-tooltip": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/tooltip",
+      "sourceRoot": "projects/bootstrap/components/tooltip/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/tooltip/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/tooltip/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/tooltip/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   }
 }

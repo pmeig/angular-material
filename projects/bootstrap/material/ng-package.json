@@ -23,6 +23,7 @@
     "@pmeig/ngb-offcanvas",
     "@pmeig/ngb-navbar",
     "@pmeig/ngb-pagination",
-    "@pmeig/ngb-progress"
+    "@pmeig/ngb-progress",
+    "@pmeig/ngb-tooltip"
   ]
 }

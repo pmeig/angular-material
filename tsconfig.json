@@ -67,6 +67,9 @@
       "b-collapse": [
         "./dist/b-collapse"
       ],
+      "b-tooltip": [
+        "./dist/b-tooltip"
+      ],
       "core": [
         "./dist/core"
       ],
@@ -127,6 +130,12 @@
     },
     {
       "path": "./projects/bootstrap/components/progress/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/tooltip/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/tooltip/tsconfig.spec.json"
     }
   ]
 }
