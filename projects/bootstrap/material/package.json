@@ -26,7 +26,8 @@
     "@pmeig/ngb-pagination": "0.0.1",
     "@pmeig/ngb-progress": "0.0.1",
     "@pmeig/ngb-tooltip": "0.0.1",
-    "@pmeig/ngb-toast": "0.0.1"
+    "@pmeig/ngb-toast": "0.0.1",
+    "@pmeig/ngb-spinner": "0.0.1"
   },
   "sideEffects": false
 }

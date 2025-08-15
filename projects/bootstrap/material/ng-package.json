@@ -25,6 +25,7 @@
     "@pmeig/ngb-pagination",
     "@pmeig/ngb-progress",
     "@pmeig/ngb-tooltip",
-    "@pmeig/ngb-toast"
+    "@pmeig/ngb-toast",
+    "@pmeig/ngb-spinner"
   ]
 }

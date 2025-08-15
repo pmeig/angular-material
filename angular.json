@@ -35,7 +35,7 @@
     },
     "@schematics/angular:library": {
       "standalone": true,
-      "prefix": "@pmeig"
+      "prefix": "pmeig"
     },
     "@schematics/angular:application": {
       "prefix": "",
@@ -847,6 +847,36 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/bootstrap/components/toast/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-spinner": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/spinner",
+      "sourceRoot": "projects/bootstrap/components/spinner/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/spinner/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/spinner/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/spinner/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
