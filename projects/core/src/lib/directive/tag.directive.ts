@@ -1,5 +1,4 @@
 import {
-  afterNextRender,
   AfterViewInit,
   Directive,
   effect,
@@ -55,26 +54,21 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   ) {
     super();
     this.element = elementRef.nativeElement;
-    if (this.isSSR()) {
-      afterNextRender(
-        () => {
-          if (this.ignore() !== '') {
-            this.applyInit();
-          }
-        });
-    }
   }
 
   ngOnInit(): void {
     if (this.isBrowser() && this.ignore() !== '') {
-      this.applyInit();
+      this.putClass(...this.getDefaultClassname());
+      this.onInit();
     }
   }
 
   ngAfterViewInit(): void {
     if (this.isBrowser() && this.ignore() !== '') {
-      this.applyAfterViewInit();
+      this.afterViewInit();
+      this.ready = true;
     }
+
   }
 
   ngOnDestroy(): void {
@@ -85,20 +79,6 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   }
 
   protected afterViewInit() {
-
-  }
-
-  protected applyAfterViewInit() {
-    this.afterViewInit();
-  }
-
-  protected applyInit() {
-    this.init();
-    this.onInit();
-    this.attributes = {
-      class: this.element.className,
-      style: this.element.getAttribute('style') ?? '',
-    };
   }
 
   protected effect(action: () => void) {
@@ -310,11 +290,6 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
     if (this.ready && this.ignore() !== '') {
       action.bind(this)();
     }
-  }
-
-  private init() {
-    this.putClass(...this.getDefaultClassname());
-    this.ready = true;
   }
 
   private getDefaultClassname() {

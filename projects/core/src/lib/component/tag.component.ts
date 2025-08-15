@@ -1,5 +1,4 @@
 import {
-  afterNextRender,
   AfterViewInit,
   Component,
   computed,
@@ -61,12 +60,6 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
   protected constructor(elementRef: ElementRef = inject(ElementRef)) {
     super();
     this.element = elementRef.nativeElement;
-    if (this.isSSR) {
-      afterNextRender(() => {
-        this.onInit();
-        this.afterViewInit();
-      });
-    }
   }
 
   ngOnInit(): void {
@@ -78,6 +71,7 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
   ngAfterViewInit(): void {
     if (this.isBrowser) {
       this.afterViewInit();
+      this.ready = true;
     }
   }
 
@@ -125,7 +119,6 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
   }
 
   protected onInit(): void {
-    this.ready = true;
   }
 
   protected insertLink(...links: Link[]) {
