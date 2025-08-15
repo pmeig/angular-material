@@ -67,6 +67,9 @@
       "b-collapse": [
         "./dist/b-collapse"
       ],
+      "b-toast": [
+        "./dist/b-toast"
+      ],
       "b-tooltip": [
         "./dist/b-tooltip"
       ],
@@ -136,6 +139,12 @@
     },
     {
       "path": "./projects/bootstrap/components/tooltip/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/toast/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/toast/tsconfig.spec.json"
     }
   ]
 }

@@ -47,8 +47,8 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
   protected element: Element;
   protected renderer = inject(Renderer2);
   protected isHovered = signal(false);
-  protected classes = computed(() => `${this.properties.classes} ${this.properties.ngClasses}`);
-  protected styles = computed(() => `${this.properties.styles ? this.properties.styles + ';' : ''}${this.properties.ngStyles}`);
+  protected classes = computed(() => `${this.properties.classes()} ${this.properties.ngClasses()}`);
+  protected styles = computed(() => `${this.properties.styles() ? this.properties.styles() + ';' : ''}${this.properties.ngStyles()}`);
 
   private properties = signalRecord({
     classes: '',
