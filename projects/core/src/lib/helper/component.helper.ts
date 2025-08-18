@@ -7,6 +7,11 @@ export interface ParentExclude {
   styles?: string[];
 }
 
+export interface InsertParent {
+  parent: Element;
+  id: string;
+}
+
 
 export type TagParent = keyof HTMLElementTagNameMap;
 
@@ -147,86 +152,64 @@ export const getIgnored = (element: Element, type: 'style' | 'class') => {
   return [];
 };
 
+export const createParent = (origin: Element, tag: TagParent, renderer: Renderer2, id?: string) => {
+  const parent = renderer.parentNode(origin) as Element;
+  let newParent = parent;
+  if (!newParent.getAttribute('pmeig-parent')) {
+    newParent = renderer.createElement(tag) as HTMLElement;
+    putAttribute(newParent, renderer, 'pmeig-parent', origin.tagName);
+    renderer.insertBefore(parent, newParent, origin);
+    renderer.removeChild(parent, origin);
+    renderer.appendChild(newParent, origin);
+  }
+  id = id || origin.id || Math.random().toString(36).substring(2, 15);
+  putAttribute(newParent, renderer, `pmeig-parent-by-${id}`, id);
+  return {
+    parent: newParent,
+    id
+  };
+}
+
 export const insertParent = (
   origin: Element,
   tag: TagParent,
   renderer: Renderer2,
-  excludes: ParentExclude = {},
+  excludes: ParentExclude = {
+    classes: origin.className.split(' '),
+    styles: Object.keys(styleToRecord(origin.getAttribute('style') ?? '')),
+  },
   styles: Record<string, string> = {},
   ...classes: string[]
 ) => {
+  const parent = createParent(origin, tag, renderer);
+  const classesAdded = origin.className.split(' ').filter(classname => !excludes.classes?.includes(classname));
+  putClass(parent.parent, renderer, classesAdded.concat(classes));
+  removeClass(origin, renderer, classesAdded);
+  const stylesAdded = Object.entries(styleToRecord(origin.getAttribute('style') ?? ''))
+    .filter(([name]) => !excludes.styles?.includes(name)).reduce((acc, [name, value]) => {
+      acc[name] = value;
+      return acc;
+    }, styles);
+  putStyle(parent.parent, renderer, stylesAdded);
+  removeStyle(origin, renderer, Object.keys(stylesAdded));
+  return parent;
+}
+
+export const removeParent = (origin: Element, renderer: Renderer2, id: string) => {
   const parent = renderer.parentNode(origin) as Element;
-  let element = renderer.createElement(tag) as HTMLElement;
-  let created = true;
-  const parentOf = parent.getAttribute('pmeig-parent');
-  if (parentOf) {
-    element = parent as HTMLElement;
-    created = false;
-  }
-  excludes.styles = [...(excludes.styles || []), ...getIgnored(origin, 'style')];
-  excludes.classes = [...(excludes.classes || []), ...getDefaultClassname(origin), ...getIgnored(origin, 'class')];
-
-  origin.className.split(' ').filter(name => !excludes.classes!!.includes(name)).forEach(name => {
-    putClass(element, renderer, [name]);
-    removeClass(origin, renderer, [name]);
-  });
-  origin.getAttribute('style')?.split(';')?.map(style => style.trim().split(':').map(value => value.trim()))
-    ?.filter(([name]) => !excludes.styles!!.includes(name))?.forEach(([name, value]) => {
-    putStyle(element, renderer, { [name]: value });
-    removeStyle(origin, renderer, [name]);
-  });
-  putClass(element, renderer, classes);
-  putStyle(element, renderer, styles);
-  if (created) {
-    renderer.insertBefore(parent, element, origin);
-    renderer.removeChild(parent, origin);
-    renderer.appendChild(element, origin);
-    putAttribute(element, renderer, 'pmeig-parent', origin.tagName);
-  }
-  return element;
-};
-
-export function removeParent(element: Element, renderer: Renderer2, attributes: { class: string, style: string },
-                             styles: string[], ...classes: string[]): Element;
-export function removeParent(element: Element, renderer: Renderer2,
-                             attributes: { class: string, style: string },
-                             ...classes: string[]): Element;
-export function removeParent(element: Element, renderer: Renderer2, styles: string[], ...classes: string[]): Element;
-export function removeParent(element: Element, renderer: Renderer2, ...classes: string[]): Element;
-export function removeParent(element: Element, renderer: Renderer2,
-                             attributes: { class: string, style: string } | string | string[],
-                             styles: string | string[], ...classes: string[]) {
-  const parent = renderer.parentNode(element) as Element;
-  if (parent && parent.getAttribute('pmeig-parent')) {
-    if (typeof attributes === 'string') {
-      classes.push(...attributes.split(' '));
-      attributes = {
-        class: '',
-        style: ''
-      };
-    } else if (Array.isArray(attributes)) {
-      styles = attributes;
-      attributes = {
-        class: '',
-        style: ''
-      };
-    }
-    if (typeof styles === 'string') {
-      classes.push(...styles.split(' '));
-      styles = [];
-    }
-    removeClass(parent, renderer, classes);
-    removeStyle(parent, renderer, styles);
-    if (!parent.getAttribute('class') && !parent.getAttribute('style')) {
-      const origin = renderer.parentNode(parent);
-      while (parent.childElementCount) {
-        const child = parent.children.item(0)!!;
-        renderer.insertBefore(origin, child, parent);
+  if (parent?.getAttribute('pmeig-parent')) {
+    const parentBy = parent.getAttribute(`pmeig-parent-by-${id}`);
+    let attemptParentBy = 0;
+    if (parentBy && parent.getAttributeNames().some(name => {
+      if (name.startsWith('pmeig-parent-by-')) {
+        attemptParentBy++;
       }
-      renderer.removeChild(origin, parent);
-      putClass(element, renderer, attributes.class.split(' '));
-      putStyle(element, renderer, styleToRecord(attributes.style));
-      return origin;
+      return attemptParentBy < 2;
+    })) {
+      const newParent = renderer.parentNode(parent) as Element;
+      renderer.insertBefore(newParent, origin, parent);
+      renderer.removeChild(newParent, parent);
+      return newParent;
     }
   }
   return parent;

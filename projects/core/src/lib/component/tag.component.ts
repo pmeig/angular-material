@@ -4,7 +4,6 @@ import {
   computed,
   effect,
   ElementRef,
-  HostListener,
   inject,
   input,
   Input,
@@ -35,6 +34,7 @@ import {
 import { getDocument } from '../helper/browser.helper';
 import { isNotBlank } from '@pmeig/ng-core';
 import { extractElementAndAddStyle, styleToRecord } from '../helper/internal.helper';
+import { BehaviorSubject, debounceTime, take } from 'rxjs';
 
 
 @Component({ template: '' })
@@ -45,9 +45,9 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
 
   protected element: Element;
   protected renderer = inject(Renderer2);
-  protected isHovered = signal(false);
   protected classes = computed(() => `${this.properties.classes()} ${this.properties.ngClasses()}`);
   protected styles = computed(() => `${this.properties.styles() ? this.properties.styles() + ';' : ''}${this.properties.ngStyles()}`);
+  protected isReady = signal(false);
 
   private properties = signalRecord({
     classes: '',
@@ -55,7 +55,8 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
     ngStyles: '',
     ngClasses: '',
   });
-  protected ready = false;
+  private lastLifecycleExecutor = new BehaviorSubject(false).pipe(debounceTime(50), take(1));
+
 
   protected constructor(elementRef: ElementRef = inject(ElementRef)) {
     super();
@@ -64,14 +65,16 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
 
   ngOnInit(): void {
     if (this.isBrowser) {
-      this.onInit();
+      this.lastLifecycleExecutor.subscribe(() => this.onInit())
     }
   }
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
-      this.afterViewInit();
-      this.ready = true;
+      this.lastLifecycleExecutor.subscribe(() => {
+        this.afterViewInit();
+        this.isReady.set(true);
+      });
     }
   }
 
@@ -96,14 +99,9 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
     this.properties.ngClasses.set(classesCss(classes));
   }
 
-  @HostListener('mouseenter')
-  hoverEvent() {
-    this.isHovered.set(true);
-  }
 
-  @HostListener('mouseleave')
-  leaveEvent() {
-    this.isHovered.set(false);
+  protected effect(action: () => void) {
+    effect(() => this.onEffect(action));
   }
 
   protected get isSSR() {
@@ -220,12 +218,8 @@ export abstract class TagComponent extends Listener implements AfterViewInit, On
     removeAttribute(element, this.renderer, names);
   }
 
-  protected effect(action: () => void) {
-    effect(() => this.refresh(action));
-  }
-
-  protected refresh(action: () => void) {
-    if (this.ready) {
+  protected onEffect(action: () => void) {
+    if (this.isReady()) {
       action.bind(this)();
     }
   }

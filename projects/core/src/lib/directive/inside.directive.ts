@@ -1,4 +1,4 @@
-import { Directive, ElementRef, input } from '@angular/core';
+import { Directive, effect, ElementRef, input } from '@angular/core';
 import { TagDirective } from './tag.directive';
 
 @Directive({
@@ -11,7 +11,7 @@ export class InsideDirective extends TagDirective {
 
   constructor() {
     super();
-    this.effect(() => this.resetInside(this.inside()));
+    effect(() => this.resetInside(this.inside()));
   }
 
 

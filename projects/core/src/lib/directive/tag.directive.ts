@@ -9,6 +9,7 @@ import {
   OnInit,
   PLATFORM_ID,
   Renderer2,
+  signal
 } from '@angular/core';
 import { isNotBlank } from '@pmeig/ng-core';
 import { EventHandler } from '../helper/event-handler';
@@ -26,27 +27,25 @@ import {
   removeAttribute,
   removeClass,
   removeStyle,
-  StyleElement,
+  StyleElement
 } from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { getDocument } from '../helper/browser.helper';
-import { insertParent, isTag, ParentExclude, removeParent, TagParent } from '../helper/component.helper';
-
+import { InsertParent, insertParent, isTag, ParentExclude, removeParent, TagParent } from '../helper/component.helper';
+import { BehaviorSubject, debounceTime, take } from 'rxjs';
 
 @Directive()
 export abstract class TagDirective<T extends Element = Element> extends EventHandler implements AfterViewInit, OnDestroy, OnInit {
   readonly element: T;
-  protected renderer = inject(Renderer2);
-  protected ready = false;
-  private platform = inject(PLATFORM_ID);
   readonly ignore = input<'' | undefined>(undefined, { alias: 'pmeig-ignore' });
-  private attributes: {
-    class: string,
-    style: string
-  } = {
-    class: '',
-    style: '',
-  };
+
+  protected readonly renderer = inject(Renderer2);
+  protected parent?: InsertParent;
+  protected readonly isReady = signal(false);
+
+
+  private readonly platform = inject(PLATFORM_ID);
+  private lastLifecycleExecutor = new BehaviorSubject(false).pipe(debounceTime(50), take(1));
 
 
   protected constructor(
@@ -58,21 +57,34 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
 
   ngOnInit(): void {
     if (this.isBrowser() && this.ignore() !== '') {
-      this.putClass(...this.getDefaultClassname());
-      this.onInit();
+      this.lastLifecycleExecutor.subscribe(() => {
+        this.putClass(...this.getDefaultClassname());
+        this.onInit();
+      })
     }
   }
 
   ngAfterViewInit(): void {
     if (this.isBrowser() && this.ignore() !== '') {
-      this.afterViewInit();
-      this.ready = true;
+      this.lastLifecycleExecutor.subscribe(() => {
+        this.afterViewInit();
+        this.isReady.set(true);
+      })
     }
 
   }
 
   ngOnDestroy(): void {
-    this.clearEvent();
+    if (this.isBrowser()) {
+      this.lastLifecycleExecutor.subscribe(() => {
+        this.clearEvent();
+        this.removeParent();
+      })
+    }
+  }
+
+  protected effect(action: () => void) {
+    effect(() => this.onEffect(action));
   }
 
   protected onInit() {
@@ -81,8 +93,10 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
   protected afterViewInit() {
   }
 
-  protected effect(action: () => void) {
-    effect(() => this.refresh(action));
+  protected onEffect(action: () => void) {
+    if (this.isReady()) {
+      action.bind(this)();
+    }
   }
 
   protected insertLink(...links: Link[]) {
@@ -276,20 +290,45 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
     if (typeof excludes === 'string') {
       styles = classes;
       classes = excludes as string;
-      excludes = {};
+      excludes = {
+        styles: element.getAttribute('style')?.split(';')
+          ?.map(style => style.trimStart().split(':').shift()).filter(style => style) as string[] ?? [],
+        classes: element.className.split(' ')
+      };
     }
-    return insertParent(element, tag as TagParent, this.renderer, excludes, styleToRecord(styles as string), ...(classes === '' ? [] : classes.split(' ')));
+    if (this.parent) {
+      this.putClass(this.parent.parent, classes);
+      this.putStyle(this.parent.parent, styles);
+    } else {
+      this.parent = insertParent(element, tag as TagParent, this.renderer, excludes,
+        styleToRecord(styles as string), ...(classes === '' ? [] : classes.split(' ')));
+    }
+    return this.parent.parent;
   }
 
-  protected removeParent(classes: string = '', styles: string = ''): Element {
-    return removeParent(this.element, this.renderer, this.attributes, styles.length > 0 ? styles.split(':') : [],
-      ...(classes === '' ? [] : classes.split(' ')));
+  protected updateParent(add: false, styles: string[], ...classes: string[]): void
+  protected updateParent(add: boolean, ...classes: string[]): void
+  protected updateParent(add: true, styles: Record<any, any>, ...classes: string[]): void
+  protected updateParent(add: boolean, styles: Record<string, string> | string[] | string, ...classes: string[]) {
+    if (typeof styles === 'string') {
+      classes.unshift(styles);
+      styles = {};
+    }
+    if (add) {
+      this.putClass(this.parent?.parent, ...classes);
+      this.putStyle(this.parent?.parent, styles as Record<string, string>);
+    } else {
+      this.removeClass(this.parent?.parent, ...classes);
+      if (Array.isArray(styles)) {
+        this.removeStyle(this.parent?.parent, ...styles);
+      }
+    }
   }
 
-  protected refresh(action: () => void) {
-    if (this.ready && this.ignore() !== '') {
-      action.bind(this)();
-    }
+  protected removeParent(): Element {
+    const element = removeParent(this.element, this.renderer, this.parent?.id ?? '')
+    this.parent = undefined;
+    return element;
   }
 
   private getDefaultClassname() {

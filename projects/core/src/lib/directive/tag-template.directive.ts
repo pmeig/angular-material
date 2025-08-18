@@ -1,6 +1,4 @@
 import {
-  afterNextRender,
-  AfterViewChecked,
   AfterViewInit,
   Directive,
   effect,
@@ -9,6 +7,7 @@ import {
   OnInit,
   PLATFORM_ID,
   Renderer2,
+  signal,
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
@@ -32,47 +31,40 @@ import {
 } from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { getDocument } from '../helper/browser.helper';
+import { BehaviorSubject, debounceTime, filter, Observable, of, take } from 'rxjs';
 
 
 @Directive()
-export abstract class TagTemplateDirective extends EventHandler implements AfterViewInit, OnDestroy, OnInit, AfterViewChecked {
+export abstract class TagTemplateDirective extends EventHandler implements AfterViewInit, OnDestroy, OnInit {
   protected renderer = inject(Renderer2);
   protected viewContainerRef = inject(ViewContainerRef);
   element: Element = this.renderer.createElement('div') as Element;
-  protected ready = false;
   protected display = false;
+  protected isReady = signal(false);
+
+
   private platform = inject(PLATFORM_ID);
+  private lastLifecycleExecutor = new BehaviorSubject(false).pipe(debounceTime(50), take(1));
 
 
   protected constructor(
     private readonly template: TemplateRef<any> = inject(TemplateRef<any>),
   ) {
     super();
-    if (this.isSSR()) {
-      afterNextRender(
-        () => {
-          this.init();
-          this.onInit();
-        });
-    }
   }
 
   ngOnInit(): void {
     if (this.isBrowser()) {
-      this.init();
-      this.onInit();
+      this.lastLifecycleExecutor.subscribe(() => this.onInit());
     }
   }
 
   ngAfterViewInit(): void {
     if (this.isBrowser()) {
-      this.afterViewInit();
-    }
-  }
-
-  ngAfterViewChecked(): void {
-    if (this.isBrowser() || this.ready) {
-      this.onChange();
+      this.lastLifecycleExecutor.subscribe(() => {
+        this.afterViewInit();
+        this.isReady.set(true);
+      });
     }
   }
 
@@ -80,26 +72,37 @@ export abstract class TagTemplateDirective extends EventHandler implements After
     this.clearEvent();
   }
 
+
+  protected effect(action: () => void) {
+    effect(() => this.onEffect(action));
+  }
+
   protected onShow() {
 
   }
 
-  protected onHide() {
+  protected onHide(): Observable<boolean> {
+    return of();
   }
 
   protected show(context: any = {}) {
     if (!this.display) {
       this.element = this.viewContainerRef.createEmbeddedView(this.template, context).rootNodes[0] as Element;
-      setTimeout(() => this.onShow());
+      this.putClass('opacity-0');
+      setTimeout(() => {
+        this.removeClass('opacity-0');
+        this.onShow()
+      });
     }
     this.display = true;
   }
 
   protected hide() {
     if (this.display) {
-      this.display = false;
-      this.onHide();
-      this.viewContainerRef.clear();
+      this.onHide().pipe(filter(hiding => hiding)).subscribe(() => {
+        this.viewContainerRef.clear();
+        this.display = false;
+      })
     }
   }
 
@@ -107,10 +110,6 @@ export abstract class TagTemplateDirective extends EventHandler implements After
   }
 
   protected afterViewInit() {
-
-  }
-
-  protected onChange() {
 
   }
 
@@ -212,6 +211,13 @@ export abstract class TagTemplateDirective extends EventHandler implements After
     removeAttribute(element, this.renderer, names);
   }
 
+
+  protected onEffect(action: () => void) {
+    if (this.isReady()) {
+      action.bind(this)();
+    }
+  }
+
   protected onRemove() {
 
   }
@@ -251,20 +257,5 @@ export abstract class TagTemplateDirective extends EventHandler implements After
 
   private removeCSSStyle(element: Item, cssStyle: string[]) {
     removeStyle(element, this.renderer, cssStyle);
-  }
-
-
-  protected refresh(action: () => void) {
-    if (this.ready) {
-      action.bind(this)();
-    }
-  }
-
-  protected effect(action: () => void) {
-    effect(() => this.refresh(action));
-  }
-
-  private init() {
-    this.ready = true;
   }
 }
