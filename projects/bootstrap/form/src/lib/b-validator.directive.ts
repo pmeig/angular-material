@@ -52,15 +52,15 @@ export class BValidatorDirective extends BTagDirective<
     @Host() @Optional() private formControlName?: FormControlName,
   ) {
     super();
-    effect(() => this.refresh(() => this.checkMessage('invalid')));
-    effect(() => this.refresh(() => this.checkMessage('valid')));
-    effect(() => this.refresh(() => this.initValidityChange()));
+    effect(() => this.onEffect(() => this.checkMessage('invalid')));
+    effect(() => this.onEffect(() => this.checkMessage('valid')));
+    effect(() => this.onEffect(() => this.initValidityChange()));
   }
 
   @Input('is-valid')
   set isValid(isValid: BooleanAttribute) {
     this.validate = booleanAttribute(isValid);
-    this.refresh(this.refreshValidate);
+    this.onEffect(this.refreshValidate);
 
   }
 
@@ -68,15 +68,15 @@ export class BValidatorDirective extends BTagDirective<
   set decorator(decorator: BooleanAttribute | '') {
     this.state.decorator =
       decorator === '' ? true : booleanAttribute(decorator);
-    this.refresh(this.refreshDecorator);
+    this.onEffect(this.refreshDecorator);
   }
 
   @Input()
   set tooltip(tooltip: BooleanAttribute | '') {
-    this.refresh(this.removeLastClass);
+    this.onEffect(this.removeLastClass);
     this.state.classSuffixTemplate =
       tooltip === '' || booleanAttribute(tooltip) ? '-tooltip' : '-feedback';
-    this.refresh(this.refreshMessageType);
+    this.onEffect(this.refreshMessageType);
   }
 
   protected override onInit() {

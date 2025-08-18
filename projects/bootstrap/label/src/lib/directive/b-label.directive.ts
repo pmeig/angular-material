@@ -17,7 +17,7 @@ export class BLabelDirective extends BTagDirective {
   @Input()
   set for(value: LabelFor) {
     this.htmlFor = value;
-    if (this.ready) {
+    if (this.isReady()) {
       this.putClassByInputType();
     }
   }

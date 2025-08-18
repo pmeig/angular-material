@@ -42,7 +42,7 @@ export class BLabelParentDirective extends BTagDirective {
         this.putAttribute('placeholder', ' ');
       }
     } else {
-      parent = this.removeParent(formClassname);
+      parent = this.removeParent();
       this.putClass(this.state.label, 'form-label');
       this.renderer.removeChild(parent, this.state.label);
       this.renderer.insertBefore(parent, this.state.label, this.element);

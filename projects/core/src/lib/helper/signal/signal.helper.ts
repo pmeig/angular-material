@@ -42,7 +42,7 @@ export function signalRecord<T extends TypescriptObject>(obj: T): SignalRecord<T
     if (obj.length === 0) {
       return [];
     }
-    return obj.map(item => (Array.isArray(item) || typeof item === 'object') ? signalRecord(item) : signal(item)) as SignalRecord<T>[];
+    return obj.map(item => typeof item === 'object' ? signalRecord(item) : signal(item)) as SignalRecord<T>[];
   }
   return Object.entries(obj).reduce((acc, [key, value]) => {
     if (typeof value === 'object' && !('new' in value)) {

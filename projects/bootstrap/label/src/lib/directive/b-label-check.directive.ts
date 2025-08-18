@@ -15,7 +15,7 @@ export class BLabelCheckDirective extends BLabelParentDirective {
   @Input()
   set switch(value: EmptyBooleanAttribute) {
     this.state['switch'] = emptyBooleanAttribute(value);
-    this.refresh(this.refreshTypeCheckbox);
+    this.onEffect(this.refreshTypeCheckbox);
   }
 
   constructor() {
@@ -35,7 +35,7 @@ export class BLabelCheckDirective extends BLabelParentDirective {
     if (this.state['switch']) {
       this.insertParent('form-switch');
     } else {
-      this.removeParent('form-switch');
+      this.removeParent();
     }
   }
 }

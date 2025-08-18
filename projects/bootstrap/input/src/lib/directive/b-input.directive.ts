@@ -77,14 +77,14 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
   @Input()
   set type(type: string) {
     this.element.type = type;
-    this.refresh(this.refreshType);
+    this.onEffect(this.refreshType);
   }
 
   @Input()
   set describe(value: string | TemplateRef<any>) {
-    this.refresh(() => {
+    this.onEffect(() => {
       if (this.state.describe) {
-        this.renderer.removeChild(this.removeParent(`input-describe-${this.element.id}`), this.state.describe);
+        this.renderer.removeChild(this.removeParent(), this.state.describe);
         this.state.describe = undefined;
       }
       if (value) {
@@ -95,7 +95,7 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
           this.state.describe = this.renderer.createElement('div');
           value.createEmbeddedView({}, this.injector).rootNodes.forEach(node => this.renderer.appendChild(this.state.describe!, node));
         }
-        if (this.ready) {
+        if (this.isReady()) {
           this.refreshDescribe();
         }
       }
@@ -153,7 +153,7 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
   }
 
   private refreshType() {
-    this.removeParent('form-check');
+    this.removeParent();
     switch (this.element.type) {
       case 'checkbox':
       case 'radio':

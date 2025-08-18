@@ -53,8 +53,8 @@ export class BLabelCheckButtonDirective extends BLabelCheckDirective {
   }
 
   private inputColorHandler(handler: () => void) {
-    this.refresh(() => this.refreshColor(false));
+    this.onEffect(() => this.refreshColor(false));
     handler();
-    this.refresh(this.refreshColor);
+    this.onEffect(this.refreshColor);
   }
 }

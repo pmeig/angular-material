@@ -12,7 +12,7 @@ export class BLabelFloatingDirective extends BLabelParentDirective {
   @Input()
   set floating(value: BooleanAttribute) {
     this.state['floating'] = booleanAttribute(value);
-    if (this.ready) {
+    if (this.isReady()) {
       if (this.state['floating']) {
         this.refreshParent('floating');
       } else {
@@ -24,7 +24,7 @@ export class BLabelFloatingDirective extends BLabelParentDirective {
   @Input('label-position')
   set position(position: 'start' | 'end') {
     this.state['position'] = position;
-    if (this.ready && !this.state['floating']) this.refreshPosition();
+    if (this.isReady() && !this.state['floating']) this.refreshPosition();
   }
 
 
