@@ -10,7 +10,7 @@ export class DropdownLiDirective extends TagDirective {
 
   constructor() {
     super();
-    this.effect(() => this.refreshActive(this.active()));
+    this.effect(this.refreshActive);
   }
 
 
@@ -34,9 +34,9 @@ export class DropdownLiDirective extends TagDirective {
     super.afterViewInit();
   }
 
-  private refreshActive(active: boolean) {
+  private refreshActive() {
     let action: (element: Element, ...classes: string[]) => void = this.removeClass.bind(this);
-    if (active) {
+    if (this.active()) {
       action = this.putClass.bind(this);
     }
     let element: Element | null = null;

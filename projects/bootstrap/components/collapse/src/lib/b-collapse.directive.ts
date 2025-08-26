@@ -1,41 +1,34 @@
-import { booleanAttribute, Directive, input, Input } from '@angular/core';
+import { booleanAttribute, Directive, input } from '@angular/core';
 import { BooleanAttribute } from '@pmeig/ng-material-core';
 import { BOOTSTRAP_ANIMATION_TIMEOUT, BTagTemplateDirective } from '@pmeig/ngb-core';
+import { delay, of } from 'rxjs';
 
 @Directive({
   selector: '[collapse]'
 })
-export class BCollapseDirective extends BTagTemplateDirective {
+export class CollapseMaterial extends BTagTemplateDirective {
   private reset = () => {
   };
   private orchestrator: Element | undefined = undefined;
 
   readonly collapseAnimation = input<'vertical' | 'horizontal'>('vertical');
-
-  @Input()
-  set collapse(value: BooleanAttribute | Element) {
-    this.reset();
-    if (!['boolean', 'string'].includes(typeof value)) {
-      this.orchestrator = value as Element;
-      this.orchestrator.ariaExpanded = 'false';
-      const resetListen = this.renderer.listen(this.orchestrator, 'click', () => {
-        this.executeAnimation(this.orchestrator!.classList.contains('collapsed'));
-      });
-      this.reset = () => {
-        resetListen();
-        this.removeAttribute(this.orchestrator, 'aria-expanded');
-      };
-      setTimeout(() => this.executeAnimation(this.orchestrator!.classList.contains('collapsed')));
-    } else {
-      value = booleanAttribute(value);
-      this.executeAnimation(value);
-      this.reset = () => {
-      };
+  readonly collapse = input<boolean | Element, BooleanAttribute | Element>(false, { transform: value => {
+    if (typeof value === 'object') {
+      return value;
     }
-  }
+    return booleanAttribute(value);
+  } });
 
   constructor() {
     super();
+    this.effect(this.refreshCollapse);
+  }
+
+
+  protected override onInit() {
+    super.onInit();
+    const collapsing = this.collapse();
+    this.display = typeof collapsing !== 'boolean' || !collapsing;
   }
 
   protected override onShow() {
@@ -63,23 +56,41 @@ export class BCollapseDirective extends BTagTemplateDirective {
     }, BOOTSTRAP_ANIMATION_TIMEOUT);
   }
 
-  private executeAnimation(onShow: boolean) {
-    if (onShow) {
-      this.show();
-    } else {
-      this.close();
-    }
-  }
-
-  private close() {
+  protected override onHide() {
     this.putClass(this.orchestrator, 'collapsed');
     this.removeClass('collapse', 'show');
     this.putClass('collapsing');
     this.removeStyle('height', 'width');
     this.putAttribute(this.orchestrator, 'aria-expanded', 'false');
-    this.addTimeout(() => {
+    return of(true).pipe(delay(BOOTSTRAP_ANIMATION_TIMEOUT));
+  }
+
+  private refreshCollapse() {
+    this.reset();
+    const collapse = this.collapse();
+    if (typeof collapse === 'boolean') {
+      this.executeAnimation(collapse);
+      this.reset = () => {};
+    } else {
+      this.orchestrator = collapse;
+      this.orchestrator.ariaExpanded = 'false';
+      const resetListen = this.renderer.listen(this.orchestrator, 'click', () => {
+        this.executeAnimation(this.orchestrator!.classList.contains('collapsed'));
+      });
+      this.reset = () => {
+        resetListen();
+        this.removeAttribute(this.orchestrator, 'aria-expanded');
+      };
+      setTimeout(() => this.executeAnimation(this.orchestrator!.classList.contains('collapsed')));
+    }
+  }
+
+  private executeAnimation(onShow: boolean) {
+    if (onShow) {
+      this.show();
+    } else {
       this.hide();
-    }, BOOTSTRAP_ANIMATION_TIMEOUT);
+    }
   }
 
   private getConfig(): { style: 'height' | 'width', start: 'Top' | 'Left', end: 'Bottom' | 'Right' } {

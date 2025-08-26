@@ -1,4 +1,4 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import { findMapper, InputValueType } from '../b-input.mapper';
 import { BInputDirective } from './b-input.directive';
 import { NgpDatePipe } from '@pmeig/ng-core';
@@ -11,24 +11,21 @@ import { NgpDatePipe } from '@pmeig/ng-core';
   providers: [NgpDatePipe],
 })
 export class BInputDateDirective extends BInputDirective {
+
+  dateType = input<InputValueType>('ts-date', {alias: 'date-type'});
+
   constructor(
     dateParser: NgpDatePipe,
   ) {
     super(dateParser);
+    this.effect(this.restoreMapper)
   }
 
-
-  override set type(type: string) {
-    super.type = type;
-    this.valueType = (this.element.getAttribute('value-type') ?? undefined) as InputValueType;
-  }
-
-  @Input('value-type')
-  set valueType(valueType: InputValueType | undefined) {
+  private restoreMapper() {
     this.mapper = findMapper(
-      valueType || 'ts-date',
+      this.dateType(),
       this.element,
       this.dateParser,
-    );
+    )
   }
 }

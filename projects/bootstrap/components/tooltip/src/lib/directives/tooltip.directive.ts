@@ -10,7 +10,7 @@ import { BAbstractTooltipDirective } from './b-abstract-tooltip.directive';
     providerTooltipRenderer
   ]
 })
-export class Tooltip extends BAbstractTooltipDirective<TooltipFactory> {
+export class TooltipMaterial extends BAbstractTooltipDirective<TooltipFactory> {
   tooltipId = input<string>(undefined, {alias: 'tooltip-id'});
   tooltip = input<string | TemplateRef<any>>();
   hover = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute, alias: 'tooltip-hover'});

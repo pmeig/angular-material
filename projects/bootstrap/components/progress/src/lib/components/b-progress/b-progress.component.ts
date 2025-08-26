@@ -44,7 +44,7 @@ export class BProgressComponent extends BTagComponent {
 
   constructor() {
     super();
-    this.effect(() => this.observe(this.observer()));
+    this.effect(this.observe);
     this.effect(() => this.putAttribute('aria-valuenow', this.progress().replace('%', '')))
   }
 
@@ -60,7 +60,8 @@ export class BProgressComponent extends BTagComponent {
     return textContent?.endsWith('%') ? textContent : `${textContent}%`;
   }
 
-  private observe(observer: Observable<HttpEvent<any>> | number | string) {
+  private observe() {
+    let observer = this.observer();
     if ( typeof observer === 'string') {
       observer = Number(observer);
       if (isNaN(observer)) {
@@ -68,7 +69,13 @@ export class BProgressComponent extends BTagComponent {
       }
     }
     if (typeof observer === 'number') {
-      this.progress.set(`${observer}%`);
+      if (observer < 0 && this.progress() !== '0%') {
+        this.progress.set('0%');
+      } else if (observer > 100 && this.progress() !== '100%') {
+        this.progress.set('100%');
+      } else if (observer >= 0 && observer <= 100) {
+        this.progress.set(`${observer}%`);
+      }
     } else if (observer instanceof Observable) {
       this.unsubscribeLastObservable();
       const id = this.addObservable(observer, (event) => {

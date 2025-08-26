@@ -1,39 +1,31 @@
-import { ContentChildren, Directive, HostListener, input, Input, output, QueryList } from '@angular/core';
+import { ContentChildren, Directive, effect, HostListener, input, output, QueryList } from '@angular/core';
 import { BTagParentDirective } from '@pmeig/ngb-core';
-import { Empty, emptyBooleanAttribute, EmptyBooleanAttribute } from '@pmeig/ng-material-core';
+import { emptyBooleanAttribute, EmptyBooleanAttribute } from '@pmeig/ng-material-core';
 import { BOptionDirective } from './b-option.directive';
+import { Nullable } from '@pmeig/ng-core';
 
 @Directive()
 export class BSelectParentDirective<Item extends any, T extends Item | Item[] | undefined = Item | undefined> extends BTagParentDirective<HTMLSelectElement> {
   private static classnameChild = 'form-select-option';
   @ContentChildren(BOptionDirective, { descendants: true }) optionValues?: QueryList<BOptionDirective>;
-  private _disabled = false;
   private lastValue = '';
 
 
   readonly selection = input<T>();
   readonly selectionChange = output<T>();
   readonly id = input<string>();
-
-  @Input()
-  set tall(value: Empty<'sm' | 'lg'>) {
-    ['sm', 'lg'].forEach(value => this.removeClass('form-select-' + value));
-    if (value) this.putClass(`form-select-${value}`);
-  }
-
-  @Input()
-  set disabled(value: EmptyBooleanAttribute) {
-    this._disabled = emptyBooleanAttribute(value);
-  }
+  readonly tall = input<string, Nullable<'sm' | 'lg'>>(undefined, {transform: tall => `form-select-${tall}`})
+  readonly disabled = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute});
 
   protected constructor(private readonly mapper: (selection: Item[]) => T) {
     super();
-    this.effect(() => this.selectOptions());
+    effect(() => this.onEffect(() => this.selectOptions()));
+    this.effect(this.refreshTall)
   }
 
   @HostListener('change', ['$event'])
   protected onChangeSelection(event: Event) {
-    if (this._disabled) {
+    if (this.disabled()) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
@@ -89,5 +81,10 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
       });
     }
 
+  }
+
+  private refreshTall() {
+    ['sm', 'lg'].forEach(value => this.removeClass('form-select-' + value));
+    this.putClass(this.tall() ?? '');
   }
 }

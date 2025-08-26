@@ -3,14 +3,14 @@ import {
   ColorAttribute,
   colorAttributeToString,
   emptyBooleanAttribute,
-  EmptyBooleanAttribute,
+  EmptyBooleanAttribute
 } from '@pmeig/ng-material-core';
 import { BTagDirective } from '@pmeig/ngb-core';
 
 @Directive({
   selector: 'badge',
 })
-export class BBadgeDirective extends BTagDirective {
+export class BadgeMaterial extends BTagDirective {
 
   private lastColor = colorAttributeToString('secondary', 'text-bg');
   private colorChanged = false;
@@ -31,24 +31,23 @@ export class BBadgeDirective extends BTagDirective {
     this.effect(this.applyAnnotate);
   }
 
-
-  protected override afterViewInit() {
-    super.afterViewInit();
+  protected override onInit() {
+    super.onInit();
     this.putClass('badge');
-    this.applyColor();
-    this.applyFormat();
   }
 
   private applyColor() {
+    const color = this.color();
     this.removeClass(this.lastColor);
-    this.putClass(this.color());
-    this.lastColor = this.color();
+    this.putClass(color);
+    this.lastColor = color;
   }
 
   private applyFormat() {
+    const format = this.format();
     this.removeClass('rounded-pill', 'rounded-circle');
-    if (this.format() !== 'default') {
-      this.putClass(`rounded-${this.format()}`);
+    if (format !== 'default') {
+      this.putClass(`rounded-${format}`);
     }
   }
 

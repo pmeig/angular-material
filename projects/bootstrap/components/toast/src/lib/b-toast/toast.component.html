@@ -1,6 +1,4 @@
-<!--@if (state.display.layout()) {-->
-
-{{ colorClass() | json }}
+@if (state.display.layout()) {
 <div [id]="name()" [class]="'toast fade ' + colorClass()  + ' ' + classes()"
      [style]="styles()"
      [style.background-color]="colorStyle()"
@@ -19,4 +17,4 @@
     }
   </div>
 </div>
-<!--}-->
+}

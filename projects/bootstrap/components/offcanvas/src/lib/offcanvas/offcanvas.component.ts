@@ -20,7 +20,7 @@ import { HasChildrenDirective } from '@pmeig/ng-core';
   ],
   styleUrl: './offcanvas.component.scss'
 })
-export class OffcanvasComponent extends BTagComponent {
+export class OffcanvasMaterial extends BTagComponent {
   private orchestrator: (() => void) | undefined = undefined;
 
   scrollable = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute});
@@ -33,7 +33,7 @@ export class OffcanvasComponent extends BTagComponent {
     return `offcanvas-${property}` as OffCanvasResponsive;
     }});
   close = input<boolean, BooleanAttribute>(true, {transform: booleanAttribute});
-  active = input<boolean, BooleanAttribute | Element>(false, {transform: item => {
+  show = input<boolean, BooleanAttribute | Element>(false, {transform: item => {
     if (this.orchestrator) {
       this.orchestrator();
       this.orchestrator = undefined;
@@ -46,7 +46,7 @@ export class OffcanvasComponent extends BTagComponent {
     })
     return false;
     }});
-  activeChange = output<boolean>();
+  showChange = output<boolean>();
   title = input<string>();
 
 
@@ -60,11 +60,12 @@ export class OffcanvasComponent extends BTagComponent {
   private backdropElement = this.createBackdrop();
   constructor() {
     super();
-    this.effect(() => this.open(this.active()))
+    this.effect(() => this.open(this.show()))
     // this.effect(() => this.animate(this.state.animate()))
-    this.effect(() => this.insertBackdrop(this.state.dom()))
-    this.effect(() => this.removeBackdrop(this.state.dom() && !this.backdrop()))
-    this.effect(() => this.initClasses(this.position(), this.responsive()))
+    this.effect(this.insertBackdrop)
+    this.effect(this.removeBackdrop)
+    this.effect(this.refreshPosition);
+    this.effect(this.refreshResponsive);
 
   }
 
@@ -85,7 +86,7 @@ export class OffcanvasComponent extends BTagComponent {
   protected override afterViewInit() {
     super.afterViewInit();
     this.body = getDocument(this.element).body
-    this.open(this.active())
+    this.open(this.show())
   }
 
   protected open(show: boolean) {
@@ -112,7 +113,7 @@ export class OffcanvasComponent extends BTagComponent {
     this.animate(true);
     setTimeout(() => {
       this.animate(false);
-      this.activeChange.emit(show);
+      this.showChange.emit(show);
     }, 300);
   }
 
@@ -123,10 +124,10 @@ export class OffcanvasComponent extends BTagComponent {
     return backdrop as HTMLDivElement;
   }
 
-  private insertBackdrop(inserted: boolean) {
+  private insertBackdrop() {
     if (this.backdrop()) {
       const parent = this.renderer.parentNode(this.element);
-      if (inserted) {
+      if (this.state.dom()) {
         this.renderer.insertBefore(parent, this.backdropElement, this.renderer.nextSibling(this.element));
       } else {
         this.renderer.removeChild(parent, this.backdropElement);
@@ -134,8 +135,8 @@ export class OffcanvasComponent extends BTagComponent {
     }
   }
 
-  private removeBackdrop(removed: boolean) {
-    if (removed) {
+  private removeBackdrop() {
+    if (this.state.dom() && !this.backdrop()) {
       const parent = this.renderer.parentNode(this.element);
       if (parent.contains(this.backdropElement)) {
         this.renderer.removeChild(parent, this.backdropElement);
@@ -159,7 +160,13 @@ export class OffcanvasComponent extends BTagComponent {
     }
   }
 
-  private initClasses(position: OffCanvasPositionClass, responsive: OffCanvasResponsive) {
-    this.putClass(position, 'offcanvas', responsive);
+  private refreshPosition() {
+    this.removeClass(...['start', 'end', 'top', 'bottom'].map(value => `offcanvas-${value}`));
+    this.putClass(this.position());
+  }
+
+  private refreshResponsive() {
+    this.removeClass(...['sm' , 'md' , 'lg' , 'xl' , 'xxl'].map(value => `offcanvas-${value}`));
+    this.putClass(this.responsive());
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, input, Optional, output, signal, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, input, Optional, output, signal, ViewChild } from '@angular/core';
 import { BTagComponent } from '@pmeig/ngb-core';
 import {
   CssSize,
@@ -50,14 +50,14 @@ export class BNavbarComponent extends BTagComponent {
 
   constructor(@Optional() protected readonly offcanvasOption?: BNavOffcanvasOptionsDirective) {
     super();
-    this.effect(() => {
+    effect(() => this.onEffect(() => {
       const togglerSize = this.toggler();
       if (!this.offcanvas() && togglerSize) {
         this.putClass(togglerSize)
       } else {
         this.removeClass('navbar-expand-lg', 'navbar-expand-md', 'navbar-expand-sm', 'navbar-expand-xl', 'navbar-expand-xxl')
       }
-    })
+    }));
   }
 
   protected override afterViewInit() {

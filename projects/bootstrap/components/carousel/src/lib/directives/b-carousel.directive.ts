@@ -1,14 +1,16 @@
-import { booleanAttribute, ContentChildren, Directive, Input, input, Optional, output, QueryList } from '@angular/core';
+import { booleanAttribute, ContentChildren, Directive, input, Optional, output, QueryList } from '@angular/core';
 import { BTagDirective } from '@pmeig/ngb-core';
 import { BCarouselItem } from '../b-carousel-item';
 import { BCarouselItemTemplate } from './b-carousel-item.template';
 import { BCarouselItemElementDirective } from './b-carousel-item-element.directive';
 import {
   BooleanAttribute,
+  emptyBooleanAttribute,
+  EmptyBooleanAttribute,
   SignalRecord,
   signalRecord,
   timeoutAttribute,
-  TimeoutAttribute,
+  TimeoutAttribute
 } from '@pmeig/ng-material-core';
 import { findDirection, SlideDirection } from '../animation.helper';
 import { NavigatorService } from '../services/navigator.service';
@@ -31,22 +33,11 @@ export class BCarouselDirective extends BTagDirective {
   indexChange = output<number>();
 
   auto = input<Timeout, TimeoutAttribute>(undefined, { transform: timeoutAttribute });
+  readonly prev = input<boolean, BooleanAttribute>(true, { transform: booleanAttribute });
+  readonly next = input<boolean, BooleanAttribute>(true, { transform: booleanAttribute });
+  readonly indicators = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute });
+
   private autoId?: string;
-
-  @Input()
-  set prev(value: BooleanAttribute) {
-    this.insertNavigator(this.navigator.prev, value);
-  }
-
-  @Input()
-  set next(value: BooleanAttribute) {
-    this.insertNavigator(this.navigator.next, value);
-  }
-
-  @Input()
-  set indicators(value: BooleanAttribute) {
-    this.insertNavigator(this.navigator.indicators, value);
-  }
 
   @ContentChildren(BCarouselItemTemplate) protected templates!: QueryList<BCarouselItemTemplate> | BCarouselItemTemplate[];
 
@@ -93,12 +84,15 @@ export class BCarouselDirective extends BTagDirective {
       indicators: this.indicatorService.createIndicators(),
     };
 
-    this.effect(() => this.restorePrev());
-    this.effect(() => this.restoreNext());
-    this.effect(() => this.restoreIndicator());
-    this.effect(() => this.restoreWhenLoopChange());
-    this.effect(() => this.applyAutoSlide());
-    this.effect(() => this.fadeAnimation());
+    this.effect(this.restorePrev);
+    this.effect(this.restoreNext);
+    this.effect(this.restoreIndicator);
+    this.effect(this.restoreWhenLoopChange);
+    this.effect(this.applyAutoSlide);
+    this.effect(this.fadeAnimation);
+    this.effect(() => this.insertNavigator(this.navigator.prev, this.prev()));
+    this.effect(() => this.insertNavigator(this.navigator.next, this.next()));
+    this.effect(() => this.insertNavigator(this.navigator.indicators, this.indicators()));
   }
 
 

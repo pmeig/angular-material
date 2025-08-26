@@ -1,14 +1,16 @@
 import { booleanAttribute, Directive, input } from '@angular/core';
 import {
-  BooleanAttribute,
   ColorAttribute,
   colorAttributeToString,
   Empty,
+  emptyBooleanAttribute,
+  EmptyBooleanAttribute,
   timeoutAttribute,
-  TimeoutAttribute,
+  TimeoutAttribute
 } from '@pmeig/ng-material-core';
 import { BOOTSTRAP_ANIMATION_TIMEOUT, BTagTemplateDirective } from '@pmeig/ngb-core';
-import { Nullable, Timeout } from '@pmeig/ng-core';
+import { Nullable, Timeout, TimeoutUnit } from '@pmeig/ng-core';
+import { delay, of } from 'rxjs';
 
 @Directive({
   selector: '[alert]',
@@ -18,53 +20,29 @@ export class BAlertDirective extends BTagTemplateDirective {
   private lastColor = 'alert-danger';
   private closeId?: string;
 
-  private addCloseButtonIfNotExist() {
-    const lastChild = this.element.lastChild as Element;
-    if (['btn-close', 'btn-close-white'].every(value => !lastChild.classList.contains(value))) {
-      this.addCloseButtonIfNotExist = () => {
-        const button = this.renderer.createElement('button') as HTMLButtonElement;
-        this.putClass(button, 'btn-close');
-        this.renderer.listen(button, 'click', () => this.hide());
-        this.renderer.appendChild(this.element, button);
-      };
-      this.addCloseButtonIfNotExist();
-    }
-  }
-
   alertDisplayed = input((_: boolean) => {
   });
-  alert = input<boolean, BooleanAttribute>(false, { transform: booleanAttribute });
+  alert = input<boolean, EmptyBooleanAttribute>(false, { transform: alert => alert === '' ? false : booleanAttribute(alert) });
   alertColor = input<string, Empty<ColorAttribute>>('alert-danger', { transform: color => colorAttributeToString(color || 'danger', 'alert') });
-  alertManual = input<boolean, BooleanAttribute>(true, { transform: booleanAttribute });
-  alertTimeout = input<Nullable<Timeout>, TimeoutAttribute>(undefined, { transform: timeoutAttribute });
+  alertClose = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute});
+  alertTimeout = input<Nullable<Timeout>, TimeoutAttribute>({
+    value: 3,
+    unit: TimeoutUnit.SECOND
+  }, { transform: timeoutAttribute });
 
   constructor() {
     super();
     this.effect(this.refreshColor);
-    this.effect(this.show);
-  }
-
-
-  protected override onInit() {
-    super.onInit();
-    this.show();
-  }
-
-
-  protected override show(context?: any) {
-    if (this.alert()) {
-      super.show(context);
-    } else {
-      super.hide();
-    }
+    this.effect(this.refreshDOMWithAlert);
   }
 
   protected override onShow() {
-    this.refreshColor();
     this.putClass('alert', 'alert-dismissible', 'fade');
-    setTimeout(() => this.putClass('show'));
-    this.alertDisplayed()(true);
-    if (this.alertManual()) {
+    this.refreshColor();
+    setTimeout(() => {
+      this.putClass('show')
+    }, 250);
+    if (this.alertClose() || !this.alertTimeout()) {
       this.addCloseButtonIfNotExist();
     }
     const timeout = this.alertTimeout();
@@ -76,20 +54,37 @@ export class BAlertDirective extends BTagTemplateDirective {
   }
 
 
-  protected override hide() {
+  protected override onHide() {
     this.removeClass('show');
-    this.display = false;
     this.clearTimeout(this.closeId);
-    setTimeout(() => {
-      this.display = true;
-      super.hide();
-      this.alertDisplayed()(false);
-    }, BOOTSTRAP_ANIMATION_TIMEOUT);
+    return of(true).pipe(delay(BOOTSTRAP_ANIMATION_TIMEOUT))
+  }
+
+
+  private refreshDOMWithAlert() {
+    if (this.alert()) {
+      this.show();
+    } else {
+      this.hide();
+    }
   }
 
   private refreshColor() {
     this.removeClass(this.lastColor);
     this.lastColor = this.alertColor();
     this.putClass(this.lastColor);
+  }
+
+  private addCloseButtonIfNotExist() {
+    const lastChild = this.element.lastChild as unknown as Element;
+    if (['btn-close', 'btn-close-white'].every(value => !lastChild?.classList?.contains(value))) {
+      this.addCloseButtonIfNotExist = () => {
+        const button = this.renderer.createElement('button') as HTMLButtonElement;
+        this.putClass(button, 'btn-close');
+        this.renderer.listen(button, 'click', () => this.hide());
+        this.renderer.appendChild(this.element, button);
+      };
+      this.addCloseButtonIfNotExist();
+    }
   }
 }

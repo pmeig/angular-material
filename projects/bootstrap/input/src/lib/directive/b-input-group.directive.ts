@@ -1,5 +1,6 @@
-import { Directive, effect, Input, input } from '@angular/core';
+import { computed, Directive, input } from '@angular/core';
 import { BTagParentDirective } from '@pmeig/ngb-core';
+import { Empty } from '@pmeig/ng-material-core';
 
 export type InputGroupSize = 'md' | 'lg' | 'sm';
 
@@ -9,25 +10,15 @@ export type InputGroupSize = 'md' | 'lg' | 'sm';
   standalone: true,
 })
 export class BInputGroupDirective extends BTagParentDirective {
-  size = input<InputGroupSize>('md');
+  sizeAttribute = input<InputGroupSize>(undefined, {alias: 'size'});
+  inputGroup = input<InputGroupSize, Empty<InputGroupSize>>('md',
+    {transform: size => size === '' ? 'md' : size, alias: 'input-group'})
   private groupClassnames = ['input-group'];
-  private sizeDirective?: InputGroupSize;
+  private size = computed(() => this.sizeAttribute() ?? this.inputGroup());
 
   constructor() {
     super();
-    effect(() => {
-      this.refreshClasses();
-    });
-  }
-
-  @Input('input-group')
-  protected set inputGroup(value: InputGroupSize | '') {
-    this.sizeDirective = value === '' ? 'md' : value;
-    this.refreshClasses();
-  }
-
-  private get currentSize(): InputGroupSize {
-    return this.sizeDirective ?? this.size();
+    this.effect(this.refreshClasses);
   }
 
 
@@ -37,22 +28,26 @@ export class BInputGroupDirective extends BTagParentDirective {
   }
 
   protected override afterViewInit(): void {
-    this.refreshClasses();
     this.children((child) => {
       if (
         ['form-', 'btn', 'valid-feedback', 'dropdown-menu'].every(regex => child?.className.indexOf(regex) === -1)
         || child?.tagName === 'LABEL'
       ) {
+        if (child?.tagName === 'LABEL' && child.previousElementSibling?.getAttribute('label')) {
+          this.renderer.insertBefore(this.element, child, child.previousElementSibling, true);
+        }
         this.removeClass(child, 'form-label', 'form-check-label');
         this.putClass(child, 'input-group-text');
       }
     });
+    this.removeClass('form-floating', 'form')
   }
 
   private refreshClasses() {
     this.removeClass(...this.groupClassnames);
-    if (this.currentSize !== 'md') {
-      this.groupClassnames = ['input-group', `input-group-${this.currentSize}`];
+    const size = this.size();
+    if (size !== 'md') {
+      this.groupClassnames = ['input-group', `input-group-${size}`];
     } else {
       this.groupClassnames = ['input-group'];
     }

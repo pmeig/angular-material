@@ -2,7 +2,41 @@ import { StyleElement } from '@pmeig/ng-material-core';
 
 export const NoValidationCss: StyleElement = {
   id: 'b-form-css',
-  css: [
+  css: [{
+    name: '.form-validation',
+    value: {
+      'padding-bottom': '1rem'
+    },
+    children: [{
+      name: ' .feedback-margin',
+      value: {
+        opacity: 0
+      },
+    },
+      {
+        name: '.was-validated ',
+        children: [{
+          name: ' .feedback-margin',
+          value: {
+            display: 'none',
+          },
+        },
+
+        {
+          name: ' :valid~ .feedback-margin-valid',
+          value: {
+            display: 'none'
+          }
+        },
+          {
+            name: ' :invalid~ .feedback-margin-invalid',
+            value: {
+              display: 'none'
+            }
+          }]
+      }
+    ]
+  },
     {
       name: '.form-control.decorator-none',
       children: [

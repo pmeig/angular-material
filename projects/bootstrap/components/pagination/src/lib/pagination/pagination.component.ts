@@ -1,4 +1,4 @@
-import { Component, computed, input, output, PipeTransform } from '@angular/core';
+import { Component, computed, input, output, PipeTransform, signal } from '@angular/core';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { BTagComponent } from '@pmeig/ngb-core';
 import { Empty, numberAttribute, NumberAttribute } from '@pmeig/ng-material-core';
@@ -14,9 +14,10 @@ type PaginationAlignment = 'center' | 'end';
     NgTemplateOutlet
   ],
   templateUrl: './pagination.component.html',
+  standalone: true,
   styleUrl: './pagination.component.scss'
 })
-export class PaginationComponent extends BTagComponent {
+export class PaginationMaterial extends BTagComponent {
   protected pages: {previous: number[], next: number[]} = {
     previous: [],
     next: []
@@ -74,6 +75,8 @@ export class PaginationComponent extends BTagComponent {
     }
   }});
 
+  protected load = signal(true);
+
   protected configuration = computed(() => {
     const configure = this.config();
     configure.page = this.page() ?? configure.page;
@@ -84,8 +87,10 @@ export class PaginationComponent extends BTagComponent {
   constructor() {
     super();
     this.effect(() => {
+      this.load.set(true);
       this.initLink('previous', this.configuration().total);
       this.prepareCellDot(this.between())
+      this.load.set(false);
     })
     this.effect(() => {
       this.changePage(this.configuration().page);

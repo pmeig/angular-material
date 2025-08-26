@@ -20,11 +20,11 @@ export class BListGroupDirective extends BTagParentDirective {
 
   constructor() {
     super();
-    this.effect(() => this.onChangeDirection(this.direction()));
-    this.effect(() => this.onChangeFlush(this.flush()));
-    this.effect(() => this.onChangeNumbered(this.numbered()));
-    this.effect(() => this.onChangeBackground(this.background()));
-    this.effect(() => this.onStripped(this.stripped()));
+    this.effect(this.onChangeDirection);
+    this.effect(this.onChangeFlush);
+    this.effect(this.onChangeNumbered);
+    this.effect(this.onChangeBackground);
+    this.effect(this.onStripped);
   }
 
 
@@ -32,22 +32,19 @@ export class BListGroupDirective extends BTagParentDirective {
     super.afterViewInit();
     this.putClass(LIST_GROUP);
     this.putClassChildren(LIST_GROUP_ITEM);
-    this.onChangeDirection(this.direction());
-    this.onChangeFlush(this.flush());
-    this.onChangeNumbered(this.numbered());
     setTimeout(() => this.removeClass(LIST_GROUP_ITEM, `${LIST_GROUP_ITEM}-action`), 250);
   }
 
-  private onChangeDirection(direction: 'vertical' | 'horizontal') {
-    this.putOrRemoveClass(`${LIST_GROUP}-horizontal`, direction === 'horizontal');
+  private onChangeDirection() {
+    this.putOrRemoveClass(`${LIST_GROUP}-horizontal`, this.direction() === 'horizontal');
   }
 
-  private onChangeFlush(flush: boolean) {
-    this.putOrRemoveClass(`${LIST_GROUP}-flush`, flush);
+  private onChangeFlush() {
+    this.putOrRemoveClass(`${LIST_GROUP}-flush`, this.flush());
   }
 
-  private onChangeNumbered(numbered: boolean) {
-    this.putOrRemoveClass(`${LIST_GROUP}-numbered`, numbered);
+  private onChangeNumbered() {
+    this.putOrRemoveClass(`${LIST_GROUP}-numbered`, this.numbered());
   }
 
   private putOrRemoveClass(classname: string, value: boolean) {
@@ -58,8 +55,9 @@ export class BListGroupDirective extends BTagParentDirective {
     }
   }
 
-  private onChangeBackground(color: string, loop: number = 0) {
+  private onChangeBackground(loop: number = 0) {
     this.removeColor();
+    const color = this.background();
     if (color.startsWith(LIST_GROUP_ITEM)) {
       this.putClassChildren(color);
       this.removeColor = () => this.removeClassChildren(color);
@@ -69,12 +67,12 @@ export class BListGroupDirective extends BTagParentDirective {
       });
       this.removeColor = () => this.removeStyleChildren('background-color');
     }
-    this.onStripped(this.stripped(), loop + 1);
+    this.onStripped(loop + 1);
   }
 
-  private onStripped(stripped: boolean, loop: number = 0) {
+  private onStripped(loop: number = 0) {
     if (this.background()) {
-      if (stripped) {
+      if (this.stripped()) {
         setTimeout(() => {
           this.children((child, index) => {
             if (index % 2 === 0) {
@@ -84,7 +82,7 @@ export class BListGroupDirective extends BTagParentDirective {
           });
         }, 50);
       } else if (loop < 2) {
-        this.onChangeBackground(this.background(), loop + 1);
+        this.onChangeBackground(loop + 1);
       }
     }
   }

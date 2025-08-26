@@ -39,7 +39,7 @@ export class BLoadBarComponent extends BTagComponent {
             ratio *= -1;
             return value + ratio;
           }
-          return -ratio;
+          return 0;
         }
         if (value < 0) {
           ratio *= -1;

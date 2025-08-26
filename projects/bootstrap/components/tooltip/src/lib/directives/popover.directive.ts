@@ -10,7 +10,7 @@ import { BooleanAttribute, emptyBooleanAttribute, EmptyBooleanAttribute, getDocu
     providerTooltipRenderer
   ]
 })
-export class Popover extends BAbstractTooltipDirective<PopoverFactory>{
+export class PopoverMaterial extends BAbstractTooltipDirective<PopoverFactory>{
 
   title = input<string | TemplateRef<any>>(undefined, {alias: 'popover-title'});
   popover = input<string | TemplateRef<any>>(undefined, {alias: 'pop-over'});

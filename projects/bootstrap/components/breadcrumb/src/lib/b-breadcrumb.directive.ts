@@ -4,7 +4,7 @@ import { BTagParentDirective } from '@pmeig/ngb-core';
 @Directive({
   selector: '[breadcrumb]',
 })
-export class BBreadcrumbDirective extends BTagParentDirective {
+export class BreadcrumbMaterial extends BTagParentDirective {
 
   role = input<string>();
   ariaLabel = input<string>('breadcrumb');
@@ -16,7 +16,7 @@ export class BBreadcrumbDirective extends BTagParentDirective {
 
   constructor() {
     super();
-    this.effect(() => this.refreshDivider());
+    this.effect(this.refreshDivider);
   }
 
 
@@ -27,9 +27,10 @@ export class BBreadcrumbDirective extends BTagParentDirective {
     }
     this.putClass('breadcrumb');
     this.putAttribute(this.renderer.parentNode(this.element), 'aria-label', this.role() || 'breadcrumb');
-    const active = this.breadcrumb() || this.id() + '-0';
+    const active = this.breadcrumb() || (this.id() + '-0');
     this.getChildren().forEach((child, index) => {
-      this.putClass(child, 'breadcrumb-item');
+      this.putClass(child, 'breadcrumb-item', 'border-0');
+      this.putStyle(child, { cursor: 'pointer', 'text-decoration': 'underline' });
       let id = child.id;
       if (!id) {
         id = this.id() + '-' + index;

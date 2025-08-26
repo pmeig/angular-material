@@ -1,47 +1,30 @@
-import { booleanAttribute, Directive, effect, Input } from '@angular/core';
-import { BooleanAttribute, SizeAttribute } from '@pmeig/ng-material-core';
+import { computed, Directive, input } from '@angular/core';
+import { Empty, emptyBooleanAttribute, EmptyBooleanAttribute, SizeAttribute } from '@pmeig/ng-material-core';
 import { BBtnToolbarDirective } from './b-btn-toolbar.directive';
-
-interface BtnState {
-  size?: SizeAttribute;
-  vertical: boolean;
-}
 
 @Directive({
   standalone: true,
   selector: 'btn-group, [btn-group]',
 })
 export class BBtnGroupDirective extends BBtnToolbarDirective {
-  private state: BtnState = {
-    vertical: false,
-  };
+
+  size = input<string, SizeAttribute>('', {transform: size => size ? `btn-group-${size}` : ''});
+  btnGroup = input<boolean, Empty<'vertical' | 'horizontal'>>(false,
+    {transform: value => value === 'vertical', alias: 'btn-group'});
+  verticalAttribute = input<boolean, EmptyBooleanAttribute>(false,
+    {transform: value => emptyBooleanAttribute(value), alias: 'vertical'});
+
+  private vertical = computed(() => this.verticalAttribute() || this.btnGroup())
 
   constructor() {
     super();
-    effect(() => this.refreshGap());
-  }
-
-  @Input()
-  set size(value: SizeAttribute) {
-    if (this.state.size) {
-      this.removeClass(`btn-group-${this.state.size}`);
-    }
-    this.state.size = value;
-    this.refreshSize();
-  }
-
-  @Input('btn-group')
-  set directiveVertical(value: 'vertical' | '' | 'horizontal') {
-    this.vertical = value === 'vertical';
-  }
-
-  @Input()
-  set vertical(value: BooleanAttribute | '') {
-    this.state.vertical = value === '' || booleanAttribute(value);
-    this.refreshVertical();
+    this.effect(this.refreshSize);
+    this.effect(this.refreshVertical);
   }
 
   protected override onInit() {
+    super.onInit();
+    setTimeout(() => this.removeClass('btn-toolbar'));
     this.getChildren().forEach(child => {
       if (child.tagName === 'INPUT') {
         this.addAttribute(child, 'class-ignore', 'btn-check btn');
@@ -64,14 +47,8 @@ export class BBtnGroupDirective extends BBtnToolbarDirective {
     this.putAttribute('pmeig-parent', 'btn-group');
   }
 
-  protected override afterViewInit() {
-    super.afterViewInit();
-    this.refreshSize();
-    this.refreshVertical();
-  }
-
   protected override refreshGap() {
-    if (this.state.vertical) {
+    if (this.vertical()) {
       if (this.gap()) {
         const elements = this.getChildren().slice(1);
         elements.forEach(value => {
@@ -82,14 +59,8 @@ export class BBtnGroupDirective extends BBtnToolbarDirective {
     } else super.refreshGap();
   }
 
-  private refreshSize() {
-    if (this.state.size) {
-      this.putClass(`btn-group-${this.state.size}`);
-    }
-  }
-
   private refreshVertical() {
-    if (this.state.vertical) {
+    if (this.vertical()) {
       this.putClass(`btn-group-vertical`);
       this.removeClass('btn-group');
     } else {
@@ -97,5 +68,13 @@ export class BBtnGroupDirective extends BBtnToolbarDirective {
       this.putClass(`btn-group`);
     }
     this.refreshGap();
+  }
+
+  private refreshSize() {
+    this.removeClass(...['xs', 'sm', 'md', 'lg', 'xl', 'xxl', 'xxs'].map(value => `btn-${value}`));
+    const size = this.size();
+    if (size) {
+      this.putClass(size);
+    }
   }
 }

@@ -10,20 +10,19 @@ import {
   signalRecord
 } from '@pmeig/ng-material-core';
 import { Observable } from 'rxjs';
-import { JsonPipe, NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'toast',
   imports: [
     HasChildrenDirective,
     NgTemplateOutlet,
-    NgClass,
-    JsonPipe
+    NgClass
   ],
   templateUrl: './toast.component.html',
   styleUrl: './toast.component.scss'
 })
-export class Toast extends BTagComponent {
+export class ToastMaterial extends BTagComponent {
   orchestrator = input<Element | Observable<any>>()
   show = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute})
   color = input<Nullable<ColorConfig>, ColorAttribute>(undefined,
@@ -48,24 +47,14 @@ export class Toast extends BTagComponent {
 
   constructor() {
     super()
-    this.effect(() => {
-      if (this.show()) {
-        this.showing();
-      } else this.hide();
-    })
-  }
-
-  protected override afterViewInit() {
-    if (this.show()) {
-      this.showing()
-    }
+    this.effect(this.onShow);
   }
 
   showing() {
     if (!this.state.display.show()) {
       this.state.display.layout.set(true);
-      this.state.display.show.set(true);
       this.state.display.showing.set(true);
+      this.state.display.show.set(true);
       setTimeout(() => {
         this.state.display.showing.set(false);
       })
@@ -81,5 +70,11 @@ export class Toast extends BTagComponent {
         this.state.display.layout.set(false);
       }, 150)
     }
+  }
+
+  private onShow() {
+    if (this.show()) {
+      this.showing();
+    } else this.hide();
   }
 }

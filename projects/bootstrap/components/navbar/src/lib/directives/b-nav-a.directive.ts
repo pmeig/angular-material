@@ -1,4 +1,4 @@
-import { Directive, HostListener, input } from '@angular/core';
+import { Directive, effect, HostListener, input } from '@angular/core';
 import { BNavDirective } from './b-nav.directive';
 import { NavMenuDirective } from './nav-menu.directive';
 import { emptyBooleanAttribute, EmptyBooleanAttribute, TagDirective } from '@pmeig/ng-material-core';
@@ -20,7 +20,7 @@ export class BNavADirective extends TagDirective {
 
   constructor() {
     super();
-    this.effect(() => this.changeDisable(this.disabled()))
+    effect(() => this.onEffect(() => this.changeDisable(this.disabled())));
     this.addObservable(navParent.pipe(filter(value => {
       return value.child === this.element
     })), value => {

@@ -1,24 +1,23 @@
 @if (display.container()) {
   <div
     [id]="name()"
-    [class]="'modal ' + settings.animations.type() + ' ' + classes()"
+    [class]="'modal ' + animation() + ' ' + classes()"
     (click)="closeByClick(modalTemplate, $event)"
     [ngClass]="{
       show: display.show(),
       'd-block': display.container(),
-      'no-backdrop': !display.backdrop(),
-      'modal-static': settings.animations.static(),
+      'no-backdrop': !backdrop(),
+      'modal-static': display.animation.static(),
     }">
     <div
-      [class]="'modal-dialog ' + settings.size.value()"
+      [class]="'modal-dialog ' + size()"
       [ngClass]="{
-        'modal-dialog-centered': settings.center(),
-        'modal-dialog-scrollable': settings.scrollable(),
+        'modal-dialog-centered': center(),
+        'modal-dialog-scrollable': scrollable(),
       }">
       <div class="modal-content" #modalTemplate>
-        @if (display.content.header.active()) {
-          <div class="modal-header" #header>
-            <div class="modal-content-header">
+          <div class="modal-header" *hasChildren>
+            <div class="modal-content-header" *hasChildren>
               <ng-content select="[header]"></ng-content>
               <ng-container
                 [ngTemplateOutlet]="container"
@@ -27,17 +26,16 @@
                 <div class="modal-title">{{ modalTitle }}</div>
               }
             </div>
-            <btn-group>
+            <btn-group *hasChildren>
               <ng-content select="[btn]"></ng-content>
               <ng-container
                 [ngTemplateOutlet]="container"
                 [ngTemplateOutletContext]="{ templates: buttons }"></ng-container>
-              @if (display.content.header.cross()) {
+              @if (cross()) {
                 <button close [id]="name() + '-close'" (click)="close()"></button>
               }
             </btn-group>
           </div>
-        }
         <div class="modal-body" *hasChildren>
           <ng-content></ng-content>
           <ng-container
@@ -53,7 +51,7 @@
       </div>
     </div>
   </div>
-  @if (display.backdrop()) {
+  @if (backdrop()) {
     <div
       class="modal-backdrop fade"
       [ngClass]="{ show: display.show(), 'd-block': display.container() }">

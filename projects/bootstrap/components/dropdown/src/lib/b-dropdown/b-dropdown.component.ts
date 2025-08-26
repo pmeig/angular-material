@@ -1,10 +1,10 @@
 import {
   Component,
+  computed,
   ContentChildren,
   ElementRef,
   Host,
   HostListener,
-  Input,
   input,
   Optional,
   output,
@@ -12,7 +12,7 @@ import {
   signal,
   TemplateRef,
   ViewChild,
-  ViewContainerRef,
+  ViewContainerRef
 } from '@angular/core';
 import { BTagComponent } from '@pmeig/ngb-core';
 import { AutoClose, createElementItem, ElementItem } from '../dropdown.model';
@@ -22,7 +22,7 @@ import {
   EmptyBooleanAttribute,
   InsideDirective,
   signalRecord,
-  SizeAttribute,
+  SizeAttribute
 } from '@pmeig/ng-material-core';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { DropdownLiDirective } from '../directives/dropdown-li.directive';
@@ -43,7 +43,7 @@ import { DropdownDirection, DropdownDirectionDirective } from '../directives/dro
   standalone: true,
 })
 export class BDropdownComponent extends BTagComponent {
-  protected selected?: ElementItem;
+  protected selected = signal<ElementItem | undefined>(undefined);
   protected state = signalRecord({
     show: false,
     visible: false,
@@ -57,12 +57,12 @@ export class BDropdownComponent extends BTagComponent {
   protected contents: ElementItem[] = [];
   @ContentChildren(TemplateRef) private templates!: QueryList<TemplateRef<any>>;
   @ViewChild('content') private templateContent!: TemplateRef<any>;
-  @ViewChild('splitButton') protected splitButton!: ElementRef<HTMLButtonElement>;
+  @ViewChild('splitButton') protected splitButton?: ElementRef<HTMLButtonElement>;
 
   selection = output<ElementItem>();
   action = output<ElementItem>();
-  render = input<(item: ElementItem) => string>(item => this.defaultRenderLabel(item));
-  split = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute });
+  readonly render = input<(item: ElementItem) => string>(item => this.defaultRenderLabel(item));
+  readonly split = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute });
 
   color = input<ColorAttribute>('primary');
   size = input<SizeAttribute>();
@@ -70,15 +70,19 @@ export class BDropdownComponent extends BTagComponent {
   direction = input<DropdownDirection>('down');
 
   autoClose = input<AutoClose>('outside');
+  text = input<string>('');
 
   protected menuWidth = signal(0);
-
-
-  @Input()
-  set text(value: string) {
-    this.state.content.label.value.set(value);
-    this.state.content.label.mutable.set(false);
-  }
+  protected label = computed(() => {
+    if (this.state.content.label.mutable()) {
+      const selected = this.selected();
+      if (selected) {
+        return this.render()(selected);
+      }
+      return '';
+    }
+    return this.state.content.label.value();
+  });
 
   @HostListener('document:click', ['$event'])
   private whenDocumentClick(event: MouseEvent) {
@@ -96,6 +100,10 @@ export class BDropdownComponent extends BTagComponent {
   constructor(private readonly viewContentRef: ViewContainerRef,
               @Optional() @Host() protected readonly directionOptions?: DropdownDirectionDirective) {
     super();
+    this.effect(() => {
+      this.state.content.label.value.set(this.text());
+      this.state.content.label.mutable.set(this.text() === '');
+    })
   }
 
 
@@ -106,8 +114,7 @@ export class BDropdownComponent extends BTagComponent {
 
   protected select(item: ElementItem) {
     this.selection.emit(item);
-    this.selected = item;
-    this.state.content.label.value.set(this.render()(item));
+    this.selected.set(item);
     if (!this.split()) {
       this.action.emit(item);
     }
@@ -125,30 +132,14 @@ export class BDropdownComponent extends BTagComponent {
   }
 
   protected sendAction() {
-    this.action.emit(this.selected!);
+    this.action.emit(this.selected()!);
   }
 
-  private initContent() {
-    let ref = this.viewContentRef.createEmbeddedView(this.templateContent);
-    let indexTemplate = 0;
-    ref.rootNodes.forEach((node: Node, index) => {
-      this.contents.push(createElementItem(Node.COMMENT_NODE === node.nodeType
-        ? this.templates.get(indexTemplate++)!
-        : node as Element, index));
+  protected dropMenuWidth(dropMenu: HTMLUListElement) {
+    setTimeout(() => {
+      this.menuWidth.set(dropMenu.getBoundingClientRect().width);
     });
-    ref.destroy();
-    this.selected = this.contents[0];
-  }
-
-  protected get label() {
-    let label = this.state.content.label.value();
-    if (!this.state.content.label.mutable()) {
-      return label;
-    }
-    if (!this.selected) {
-      return label;
-    }
-    return this.render()(this.selected);
+    return this.menuWidth();
   }
 
   private defaultRenderLabel(item: ElementItem) {
@@ -164,16 +155,21 @@ export class BDropdownComponent extends BTagComponent {
   }
 
   private getLabel(element: Element) {
-    if (this.renderer.parentNode(element).tagName === 'UL') {
+    if (this.renderer.parentNode(element)?.tagName === 'UL') {
       element = element.firstChild as Element;
     }
     return element.textContent ?? element.innerHTML;
   }
 
-  dropMenuWidth(dropMenu: HTMLUListElement) {
-    setTimeout(() => {
-      this.menuWidth.set(dropMenu.getBoundingClientRect().width);
+  private initContent() {
+    let ref = this.viewContentRef.createEmbeddedView(this.templateContent);
+    let indexTemplate = 0;
+    ref.rootNodes.forEach((node: Node, index) => {
+      this.contents.push(createElementItem(Node.COMMENT_NODE === node.nodeType
+        ? this.templates.get(indexTemplate++)!
+        : node as Element, index));
     });
-    return this.menuWidth();
+    ref.destroy();
+    this.selected.set(this.contents[0]);
   }
 }

@@ -1,4 +1,4 @@
-import { Directive, effect, input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import { TagParentDirective } from '@pmeig/ng-material-core';
 
 @Directive({
@@ -9,7 +9,7 @@ export class BBtnToolbarDirective extends TagParentDirective {
 
   constructor() {
     super();
-    effect(() => this.refreshGap());
+    this.effect(this.refreshGap);
   }
 
 
@@ -20,7 +20,6 @@ export class BBtnToolbarDirective extends TagParentDirective {
 
   protected override afterViewInit(): void {
     super.afterViewInit();
-    this.refreshGap();
   }
 
   protected refreshGap() {

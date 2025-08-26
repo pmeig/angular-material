@@ -1,4 +1,4 @@
-import { Directive, input } from '@angular/core';
+import { Directive, effect, input } from '@angular/core';
 import { BTagParentDirective } from '@pmeig/ngb-core';
 import { Empty } from '@pmeig/ng-material-core';
 import { sharedDirectiveParent } from './event.directives';
@@ -19,17 +19,15 @@ export class BNavDirective extends BTagParentDirective {
 
   constructor() {
     super();
-    this.effect(() => this.changeDirection(this.direction()));
-    this.effect(() => this.changeFormat(this.format()));
-    this.effect(() => this.changeSpaces(this.spaces()));
+    effect(() => this.changeDirection(this.direction()));
+    effect(() => this.changeFormat(this.format()));
+    effect(() => this.changeSpaces(this.spaces()));
   }
 
 
   protected override onInit() {
     super.onInit();
     this.putClass('nav');
-    this.changeDirection(this.direction());
-    this.changeFormat(this.format());
   }
 
 
