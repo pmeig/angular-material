@@ -2,7 +2,7 @@ import { Directive, input } from '@angular/core';
 import { emptyBooleanAttribute, EmptyBooleanAttribute, TagDirective } from '@pmeig/ng-material-core';
 
 @Directive({
-  selector: 'td, tr'
+  selector: 'td, tr, .td, .tr'
 })
 export class BTableContentOptionsDirective extends TagDirective {
   active = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute});

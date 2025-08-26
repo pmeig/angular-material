@@ -2,7 +2,7 @@ import { Directive, input } from '@angular/core';
 import { Color, colorToString, Empty, TagDirective } from '@pmeig/ng-material-core';
 
 @Directive({
-  selector: 'table, tr, th, td, thead, tbody, tfoot'
+  selector: 'table, tr, th, td, thead, tbody, tfoot, .table, .tr, .th, .td, .thead, .tbody, .tfoot'
 })
 export class BTableColorDirective extends TagDirective {
 

@@ -2,7 +2,7 @@ import { Directive } from '@angular/core';
 import { TagDirective } from '@pmeig/ng-material-core';
 
 @Directive({
-  selector: 'tbody[divider], tr[divider]'
+  selector: '[divider]'
 })
 export class BTableDividerDirective extends TagDirective {
 

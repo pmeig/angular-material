@@ -3,7 +3,7 @@ import { BTagParentDirective } from '@pmeig/ngb-core';
 import { Empty, emptyBooleanAttribute, EmptyBooleanAttribute, Size } from '@pmeig/ng-material-core';
 
 @Directive({
-  selector: 'table'
+  selector: 'table, .table'
 })
 export class BTableDirective extends BTagParentDirective {
 
