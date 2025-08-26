@@ -13,13 +13,14 @@ import { CardMaterial } from '@pmeig/ngb-card';
 import { CarouselMaterial } from '@pmeig/ngb-carousel';
 import { DropdownMaterial } from '@pmeig/ngb-dropdown';
 import { ListMaterial } from '@pmeig/ngb-list';
-import { OffCanvasMaterial } from '@pmeig/ngb-offcanvas';
+import { OffcanvasMaterial } from '@pmeig/ngb-offcanvas';
 import { NavbarMaterial } from '@pmeig/ngb-navbar';
 import { PaginationMaterial } from '@pmeig/ngb-pagination';
 import { ProgressMaterial } from '@pmeig/ngb-progress';
-import { Popover, Tooltip } from '@pmeig/ngb-tooltip';
-import { Toast } from '@pmeig/ngb-toast';
-import { Spinner } from '@pmeig/ngb-spinner';
+import { PopoverMaterial, TooltipMaterial } from '@pmeig/ngb-tooltip';
+import { ToastMaterial } from '@pmeig/ngb-toast';
+import { SpinnerMaterial } from '@pmeig/ngb-spinner';
+import { TableMaterial } from '@pmeig/ngb-table';
 
 const excludeModule = <T>(excludes: T[], modules: T[]) => {
   const imports = modules.filter(module => !excludes.includes(module));
@@ -38,8 +39,9 @@ const SIMPLE_MATERIAL_MODULES = [InputMaterial, LabelMaterial, ButtonMaterial, S
 export class PmeigSimpleMaterial {
 }
 
-type FORM_EXCLUDES = AlertMaterial | DropdownMaterial | ProgressMaterial | Tooltip | Popover | Toast | Spinner;
-const FORMS_MATERIAL_MODULES = [PmeigSimpleMaterial, FormMaterial, AlertMaterial, DropdownMaterial, ProgressMaterial, Tooltip, Popover, Toast];
+type FORM_EXCLUDES = AlertMaterial | DropdownMaterial | ProgressMaterial | TooltipMaterial | PopoverMaterial | ToastMaterial | SpinnerMaterial;
+const FORMS_MATERIAL_MODULES = [PmeigSimpleMaterial, FormMaterial, AlertMaterial, DropdownMaterial,
+  ProgressMaterial, TooltipMaterial, PopoverMaterial, ToastMaterial, SpinnerMaterial];
 
 @NgModule({
   imports: FORMS_MATERIAL_MODULES,
@@ -51,9 +53,9 @@ export class PmeigFormsMaterial {
   }
 }
 
-type NAVIGATION_EXCLUDES = NavbarMaterial | CollapseMaterial | OffCanvasMaterial | BreadcrumbMaterial | PaginationMaterial;
+type NAVIGATION_EXCLUDES = NavbarMaterial | CollapseMaterial | OffcanvasMaterial | BreadcrumbMaterial | PaginationMaterial;
 const NAVIGATION_MATERIAL_MODULES = [PmeigSimpleMaterial, NavbarMaterial, CollapseMaterial,
-  OffCanvasMaterial, BreadcrumbMaterial, PaginationMaterial];
+  OffcanvasMaterial, BreadcrumbMaterial, PaginationMaterial];
 
 @NgModule({
   imports: NAVIGATION_MATERIAL_MODULES,
@@ -66,9 +68,9 @@ export class PmeigNavigationMaterial {
 }
 
 
-type DESIGN_EXCLUDES = CardMaterial | CarouselMaterial | AccordionMaterial | CollapseMaterial | ListMaterial;
+type DESIGN_EXCLUDES = CardMaterial | CarouselMaterial | AccordionMaterial | CollapseMaterial | ListMaterial | TableMaterial;
 const DESIGN_MATERIAL_MODULES = [PmeigSimpleMaterial, CardMaterial, CarouselMaterial,
-  AccordionMaterial, CollapseMaterial, ListMaterial];
+  AccordionMaterial, CollapseMaterial, ListMaterial, TableMaterial];
 
 @NgModule({
   imports: DESIGN_MATERIAL_MODULES,
@@ -92,12 +94,12 @@ export class PmeigMaterial {
     forms?: FORM_EXCLUDES[],
     navigation?: NAVIGATION_EXCLUDES[],
     design?: DESIGN_EXCLUDES[],
-    default?: BadgeMaterial[]
+    default?: BadgeMaterial
   }) {
     const imports = [PmeigMaterial.exclude(excludes.forms, PmeigFormsMaterial),
       PmeigMaterial.exclude(excludes.navigation, PmeigNavigationMaterial),
       PmeigMaterial.exclude(excludes.design, PmeigDesignMaterial),
-      ...[BadgeMaterial].filter(module => !excludes.default?.includes(module))];
+      ...[BadgeMaterial].filter(() => !excludes.default)];
     return {
       imports,
       exports: imports
