@@ -10,7 +10,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     @if (offcanvas()) {
-      <offcanvas [active]="button"
+      <offcanvas [show]="button"
                  [name]="name() + '-navbar'"
                  [backdrop]="offcanvasOption?.backdrop() ?? true"
                  [scrollable]="offcanvasOption?.scrollable() ?? false"

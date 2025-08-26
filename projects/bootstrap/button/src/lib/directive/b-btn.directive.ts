@@ -6,7 +6,8 @@ import {
   Empty,
   emptyBooleanAttribute,
   EmptyBooleanAttribute,
-  Size
+  SizeAttribute,
+  sizeToString
 } from '@pmeig/ng-material-core';
 import { BTagDirective } from '@pmeig/ngb-core';
 
@@ -19,7 +20,7 @@ export class BBtnDirective extends BTagDirective implements OnInit {
   btn = input<boolean, Empty<'close'>>(false, {transform: closes => closes === 'close'})
   close = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute})
   disabled = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute})
-  size = input<string, Size>('', {transform: size => `btn-${size}`})
+  size = input<string, SizeAttribute>('', {transform: size => sizeToString(size, 'btn')})
   color = input<ColorConfig, Empty<ColorAttribute>>({
     style: 'primary',
     color: 'btn-primary',

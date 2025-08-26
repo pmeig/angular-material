@@ -14,14 +14,14 @@ import { NavMenuDirective } from '../../directives/nav-menu.directive';
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
 import { HasChildrenDirective, Nullable } from '@pmeig/ng-core';
 import { CollapseMaterial } from '@pmeig/ngb-collapse';
-import { OffCanvasMaterial } from '@pmeig/ngb-offcanvas';
+import { OffcanvasMaterial } from '@pmeig/ngb-offcanvas';
 import { BNavOffcanvasOptionsDirective } from '../../directives/b-nav-offcanvas.options.directive';
 
 @Component({
   selector: 'navbar',
   templateUrl: './b-navbar.component.html',
   imports: [CollapseMaterial, NavMenuDirective, NgTemplateOutlet,
-    NgStyle, HasChildrenDirective, OffCanvasMaterial],
+    NgStyle, HasChildrenDirective, OffcanvasMaterial],
   styleUrl: './b-navbar.component.scss'
 })
 export class BNavbarComponent extends BTagComponent {

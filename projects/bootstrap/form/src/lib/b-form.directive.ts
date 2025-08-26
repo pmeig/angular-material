@@ -69,7 +69,9 @@ export class BFormDirective extends BTagDirective<HTMLFormElement> {
       let hoverElements = this.statusHover();
       if (hoverElements !== false) {
         if (!Array.isArray(hoverElements)) {
-          hoverElements = [...this.element.querySelectorAll('button[type="submit"]')];
+          hoverElements = [];
+          this.element.querySelectorAll('button[type="submit"]')
+            .forEach(element => (hoverElements as Element[]).push(element))
         }
         const control = this.checkIsHoverSubmittedFunction(hoverElements);
         const onMove = this.renderer.listen(this.element, 'mousemove', event => {

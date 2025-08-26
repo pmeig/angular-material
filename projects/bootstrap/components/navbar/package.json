@@ -2,13 +2,14 @@
   "name": "@pmeig/ngb-navbar",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/core": "^20.0.0",
+    "@angular/common": "^20.2.1",
+    "@angular/core": "^20.2.1",
     "@pmeig/ngb-offcanvas": "0.0.1"
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "@pmeig/ngb-collapse": "0.0.1"
+    "@pmeig/ngb-collapse": "0.0.1",
+    "@pmeig/ngb-offcanvas": "0.0.1"
   },
   "sideEffects": false
 }
