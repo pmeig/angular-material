@@ -6,7 +6,8 @@
     "@angular/core": "^20.0.6"
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@pmeig/ngb-core": "0.0.1"
   },
   "sideEffects": false
 }
