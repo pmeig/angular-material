@@ -70,6 +70,9 @@
       "b-spinner": [
         "./dist/b-spinner"
       ],
+      "b-table": [
+        "./dist/b-table"
+      ],
       "b-toast": [
         "./dist/b-toast"
       ],
@@ -154,6 +157,12 @@
     },
     {
       "path": "./projects/bootstrap/components/spinner/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/table/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/table/tsconfig.spec.json"
     }
   ]
 }
