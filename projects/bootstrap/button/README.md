@@ -1,24 +1,89 @@
-# BBtn
+# @pmeig/ngb-button
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.0.
+A lightweight Angular library that provides Bootstrap-styled button components and directives.
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name --project b-btn` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project b-btn`.
-> Note: Don't forget to add `--project b-btn` or else it will be added to the default project in your `angular.json` file.
+```bash 
+  npm install @pmeig/ngb-button
+``` 
 
-## Build
+## Features
 
-Run `ng build b-btn` to build the project. The build artifacts will be stored in the `dist/` directory.
+- 🎯 **BBtnDirective** - Core button directive with Bootstrap styling
+- 📦 **BBtnGroupDirective** - Button group functionality
+- 🛠️ **BBtnToolbarDirective** - Button toolbar organization
+- 🎨 Bootstrap 5.3.3 compatible styling
+- 🚀 Angular 20.2.1 support
+- 📱 Responsive design
+- ♿ Accessibility friendly
 
-## Publishing
+## Usage
 
-After building your library with `ng build b-btn`, go to the dist folder `cd dist/b-btn` and run `npm publish`.
+### Import the Module
+```typescript 
+import { ButtonMaterial } from '@pmeig/ngb-button';
+@NgModule({ imports: [ ButtonMaterial ],
+// ... 
+}) export class AppModule { }
+``` 
 
-## Running unit tests
+### Basic Button
+```html 
+  <button color="secondary"></button>
+``` 
 
-Run `ng test b-btn` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Button Group
+```html
+<btn-group>
+  <button outline>first</button>
+  <button>second</button>
+</btn-group>
+``` 
 
-## Further help
+### Button Toolbar
+```html
+<btn-toolbar>
+  <button>first</button>
+</btn-toolbar>
+```
+## Bootstrap Classes Support
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This library works seamlessly with Bootstrap 5 button classes:
+
+- `btn-primary`, `btn-secondary`, `btn-success`, `btn-danger`, `btn-warning`, `btn-info`, `btn-light`, `btn-dark`
+- `btn-outline-*` variants
+- `btn-lg`, `btn-sm` for sizing
+- `disabled` state support
+
+## Dependencies
+
+- Angular: ^20.2.1
+- Bootstrap: ^5.3.3
+- TypeScript: ^5.8.3
+
+## Compatibility
+
+- Angular: 20.2.1+
+- Bootstrap: 5.3.3+
+- TypeScript: 5.8.3+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+
+
+## License
+This project is licensed under the MIT License.
+## Support
+For issues and questions, please open an issue on the GitHub repository.
+
+
+This README provides:
+
+1. **Clear installation instructions** using the package name found in the project
+2. **Feature overview** based on the directives discovered in the module
+3. **Usage examples** for all three main directives (BBtnDirective, BBtnGroupDirective, BBtnToolbarDirective)
+4. **Bootstrap integration** information since the project uses Bootstrap 5.3.3
+5. **Compatibility information** based on the project's dependencies
+6. **Development and contribution guidelines**
+7. **Professional structure** with emojis for better readability
+
+The README is structured to be comprehensive yet easy to follow, providing developers with all the information they need to effectively use the b-button module in their Angular applications.

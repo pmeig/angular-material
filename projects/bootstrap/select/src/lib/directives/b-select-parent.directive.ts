@@ -1,4 +1,4 @@
-import { ContentChildren, Directive, effect, HostListener, input, output, QueryList } from '@angular/core';
+import { ContentChildren, Directive, HostListener, input, output, QueryList } from '@angular/core';
 import { BTagParentDirective } from '@pmeig/ngb-core';
 import { emptyBooleanAttribute, EmptyBooleanAttribute } from '@pmeig/ng-material-core';
 import { BOptionDirective } from './b-option.directive';
@@ -19,7 +19,7 @@ export class BSelectParentDirective<Item extends any, T extends Item | Item[] | 
 
   protected constructor(private readonly mapper: (selection: Item[]) => T) {
     super();
-    effect(() => this.onEffect(() => this.selectOptions()));
+    this.effect(this.selectOptions);
     this.effect(this.refreshTall)
   }
 

@@ -12,7 +12,7 @@ import { NgpDatePipe } from '@pmeig/ng-core';
 })
 export class BInputDateDirective extends BInputDirective {
 
-  dateType = input<InputValueType>('ts-date', {alias: 'date-type'});
+  dateType = input<Omit<InputValueType, 'rgb'>>('ts-date', {alias: 'date-type'});
 
   constructor(
     dateParser: NgpDatePipe,
