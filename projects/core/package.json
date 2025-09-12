@@ -8,5 +8,19 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
+  "homepage": "https://github.com/pmeig/angular-material/tree/main/projects/core",
+  "repository": {
+    "url": "https://github.com/pmeig/angular-material"
+  },
+  "keywords": [
+    "angular",
+    "pmeig",
+    "ng",
+    "angular@20.2",
+    "material",
+    "core",
+    "shared"
+  ],
+  "license": "MIT",
   "sideEffects": false
 }

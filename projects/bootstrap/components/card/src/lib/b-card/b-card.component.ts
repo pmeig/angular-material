@@ -1,11 +1,18 @@
-import { booleanAttribute, Component, effect, input } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { BTagComponent } from '@pmeig/ngb-core';
-import { BooleanAttribute, putClass, removeClass, signalRecord } from '@pmeig/ng-material-core';
+import {
+  BooleanAttribute,
+  emptyBooleanAttribute,
+  EmptyBooleanAttribute,
+  putClass,
+  removeClass,
+  signalRecord
+} from '@pmeig/ng-material-core';
 import { NgClass } from '@angular/common';
 import { HasChildrenDirective } from '@pmeig/ng-core';
 
 @Component({
-  selector: 'b-card',
+  selector: 'card',
   templateUrl: './b-card.component.html',
   standalone: true,
   imports: [
@@ -21,7 +28,7 @@ export class BCardComponent extends BTagComponent {
     body: true,
   });
 
-  overlay = input<BooleanAttribute, boolean>(false, { transform: booleanAttribute });
+  overlay = input<BooleanAttribute, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute });
 
   constructor() {
     super();

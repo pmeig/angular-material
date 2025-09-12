@@ -11,5 +11,20 @@
     "@pmeig/ngb-collapse": "0.0.1",
     "@pmeig/ngb-offcanvas": "0.0.1"
   },
+  "homepage": "https://github.com/pmeig/angular-material/tree/main/projects/bootstrap/components/navbar",
+  "repository": {
+    "url": "https://github.com/pmeig/angular-material"
+  },
+  "keywords": [
+    "angular",
+    "pmeig",
+    "ng",
+    "angular@20.2",
+    "bootstrap",
+    "bootstrap@5.8",
+    "material",
+    "navbar"
+  ],
+  "license": "MIT",
   "sideEffects": false
 }

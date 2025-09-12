@@ -1,63 +1,146 @@
-# BBadge
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.0.
+# @pmeig/ngb-badge
 
-## Code scaffolding
+A powerful Angular library that provides Bootstrap-styled badge components with advanced formatting options, annotation positioning, and dynamic color management.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Installation
+```bash 
+  npm install @pmeig/ngb-badge
+``` 
 
-```bash
-ng generate component component-name
+## Features
+
+- 🎯 **BadgeMaterial Directive** - Smart badge directive with automatic styling
+- 🎨 **All Bootstrap Colors** - Support for all Bootstrap color variants  
+- 🔄 **Multiple Formats** - Default, pill, and circle badge shapes
+- 📍 **Annotation Mode** - Notification badges with automatic positioning
+- ✨ **Dynamic Color Management** - Automatic color switching and cleanup
+- 🎨 Bootstrap 5.3.3 compatible styling
+- 🚀 Angular 20.2.1 support with signals
+- 📱 Responsive design
+- ♿ Accessibility friendly
+- 🛠️ Smart parent element positioning
+
+## Usage
+
+### Import the Module
+```typescript 
+import { BadgeMaterial } from '@pmeig/ngb-badge';
+@NgModule({ imports: [ BadgeMaterial ], 
+// ... 
+}) export class AppModule { }
+``` 
+
+### Basic Badge
+```html
+  <badge>Badge Text</badge>
+``` 
+
+### Badge with Different Colors
+```html
+  <badge color="primary">Primary</badge>
+  <badge color="success">Success</badge>
+``` 
+
+### Badge Formats
+```html
+  <badge format="pill">Pill</badge>
+  <badge format="circle">Circle</badge>
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## API Reference
 
-```bash
-ng generate --help
+### BadgeMaterial Directive
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `color` | `string \| ColorAttribute` | `'text-bg-secondary'` | Bootstrap color variant for the badge |
+| `format` | `'pill' \| 'circle' \| 'default'` | `'default'` | Badge shape format |
+| `annotate` | `boolean` | `false` | Enables annotation/notification mode with absolute positioning |
+
+#### Color Options
+- `primary` → `text-bg-primary`
+- `secondary` → `text-bg-secondary` 
+- `success` → `text-bg-success`
+- `danger` → `text-bg-danger`
+- `warning` → `text-bg-warning`
+- `info` → `text-bg-info`
+- `light` → `text-bg-light`
+- `dark` → `text-bg-dark`
+
+#### Format Options
+- `default` - Standard rectangular badge
+- `pill` - Rounded pill-shaped badge
+- `circle` - Circular badge (best for numbers/icons)
+
+## How It Works
+
+### Automatic Styling Management
+The badge directive automatically:
+1. **Applies base classes**: Adds `badge` class on initialization
+2. **Manages color transitions**: Handles color switching with proper cleanup
+3. **Format control**: Applies appropriate shape classes based on format
+4. **Annotation positioning**: Automatically positions badges as notifications
+5. **Parent element styling**: Adds necessary positioning classes to parent elements
+
+### Annotation Mode Behavior
+When `annotate="true"`:
+- Adds absolute positioning classes
+- Automatically switches to danger color if no color is specified
+- Adds accessibility attributes for screen readers
+- Modifies parent element positioning
+- Handles empty badges with visual indicators
+
+## Bootstrap Classes Support
+
+This library generates and works with standard Bootstrap 5 badge classes:
+- `badge` - Base badge class
+- `text-bg-*` - Bootstrap 5.3+ background and text color utilities
+- `rounded-pill` - Pill-shaped badges
+- `rounded-circle` - Circular badges
+- `position-absolute`, `top-0`, `start-100`, `translate-middle` - Annotation positioning
+- `position-relative` - Applied to parent elements for annotation badges
+
+## TypeScript Support
+
+Full TypeScript support with proper typing:
 ```
+typescript import { BadgeMaterial } from '@pmeig/ngb-badge';
+@Component({ template: `<badge [color]="badgeColor" [format]="badgeFormat" [annotate]="isAnnotation"> {{ content }} </badge> `}) export class MyBadgeComponent { badgeColor: 'success' | 'danger' | 'warning' | 'info' = 'success'; badgeFormat: 'pill' | 'circle' | 'default' = 'default'; isAnnotation = false; content = 'Badge Text'; }
+``` 
 
-## Building
+## Dependencies
 
-To build the library, run:
+- **Angular**: ^20.2.1
+- **@angular/common**: ^20.2.1
+- **@pmeig/ngb-core**: ^0.0.1
+- **tslib**: ^2.3.0
 
-```bash
-ng build b-badge
-```
+## Compatibility
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+- Angular: 20.2.1+
+- Bootstrap: 5.3.3+
+- TypeScript: 5.8.3+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
 
-### Publishing the Library
+## Troubleshooting
+### Common Issues
+**Badge not displaying colors**
+- Check that color values are valid Bootstrap color names
 
-Once the project is built, you can publish your library by following these steps:
+**Annotation badges not positioning correctly**
+- Verify parent element has proper structure
+- Check for conflicting CSS position rules
 
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/b-badge
-   ```
+**Format changes not applying**
+- Ensure format values are one of: 'default', 'pill', 'circle'
+- Check for CSS conflicts with border-radius
 
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
+**Accessibility concerns**
+- Always provide meaningful text content
+- Use visually-hidden spans for screen readers when using icon-only badges
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## License
+This project is licensed under the MIT License.
+## Support
+For issues and questions, please open an issue on the GitHub repository.

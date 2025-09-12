@@ -1,170 +1,225 @@
-# Bootstrap Select Module
+# @pmeig/ngb-select
 
-A Bootstrap-styled select component library for Angular applications, part of the NGP Material design system.
-
-## Overview
-
-The Bootstrap Select module provides advanced select components and directives that follow Bootstrap design patterns while integrating seamlessly with Angular applications. This module offers single and multiple selection capabilities, custom option handling, and enhanced form integration.
+A powerful Angular library that provides Bootstrap-styled select components with advanced features like multiple selection, smart option handling, and automatic styling management.
 
 ## Installation
-
-This module is part of the NGP Material monorepo. Install it using npm:
-
 ```bash
-npm install @pmeig/ngb-select
+  npm install @pmeig/ngb-select
 ```
 ## Features
-- **Bootstrap Integration**: Styled according to Bootstrap design principles
-- **Angular Support**: Built for Angular 20.2.1+ with TypeScript 5.8.3
-- **Single & Multiple Selection**: Support for both single and multiple selection modes
-- **Advanced Option Management**: Custom option directives and value handling
-- **Form Integration**: Full support for Angular reactive and template-driven forms
-- **Accessibility**: WCAG compliant select components with proper ARIA attributes
-- **Customizable**: Extensible styling and behavior options
-- **Type Safety**: Full TypeScript support
+
+- 🎯 **BSelectDirective** - Smart single-selection select directive with Bootstrap styling
+- 📦 **BSelectMultipleDirective** - Multiple selection support with array value handling
+- 🔘 **BOptionDirective** - Enhanced option directive with value binding support
+- 🔄 **Smart Value Mapping** - Automatic conversion between option values and selected items
+- ✨ **Size Variants** - Support for small and large select components
+- 🛡️ **Disabled State Management** - Built-in disabled state handling with event prevention
+- 🎨 Bootstrap 5.3.3 compatible styling
+- 🚀 Angular 20.2.1 support with signals
+- 📱 Responsive design
+- ♿ Accessibility friendly
+- 🛠️ Smart parent element management
 
 ## Usage
+
 ### Import the Module
 ```typescript
 import { SelectMaterial } from '@pmeig/ngb-select';
 
 @NgModule({
-  imports: [SelectMaterial],
-  // ...
+imports: [
+SelectMaterial
+],
+// ...
 })
 export class AppModule { }
 ```
-### Basic Select Usage
+### Basic Single Select
 ```html
-<!-- Basic single select -->
-<select [(selection)]="selected"> 
-  <option selected>Choose...</option>
-  <option value="1">One</option>
-  <option value="2">Two</option>
-  <option value="3">Three</option>
+<!-- Basic select -->
+<select id="country" [(selection)]="selectedCountry">
+  <option value="us">United States</option>
+  <option value="ca">Canada</option>
+  <option value="uk">United Kingdom</option>
+  <option value="de">Germany</option>
+</select>
+
+<!-- With object values -->
+<select id="product" [(selection)]="selectedProduct">
+  <option [ngValue]="product1">Premium Package</option>
+  <option [ngValue]="product2">Standard Package</option>
+  <option [ngValue]="product3">Basic Package</option>
 </select>
 ```
 ### Multiple Selection
 ```html
-<!-- Multiple select -->
-<select [(selection)]="selected"  multiple>
-  <option value="1">One</option>
-  <option value="2">Two</option>
-  <option value="3">Three</option>
-  <option value="4">Four</option>
-  <option value="5">Five</option>
+<!-- Multiple select with array values -->
+<select multiple id="skills" [(selection)]="selectedSkills">
+  <option value="angular">Angular</option>
+  <option value="react">React</option>
+  <option value="vue">Vue.js</option>
+  <option value="typescript">TypeScript</option>
+  <option value="javascript">JavaScript</option>
+</select>
+
+<!-- Multiple select with object values -->
+<select multiple id="categories" [(selection)]="selectedCategories">
+  <option [ngValue]="tech">Technology</option>
+  <option [ngValue]="design">Design</option>
+  <option [ngValue]="business">Business</option>
+  <option [ngValue]="marketing">Marketing</option>
 </select>
 ```
-### With Angular Reactive Forms
-```typescript
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-
-export class MyComponent {
-  form: FormGroup;
-  options = [
-    { value: 'option1', label: 'Option 1' },
-    { value: 'option2', label: 'Option 2' },
-    { value: 'option3', label: 'Option 3' }
-  ];
-
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      singleSelect: [''],
-      multipleSelect: this.fb.array([])
-    });
-  }
-}
-```
-
+### Size Variants
 ```html
-<form [formGroup]="form">
-  <!-- Single selection -->
-  <div class="mb-3">
-    <label for="singleSelect" class="form-label">Single Select</label>
-    <select id="singleSelect" formControlName="singleSelect">
-      <option value="">Choose...</option>
-      @for(let option of options; track option.label) {
-      <option [value]="option.value">
-        {{ option.label }}
-      </option>
-      }
-    </select>
-  </div>
-</form>
-```
-
-### Select Sizes
-```html
-<!-- Large select -->
-<select tall="lg">
-  <option>Large select</option>
-</select>
-
-<!-- Default select -->
-<select>
-  <option>Default select</option>
-</select>
-
 <!-- Small select -->
-<select tall="sm">
-  <option>Small select</option>
+<select id="smallSelect" tall="sm" [(selection)]="smallValue">
+  <option value="option1">Small Option 1</option>
+  <option value="option2">Small Option 2</option>
+</select>
+
+<!-- Default size select -->
+<select id="defaultSelect" [(selection)]="defaultValue">
+  <option value="option1">Default Option 1</option>
+  <option value="option2">Default Option 2</option>
+</select>
+
+<!-- Large select -->
+<select id="largeSelect" tall="lg" [(selection)]="largeValue">
+  <option value="option1">Large Option 1</option>
+  <option value="option2">Large Option 2</option>
 </select>
 ```
+### Disabled Select
+```html
+<!-- Disabled select -->
+<select id="disabledSelect" disabled [(selection)]="disabledValue">
+  <option value="option1">Cannot Select This</option>
+  <option value="option2">Or This</option>
+</select>
 
-
-## Configuration
-The module can be configured through the Angular build system and supports:
-- **Development builds**: `tsconfig.lib.json`
-- **Production builds**: `tsconfig.lib.prod.json`
-- **Testing**: `tsconfig.spec.json`
-
-## Dependencies
-- **Angular**: 20.2.1+
-- **Bootstrap**: 5.3.3+
-- **RxJS**: 7.8.0+
-- **TypeScript**: 5.8.3+
-
-## Development
-### Building
-```bash
-ng build b-select
+<!-- Conditionally disabled -->
+<select id="conditionalSelect" [disabled]="isReadOnly" [(selection)]="conditionalValue">
+  <option value="read">Read Only Mode</option>
+  <option value="edit">Edit Mode</option>
+</select>
 ```
 
 ## API Reference
-### SelectMaterial Module
-The main module that provides all select-related components and directives.
-### Directives
-- **bSelect**: Main select directive for enhanced functionality
-- **bSelectParent**: Parent container directive for select management
-- **bSelectMultiple**: Multiple selection support directive
-- **bOption**: Option directive for custom option handling
 
-### Components
-- Bootstrap-styled select components
-- Single and multiple selection support
-- Form integration utilities
-- Validation state management
+### BSelectDirective
 
-## Accessibility
-The select module ensures:
-- Proper ARIA attributes for screen readers
-- Keyboard navigation support (Arrow keys, Enter, Space)
-- Focus management for multiple selections
-- High contrast support
-- Screen reader friendly option announcements
+Applied automatically to `select:not([multiple])` elements.
 
-## Best Practices
-1. **Always provide a default option** for single selects
-2. **Use clear, descriptive option labels**
-3. **Group related options** using `<optgroup>` when appropriate
-4. **Limit multiple selection options** to avoid overwhelming users
-5. **Provide validation feedback** for required fields
-6. **Use appropriate select sizes** based on context
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `id` | `string` | **Required** | Unique identifier for the select element |
+| `selection` | `T` | `undefined` | Currently selected value |
+| `tall` | `'sm' \| 'lg'` | `undefined` | Size variant of the select |
+| `disabled` | `boolean` | `false` | Disabled state of the select |
 
-## Contributing
-This module is part of the NGP Material design system. Please follow the established coding standards and testing practices when contributing.
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `selectionChange` | `T \| undefined` | Emitted when selection changes, returns the selected option value |
+
+### BSelectMultipleDirective
+
+Applied automatically to `select[multiple]` elements.
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `id` | `string` | **Required** | Unique identifier for the select element |
+| `selection` | `T[]` | `[]` | Currently selected values array |
+| `tall` | `'sm' \| 'lg'` | `undefined` | Size variant of the select |
+| `disabled` | `boolean` | `false` | Disabled state of the select |
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `selectionChange` | `T[]` | Emitted when selection changes, returns the array of selected option values |
+
+### BOptionDirective
+
+Applied automatically to `option` elements.
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `any` | `undefined` | Option value (alternative to HTML value attribute) |
+| `ngValue` | `any` | `undefined` | Object value for the option (takes precedence over value) |
+
+## How It Works
+
+### Smart Value Mapping
+The select directives automatically:
+1. **Map option values**: Converts between HTML option indices and actual values
+2. **Handle selection events**: Processes change events and emits typed values
+3. **Manage state**: Tracks selected options and updates selection accordingly
+4. **Type conversion**: Handles both primitive values and complex objects
+
+### Single vs Multiple Selection
+- **Single Selection**: Returns the selected value directly (`T | undefined`)
+- **Multiple Selection**: Returns an array of selected values (`T[]`)
+- **Automatic Detection**: Uses the `multiple` attribute to determine behavior
+
+### Option Value Resolution
+1. **ngValue**: Takes highest precedence for object values
+2. **value**: Used for primitive values
+3. **Automatic ID**: Generates unique IDs for options if not provided
+
+## Bootstrap Classes Support
+
+This library generates and works with standard Bootstrap 5 select classes:
+- `form-select` - Base select styling
+- `form-select-sm` - Small select variant
+- `form-select-lg` - Large select variant
+- `form-select-option` - Applied to option elements
+
+
+## Dependencies
+
+- **Angular**: ^20.2.1
+- **@angular/common**: ^20.2.1
+- **@pmeig/ngb-core**: ^0.0.1
+- **tslib**: ^2.3.0
+
+## Compatibility
+
+- Angular: 20.2.1+
+- Bootstrap: 5.3.3+
+- TypeScript: 5.8.3+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+
+
+## Troubleshooting
+
+### Common Issues
+
+**Error: "id is required for select"**
+- The `id` attribute is required for all select elements
+- Ensure you've set a unique ID: `<select id="unique-id">`
+
+**Selection not updating**
+- Verify that the selection binding is correct: `[(selection)]="property"`
+- Check that option values match the expected data types
+- Ensure ngValue is used for object comparisons
+
+**Multiple select not working**
+- Ensure the `multiple` attribute is present: `<select multiple>`
+- Check that the selection property is an array: `selectedItems: any[] = []`
+
+**Options not displaying values correctly**
+- Use `[ngValue]` for object values and `value` for primitive values
+- Ensure the binding syntax is correct
+- Check for proper change detection in dynamic options
+
 ## License
-This project is licensed under the terms specified in the root LICENSE file.
+
+This project is licensed under the MIT License.
 
 ## Support
-For issues and questions related to this module, please refer to the main project repository or contact the development team.
+
+For issues and questions, please open an issue on the GitHub repository.
+

@@ -20,8 +20,6 @@ export class BAlertDirective extends BTagTemplateDirective {
   private lastColor = 'alert-danger';
   private closeId?: string;
 
-  alertDisplayed = input((_: boolean) => {
-  });
   alert = input<boolean, EmptyBooleanAttribute>(false, { transform: alert => alert === '' ? false : booleanAttribute(alert) });
   alertColor = input<string, Empty<ColorAttribute>>('alert-danger', { transform: color => colorAttributeToString(color || 'danger', 'alert') });
   alertClose = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute});

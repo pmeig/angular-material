@@ -1,0 +1,290 @@
+name: Deploy
+on:
+  workflow_dispatch:
+    inputs:
+      modules:
+        description: modules do you want build separate by space
+        required: false
+        default: ''
+      env:
+        description: environment to build
+        required: false
+        type: choice
+        options:
+          - dev
+          - prod
+        default: 'dev'
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - develop
+      - main
+
+permissions: write-all
+
+jobs:
+  context:
+    if: ${{ github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch' }}
+    runs-on:
+      - self-hosted
+      - Linux
+      - pmeig
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v4
+      - name: metadata
+        id: metadata
+        uses: pmeig/github-actions/actions/context/metadata@main
+      - name: retrieve module change
+        id: modules-accepted
+        if: ${{ steps.metadata.outputs.env-target == 'prod' && github.event_name != 'workflow_dispatch' }}
+        uses: pmeig/github-actions/actions/github/diff@main
+        with:
+          includes: 'start=projects'
+      - name: prepare modules
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        id: isolates
+        run: |
+          files=''
+          for file in ${{ steps.modules-accepted.outputs.files }}
+          do
+            if [[ "$file" == *"/src/"* ]]
+            then
+              path=${file/\/src\//@}
+              module=$(echo $path | cut -d'@' -f1)
+              if [[ " $files " != *" $module "* ]]
+              then
+                files="$files $module"
+              fi
+            fi
+          done
+          echo "value=$files" >> $GITHUB_OUTPUT
+      - name: retrieve modules change
+        id: changed
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        run: |
+          names=''
+          for module in ${{ steps.isolates.outputs.value }}
+          do
+            name=$(jq -rc --arg path "$module" '.projects | to_entries | map(select(.value.root == $path)) | .[] | .key' angular.json
+            names="$names $name"
+          done
+          echo "value=$names" >> $GITHUB_OUTPUT
+      - name: suffix version
+        id: suffix
+        uses: pmeig/github-actions/actions/context/version/suffix@main
+        with:
+          env: ${{ steps.metadata.outputs.env-target }}
+      - name: env accepted
+        id: env
+        run: |
+          env='${{ steps.metadata.outputs.env-target }}'
+          if [ '${{ github.event_name }}' == 'workflow_dispatch' ]
+          then
+            env='dev'
+          fi
+          echo "value=$env" >> $GITHUB_OUTPUT
+      - name: projects context
+        id: projects
+        run: |
+          json='{}'
+          for project in $(jq -rc '.projects | to_entries | map({"name": .key, "path": .value.root}) | .[]' angular.json)
+          do
+            name=$(echo $project | jq -rc '.name')
+            path=$(echo $project | jq -rc '.package')
+            version=$(echo $project | jq -rc '.version')
+            projectName=$(jq -rc '.name' $path/package.json)
+            context="{\"name\": \"$name\", \"path\": \"$path\", \"project\": \"$projectName\", \"version\": \"$version\"}"
+            json=$(echo $json | jq -rc --arg name "$name" --arg project "$projectName" context "$context" '. + {($name): $context, ($project): $context}')
+          done
+          echo "value=json" >> $GITHUB_OUTPUT)
+    outputs:
+      env: ${{ steps.changed.outputs.value }}
+      modules: ${{ steps.changed.outputs.value }}${{ inputs.modules }}
+      artifactory: ${{ steps.metadata.outputs.npm-target }}
+      projects: ${{ steps.projects.outputs.value }}
+      target: ${{ steps.metadata.outputs.target }}
+  build:
+    needs: context
+    runs-on:
+      - self-hosted
+      - Linux
+      - pmeig
+    environment: ${{ needs.context.outputs.env }}
+    env:
+      PMEIG_TOKEN: ${{ secrets.PMEIG_TOKEN }}
+    strategy:
+      matrix:
+        module: ${{ fromJSON(needs.context.outputs.modules) }}
+      max-parallel: 3
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v4
+      - name: load secrets
+        uses: pmeig/github-actions/actions/secret/vault@main
+        id: vault
+        with:
+          cache: 'false'
+          role-id: ${{ secrets.VAULT_ROLE_ID }}
+          secret-id: ${{ secrets.VAULT_SECRET_ID }}
+          secrets: |
+            pmeig/server/data/cicd/jfrog/writer user | ARTIFACTORY_USER;
+            pmeig/server/data/cicd/jfrog/writer password | ARTIFACTORY_PASSWORD;
+            pmeig/server/data/cicd/jfrog/reader user | ARTIFACTORY_READER_USER;
+            pmeig/server/data/cicd/jfrog/reader password | ARTIFACTORY_READER_PASSWORD;
+            pmeig/server/data/cicd/npm user | REMOTE_USER;
+            pmeig/server/data/cicd/npm password | REMOTE_PASSWORD;
+      - name: node setup
+        uses: pmeig/github-actions/actions/node/setup@main
+        id: node-setup
+        with:
+          artifactory-password: ${{ env.ARTIFACTORY_READER_PASSWORD }}
+          artifactory-user: ${{ env.ARTIFACTORY_READER_USER }}
+          remote-token: ${{ env.REMOTE_PASSWORD }}
+          branch: ${{ needs.context.outputs.target }}
+      - name: find dependencies internal
+        id: dependencies
+        uses: pmeig/github-actions/actions/node/package/dependencies@main
+        with:
+          dev: true
+          prefix: '@pmeig/'
+          subpath-resolver: |
+            package=(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$depend" '.[$key].path')
+      - name: install dependencies
+        id: projects
+        run: |
+          npm install
+          cwd=$(pwd)
+          for depend in ${{ steps.dependencies.outputs.value }}
+          do
+            context=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$depend" '.[$key]')
+            name=$(echo $context | jq -rc '.name')
+            npm run ng -- build $name --configuration=production
+            path=$(echo $context | jq -rc '.path')
+            cd $path
+            dist=$(npm run tsc --showConfig | jq -rc '.compilerOptions.outDir')
+            cd $dist
+            npm pack
+            dist=$(pwd)
+            mv *.tgz $name.tgz
+            cd $cwd
+            npm install $dist/$name.tgz
+          done
+      - name: build ${{ matrix.module }}
+        id: build
+        run: |
+          npm run ng -- build ${{ matrix.module }} --configuration=production
+          path=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "${{ matrix.module }}" '.[$key].path')
+          cd $path
+          dist=$(npm run tsc -- showConfig | jq -rc '.compilerOptions.outDir')
+          cd dist
+          npm pack
+          mv *.tgz ${{ matrix.module }}.tgz
+          echo "pack=$(pwd)/${{ matrix.module }}.tgz" >> $GITHUB_OUTPUT
+      - name: deploy on remote
+        if: ${{ needs.context.outputs.env == 'prod' }}
+        run: |
+          options='--no-git-checks'
+          if [ '${{ needs.context.outputs.env }}' != 'prod' ]
+          then
+           options="$options --tag snapshot"
+          fi
+          # npm publish ${{ steps.pack.outputs.path }}${{ steps.cli.outputs.path }} $options
+          npm config delete @pmeig:registry
+          npm publish ${{ steps.pack.outputs.path }}${{ steps.cli.outputs.path }} --access public $options
+  prepare-tag:
+    if: ${{ needs.context.outputs.env == 'prod' }}
+    needs:
+      - build
+      - context
+    uses: ./.github/workflows/version.yml
+    with:
+      modules: ${{ needs.context.outputs.modules }}
+  tag:
+    needs:
+      - prepare-tag
+      - context
+    runs-on:
+      - self-hosted
+      - Linux
+      - pmeig
+    strategy:
+      max-parallel: 3
+      matrix:
+        module: ${{ fromJSON(needs.context.outputs.modules) }}
+    steps:
+      - name: create tag
+        uses: pmeig/github-actions/actions/github/release@main
+        with:
+          name: ${{ matrix.module.name }}_${{ matrix.module.version }}
+          tag_name: ${{ matrix.module.name }}_${{ matrix.module.version }}
+          branch: main
+  tag-date:
+    needs: tag
+    runs-on:
+      - self-hosted
+      - Linux
+      - pmeig
+    steps:
+      - name: tag
+        id: tag
+        run: |
+          current=$(date +YYYY_MM_JJ)
+          echo "value=release_$current" >> $GITHUB_OUTPUT
+      - name: create tag
+        uses: pmeig/github-actions/actions/github/release@main
+        with:
+          name: ${{ steps.tag.outputs.value }}
+          tag_name: ${{ steps.tag.outputs.value }}
+          branch: main
+
+
+  next-feature:
+    needs:
+      - build
+      - context
+    if: ${{ needs.context.outputs.env == 'prod' }}
+    environment: manual
+    runs-on:
+      - self-hosted
+      - Linux
+      - pmeig
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+      - name: push next feature
+        id: staging
+        run: |
+          staging=''
+          modules=''
+          for module in $(echo '${{ needs.context.outputs.modules }}' | jq -rc '.[]')
+          do
+            project=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$module" '.[$key]')
+            package="$(echo $project | jq -rc '.path')/package.json"
+            release=$(echo $project | jq -rc '.version' | cut -d'.' -f2)
+            version=$(jq -r '.version' $package)
+            version=$(echo "$version" | cut -d'-' -f1)
+            major=$(echo "$version" | cut -d'.' -f1)
+            minor=$(echo "$version" | cut -d'.' -f2)
+
+            if (( $minor == $release ))
+            then
+              jq --arg version "$major.$((minor + 1)).0-SNAPSHOT" '.version = $version' $package > $package
+              modules="$modules $(echo $module | jq -rc 'name')"
+              staging="$staging $package"
+            fi
+          done
+
+          echo "modules=$modules" >> $GITHUB_OUTPUT
+          echo "value=$staging" >> $GITHUB_OUTPUT
+      - name: commit next feature
+        if: ${{ steps.staging.outputs.value != '' }}
+        uses: pmeig/github-actions/actions/github/push@main
+        with:
+          commit: "semver(minor): bump next feature for ${{ steps.staging.outputs.modules }}"
+          stage: ${{ steps.staging.outputs.value }}
+          mail: 'pierrick.workplace@gmail.com'
+          user: 'pmeig'

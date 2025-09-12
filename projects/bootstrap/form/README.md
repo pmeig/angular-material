@@ -116,29 +116,7 @@ The directive automatically:
 3. **Submitted State**: After form submission, validation persists
 4. **Dynamic Updates**: Validation states update reactively based on form changes
 
-## Integration with Other Modules
-This module works seamlessly with other @pmeig modules:
-```typescript
-import { PmeigFormsMaterial } from '@pmeig/ngb-material';
 
-@NgModule({
-  imports: [
-    PmeigFormsMaterial // Includes FormMaterial + other form-related modules
-  ]
-})
-export class AppModule { }
-```
-### Exclude Specific Modules
-```typescript
-import { PmeigFormsMaterial, AlertMaterial, TooltipMaterial } from '@pmeig/ngb-material';
-
-@NgModule({
-  imports: [
-    PmeigFormsMaterial.excludes(AlertMaterial, TooltipMaterial)
-  ]
-})
-export class AppModule { }
-```
 ## Bootstrap Classes Support
 This library enhances standard Bootstrap 5 form validation classes:
 - `was-validated` - Applied automatically on form submission or hover
@@ -146,23 +124,6 @@ This library enhances standard Bootstrap 5 form validation classes:
 - `is-valid` / `is-invalid` - Works with existing Bootstrap validation
 - `valid-feedback` / `invalid-feedback` - Display validation messages
 
-## TypeScript Support
-Full TypeScript support with proper typing:
-```typescript
-import { BFormDirective } from '@pmeig/ngb-form';
-
-@Component({
-  template: `
-    <form [unvalidated]="isUnvalidated" [status-hover]="hoverElements">
-      <!-- form content -->
-    </form>
-  `
-})
-export class MyComponent {
-  isUnvalidated = false;
-  hoverElements: Element[] = [];
-}
-```
 ## Dependencies
 - Angular: ^20.2.1
 - @angular/common: ^20.2.1
@@ -174,37 +135,6 @@ export class MyComponent {
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)
-
-## Best Practices
-### 1. Version bootstrap
-```html
-<form class="needs-validation" novalidate>
-  <div class="mb-3">
-    <input type="email" class="form-control" required>
-    <div class="invalid-feedback">Invalid email</div>
-  </div>
-</form>
-```
-### 2. Version reactive forms with angular
-```html
-<form [formGroup]="myForm">
-  <div class="mb-3">
-    <input 
-      type="email" 
-      class="form-control"
-      formControlName="field"
-      error="Invalid email"
-  </div>
-</form>
-```
-### 3. Handle Dynamic Forms
-```typescript
-export class DynamicFormComponent {
-  form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]]
-  });
-}
-```
 
 
 ## Documentation
@@ -218,19 +148,4 @@ export class DynamicFormComponent {
 This project is licensed under the MIT License.
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
-``` 
 
-This README provides:
-
-1. **Clear overview** of the form validation capabilities
-2. **Comprehensive usage examples** showing both template-driven and reactive forms
-3. **Advanced features documentation** including hover validation and custom configurations
-4. **Property reference table** for all directive inputs
-5. **Integration examples** with other modules in the ecosystem
-6. **Bootstrap compatibility** information
-7. **TypeScript support** examples
-8. **Best practices** for different use cases
-9. **Technical details** about how the validation flow works
-
-The documentation focuses on the unique features of this form module, particularly the innovative hover validation system and smart state management that sets it apart from standard Bootstrap form validation.
-```

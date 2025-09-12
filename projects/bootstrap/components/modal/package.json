@@ -9,5 +9,20 @@
     "tslib": "^2.3.0",
     "@pmeig/ngb-button": "0.0.1"
   },
+  "homepage": "https://github.com/pmeig/angular-material/tree/main/projects/bootstrap/components/modal",
+  "repository": {
+    "url": "https://github.com/pmeig/angular-material"
+  },
+  "keywords": [
+    "angular",
+    "pmeig",
+    "ng",
+    "angular@20.2",
+    "bootstrap",
+    "bootstrap@5.8",
+    "material",
+    "modal"
+  ],
+  "license": "MIT",
   "sideEffects": false
 }

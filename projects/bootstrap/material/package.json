@@ -30,5 +30,41 @@
     "@pmeig/ngb-spinner": "0.0.1",
     "@pmeig/ngb-table": "0.0.1"
   },
+  "homepage": "https://github.com/pmeig/angular-material/tree/main/projects/bootstrap/material",
+  "repository": {
+    "url": "https://github.com/pmeig/angular-material"
+  },
+  "keywords": [
+    "angular",
+    "pmeig",
+    "ng",
+    "angular@20.2",
+    "bootstrap",
+    "bootstrap@5.8",
+    "material",
+    "form",
+    "input",
+    "label",
+    "select",
+    "accordion",
+    "badge",
+    "alert",
+    "breadcrumb",
+    "card",
+    "carousel",
+    "collapse",
+    "dropdown",
+    "list",
+    "offcanvas",
+    "navbar",
+    "pagination",
+    "progress",
+    "tooltip",
+    "toast",
+    "spinner",
+    "table",
+    "button"
+  ],
+  "license": "MIT",
   "sideEffects": false
 }
