@@ -12,7 +12,7 @@
     "postbuild:bootstrap": "scripts/build.bat b-material",
     "build:bootstrap": "scripts/build.bat b-input b-form b-label b-button b-select b-collapse b-accordion b-card b-breadcrumb b-badge b-alert b-carousel b-dropdown b-list b-offcanvas b-navbar b-pagination b-progress b-tooltip b-toast b-spinner b-table",
     "prebuild:bootstrap": "scripts/build.bat core b-core",
-    "preinstall": "node scripts/pre-commit.js",
+    "preinstall": "node scripts/hook.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
