@@ -1,6 +1,6 @@
-import { booleanAttribute, Directive, input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import { BTagParentDirective } from '@pmeig/ngb-core';
-import { BooleanAttribute, ColorAttribute, colorAttributeToString } from '@pmeig/ng-material-core';
+import { ColorAttribute, colorAttributeToString } from '@pmeig/ng-material-core';
 
 const LIST_GROUP = 'list-group';
 const LIST_GROUP_ITEM = `${LIST_GROUP}-item`;
@@ -10,10 +10,10 @@ const LIST_GROUP_ITEM = `${LIST_GROUP}-item`;
 })
 export class BListGroupDirective extends BTagParentDirective {
   direction = input<'vertical' | 'horizontal'>('vertical');
-  flush = input<boolean, BooleanAttribute>(false, { transform: booleanAttribute });
-  numbered = input<boolean, BooleanAttribute>(false, { transform: booleanAttribute });
+  flush = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute });
+  numbered = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute });
   background = input<string, ColorAttribute>('', { transform: color => colorAttributeToString(color, LIST_GROUP_ITEM) });
-  stripped = input<boolean, BooleanAttribute>(false, { transform: booleanAttribute });
+  stripped = input<boolean, EmptyBooleanAttribute>(false, { transform: emptyBooleanAttribute });
 
   private removeColor = () => {
   };

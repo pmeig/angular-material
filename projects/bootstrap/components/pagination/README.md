@@ -1,63 +1,263 @@
-# BPagination
+# @pmeig/ngb-pagination
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.0.
+A powerful Angular library that provides Bootstrap-styled pagination components with intelligent page management, customizable navigation, and advanced configuration options.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+## Installation
 ```bash
-ng generate component component-name
+  npm install @pmeig/ngb-pagination
+```
+## Features
+
+- 🎯 **PaginationMaterial Component** - Full-featured pagination with Bootstrap styling
+- 📦 **Intelligent Page Management** - Smart page range display with ellipsis support
+- 🔄 **Configurable Navigation** - Icons, labels, or custom navigation buttons
+- ✨ **Size Variants** - Small, default, and large pagination sizes
+- 🎨 **Alignment Options** - Left, center, and right alignment support
+- 🔢 **Disabled Pages** - Support for disabling specific pages
+- 📱 **Responsive Design** - Mobile-friendly pagination controls
+- 🚀 Angular 20.2.1 support with signals
+- ♿ Accessibility friendly with proper ARIA attributes
+- 🛠️ Flexible configuration with between-page ranges
+
+## Usage
+
+### Import the Module
+```typescript
+import { PaginationMaterial } from '@pmeig/ngb-pagination';
+@Component({
+imports: [PaginationMaterial],
+// ...
+})
+export class MyComponent { }
+```
+### Basic Pagination
+```html
+<pagination
+[total]="50"
+[(page)]="currentPage">
+</pagination>
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+```typescript
+import { signal, effect } from '@angular/core';
 
-```bash
-ng generate --help
+export class MyComponent {
+  currentPage = signal(1);
+
+  constructor() {
+    effect(() => this.loadData(this.currentPage());
+  }
+}
+```
+### Configuration-Based Pagination
+```html
+<pagination
+[config]="paginationConfig"
+(pageChange)="onPageChange($event)">
+</pagination>
+```
+```typescript
+export class MyComponent {
+  paginationConfig = {
+    page: 1,
+    total: 100
+  };
+  
+  onPageChange(page: number) {
+    this.paginationConfig.page = page;
+    this.loadData(page);
+  }
+}
 ```
 
-## Building
 
-To build the library, run:
-
-```bash
-ng build b-pagination
+### Pagination with Page Range
+```html
+<pagination 
+  [total]="200"
+  [(page)]="currentPage"
+  [between]="{previous: 3, next: 3}">
+</pagination>
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
 
-### Publishing the Library
+### Different Sizes
+```html
+<!-- Small Pagination -->
+<pagination 
+  [total]="25" 
+  [(page)]="currentPage" 
+  size="sm">
+</pagination>
 
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/b-pagination
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+<!-- Large Pagination -->
+<pagination 
+  [total]="25" 
+  [(page)]="currentPage" 
+  size="lg">
+</pagination>
 ```
 
-## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
+### Aligned Pagination
+```html
+<!-- Center Aligned -->
+<pagination 
+  [total]="30" 
+  [(page)]="currentPage" 
+  align="center">
+</pagination>
 
-```bash
-ng e2e
+<!-- Right Aligned -->
+<pagination 
+  [total]="30" 
+  [(page)]="currentPage" 
+  align="end">
+</pagination>
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-## Additional Resources
+### Custom Navigation Labels
+```html
+<pagination 
+  [total]="40" 
+  [(page)]="currentPage" 
+  navigation="label">
+</pagination>
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+### Disabled Pages
+```html
+<pagination 
+  [total]="20" 
+  [(page)]="currentPage" 
+  [page-disabled]="[5, 10, 15]">
+</pagination>
+```
+
+
+### No Navigation Arrows
+```html
+<pagination 
+  [total]="15" 
+  [(page)]="currentPage" 
+  [navigation]="false">
+</pagination>
+```
+
+
+## API Reference
+
+### Pagination Component Options
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `total` | `number` | `0` | Total number of pages |
+| `page` | `number` | `1` | Current active page |
+| `size` | `'sm' \| 'lg'` | `undefined` | Pagination size variant |
+| `align` | `'start' \| 'center' \| 'end'` | `undefined` | Pagination alignment |
+| `navigation` | `'icons' \| 'label' \| false \| PipeTransform` | `'icons'` | Navigation button style |
+| `between` | `{previous: number, next: number} \| number` | `{previous: 0, next: 0}` | Number of pages to show around current page |
+| `config` | `{page: number, total: number}` | `{page: 1, total: 0}` | Configuration object for page and total |
+| `page-disabled` | `number[] \| string \| number` | `[]` | Pages to disable (comma-separated string or array) |
+
+### Events
+| Event | Type | Description |
+|-------|------|-------------|
+| `pageChange` | `number` | Emitted when page changes |
+
+#### Navigation Options
+- **Icons**: `navigation="icons"` - Shows « and » symbols
+- **Labels**: `navigation="label"` - Shows "Previous" and "Next" text
+- **Custom**: `navigation="customPipe"` - Uses custom pipe transform
+- **None**: `navigation="false"` - No navigation arrows
+
+## How It Works
+
+### Intelligent Page Display
+The pagination component automatically:
+1. **Range Management**: Shows appropriate page ranges around current page
+2. **Ellipsis Handling**: Displays "..." when there are gaps in page sequence
+3. **Navigation Logic**: Handles previous/next navigation with disabled page skipping
+4. **State Synchronization**: Maintains current page state and emits changes
+
+### Page Range Logic
+- **Between Configuration**: Controls how many pages to show before and after current page
+- **Dynamic Adjustment**: Automatically adjusts ranges near beginning or end of pagination
+- **Ellipsis Insertion**: Shows dots when there are gaps in the page sequence
+
+## Bootstrap Classes Support
+
+This library generates and works with standard Bootstrap 5 pagination classes:
+- `pagination` - Base pagination styling
+- `pagination-sm` - Small pagination variant
+- `pagination-lg` - Large pagination variant
+- `justify-content-start`, `justify-content-center`, `justify-content-end` - Alignment classes
+- `page-item` - Individual page item container
+- `page-link` - Page link styling
+- `active` - Current page indicator
+- `disabled` - Disabled page state
+
+## Size Options
+
+Available pagination sizes:
+- **Small**: `size="sm"` - Compact pagination for dense layouts
+- **Default**: No size attribute - Standard pagination size
+- **Large**: `size="lg"` - Larger pagination for prominent placement
+
+## Alignment Options
+
+Control pagination alignment:
+- **Start**: `align="start"` - Left-aligned (default)
+- **Center**: `align="center"` - Center-aligned
+- **End**: `align="end"` - Right-aligned
+
+## Dependencies
+
+- **Angular**: ^20.2.1
+- **@angular/common**: ^20.2.1
+- **@pmeig/ngb-core**: ^0.0.1
+- **tslib**: ^2.3.0
+
+## Compatibility
+
+- Angular: 20.2.1+
+- Bootstrap: 5.3.3+
+- TypeScript: 5.8.3+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+
+## Troubleshooting
+
+### Common Issues
+
+**Pagination not updating**
+- Ensure `pageChange` event is properly handled
+- Check that `page` input is being updated correctly
+- Verify that component change detection is triggered
+
+**Page numbers not displaying correctly**
+- Check that `total` is set to the correct number of pages
+- Verify that `between` configuration is appropriate for your data size
+- Ensure page calculations are correct in your component
+
+**Navigation arrows not working**
+- Confirm that `navigation` is not set to `false`
+- Check that pages are not disabled when navigating
+- Verify that proper page bounds are respected
+
+**Disabled pages not working**
+- Ensure `page-disabled` format is correct (array of numbers or comma-separated string)
+- Check that disabled pages are within the valid page range
+- Verify that navigation skips disabled pages correctly
+
+**Styling issues**
+- Ensure Bootstrap CSS is properly loaded
+- Check for conflicting CSS that might override pagination styles
+- Verify that size and alignment classes are applied correctly
+
+## License
+This project is licensed under the MIT License.
+
+## Support
+For issues and questions, please open an issue on the GitHub repository.

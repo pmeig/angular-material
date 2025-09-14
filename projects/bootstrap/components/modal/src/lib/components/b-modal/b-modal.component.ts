@@ -62,7 +62,7 @@ export class ModalMaterial extends BTagComponent implements Modal {
   fullscreen = input<'modal-fullscreen-size-down' | 'modal-size', EmptyBooleanAttribute>('modal-size',
     {transform: fullscreen => emptyBooleanAttribute(fullscreen) ? 'modal-fullscreen-size-down' : 'modal-size'});
   timeout = input<Nullable<Timeout>, TimeoutAttribute>(undefined, {transform: timeoutAttribute})
-  sizeAttribute = input<SizeAttribute>();
+  sizeAttribute = input<SizeAttribute>(undefined, {alias: 'size'});
   size = computed(() => this.compileClassSize());
   center = input<boolean, EmptyBooleanAttribute>(true, {transform: emptyBooleanAttribute});
   scrollable = input<boolean, EmptyBooleanAttribute>(true, {transform: emptyBooleanAttribute});

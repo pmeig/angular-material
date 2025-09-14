@@ -12,6 +12,10 @@
   "repository": {
     "url": "https://github.com/pmeig/angular-material"
   },
+  "bugs": {
+    "url": "https://github.com/pmeig/angular-material/issues",
+    "email": "pierrick.workspace@gmail.com"
+  },
   "keywords": [
     "angular",
     "pmeig",

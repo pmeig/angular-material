@@ -26,8 +26,8 @@ export class BProgressComponent extends BTagComponent {
 
   striped = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute});
   animated =  input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute});
-  label = input<boolean, BooleanAttribute>(true, {transform: booleanAttribute});
-  observer = input<Observable<HttpEvent<any>> | number | string>(0);
+  label = input<boolean, BooleanAttribute>(true, {transform: booleanAttribute, alias: 'label-enabled'});
+  observer = input<Observable<HttpEvent<any>> | number | `${number}`>(0);
   color = input<ColorConfig, ColorAttribute>({style: ''}, {transform: color => colorAttribute(color, 'bg')});
   various= input<Record<`${number}`, ColorAttribute>>({})
 

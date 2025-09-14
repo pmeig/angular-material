@@ -1,63 +1,259 @@
-# BProgress
+# @pmeig/ngb-progress
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.0.
+A powerful Angular library that provides Bootstrap-styled progress components with HTTP request integration, animated load bars, and advanced color configuration options.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+## Installation
 ```bash
-ng generate component component-name
+  npm install @pmeig/ngb-progress
+```
+## Features
+
+- 🎯 **BProgressComponent** - Full-featured progress bar with Bootstrap styling
+- 📦 **BLoadBarComponent** - Animated loading bars with customizable movement patterns
+- 🔄 **HTTP Integration** - Automatic progress tracking for HTTP requests
+- ✨ **Color Theming** - Bootstrap color variants and custom color configurations
+- 🎨 **Striped & Animated** - Visual enhancements with striped and animated patterns
+- 🔢 **Dynamic Colors** - Change colors based on progress percentage
+- 📱 **Observable Support** - Real-time progress updates via RxJS observables
+- 🚀 Angular 20.2.1 support with signals
+- ♿ Accessibility friendly with ARIA attributes
+- 🛠️ Flexible configuration options
+
+## Usage
+
+### Import the Module
+```typescript 
+import { ProgressMaterial } from '@pmeig/ngb-progress';
+@Component({
+  imports: [ProgressMaterial],
+  // ...
+})
+export class MyComponent { }
+``` 
+
+### Basic Progress Bar
+```html
+<progressbar observer="75" color="primary">
+</progressbar>
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
+### Progress Bar with Label
+```html
+<progressbar [observer]="currentProgress" label-enabled="false" color="success">
+</progressbar>
 ```
 
-## Building
-
-To build the library, run:
-
-```bash
-ng build b-progress
+### Striped Progress Bar
+```html
+<progressbar [observer]="uploadProgress" color="info" striped>
+</progressbar>
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
-
-### Publishing the Library
-
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/b-progress
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+### Animated Progress Bar
+```html
+<progressbar [observer]="loadingProgress" color="warning" striped animated>
+</progressbar>
 ```
 
-## Running end-to-end tests
+### HTTP Request Progress
+```html
+<progressbar [observer]="httpRequest$" color="primary">
+</progressbar>
+```
+ 
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+### Basic Progress Bar
+```html
+<progressbar observer="75" color="primary">
+</progressbar>
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-## Additional Resources
+### Progress Bar without Label
+```html
+<progressbar [observer]="currentProgress" label-enabled="false" color="success">
+</progressbar>
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+### Striped Progress Bar
+```html
+<progressbar [observer]="uploadProgress" color="info" striped>
+</progressbar>
+```
+
+
+### Animated Progress Bar
+```html
+<progressbar [observer]="loadingProgress" color="warning" animated>
+</progressbar>
+```
+
+
+### HTTP Request Progress
+```html
+<progressbar [observer]="httpRequest$" color="primary">
+</progressbar>
+```
+
+```typescript
+export class MyComponent {
+  httpRequest$: Observable<HttpEvent<any>>;
+
+  constructor(private readonly http: HttpClient) {}
+
+  uploadFile(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.httpRequest$ = this.http.post('/api/upload', formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
+}
+```
+
+
+### Dynamic Color Based on Progress
+```html
+<progressbar 
+  [observer]="currentProgress" 
+  color="danger"
+  [various]="{
+    30: 'warning',
+    70: 'success'
+  }">
+</progressbar>
+```
+
+
+### Load Bar (Indeterminate Progress)
+```html
+<load-bar color="primary" speed="3" round>
+</load-bar>
+```
+
+
+### Load Bar Without Circle Animation
+```html
+<load-bar color="info" [circle]="false" [speed]="5">
+</load-bar>
+```
+
+
+## API Reference
+
+### Progress Bar Component Options
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `observer` | `Observable<HttpEvent> \| number \| string` | `0` | Progress source - HTTP observable, number (0-100), or string percentage |
+| `color` | `ColorConfig \| ColorAttribute` | `{style: ''}` | Progress bar color configuration |
+| `various` | `Record<string, ColorAttribute>` | `{}` | Color changes based on progress percentage |
+| `striped` | `boolean` | `false` | Adds striped pattern to progress bar |
+| `animated` | `boolean` | `false` | Animates striped pattern (requires striped=true) |
+| `label` | `boolean` | `true` | Shows progress percentage text |
+
+### Load Bar Component Options
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `color` | `ColorAttribute` | `'primary'` | Load bar color |
+| `speed` | `number` | `5` | Animation speed (lower = faster) |
+| `round` | `boolean` | `true` | Rounded corners on progress bar |
+| `circle` | `boolean` | `true` | Circular animation pattern vs linear |
+
+#### Observer Input Types
+- **Number**: Static percentage (0-100)
+- **String**: Percentage string (e.g., "75%")
+- **HTTP Observable**: Automatically tracks upload/download progress
+- **Custom Observable**: Any observable emitting HttpEvent objects
+
+## How It Works
+
+### Progress Tracking
+The progress component automatically:
+1. **Value Processing**: Handles different input types (numbers, strings, observables)
+2. **HTTP Integration**: Listens to HTTP events for upload/download progress
+3. **Percentage Calculation**: Converts loaded/total bytes to percentage
+4. **Color Management**: Applies colors based on current progress value
+5. **ARIA Updates**: Maintains accessibility attributes
+
+### Load Bar Animation
+The load bar provides:
+- **Continuous Animation**: Smooth, ongoing progress indication
+- **Pattern Control**: Circular or linear animation patterns
+- **Speed Configuration**: Adjustable animation timing
+- **Visual Feedback**: For operations without definite progress
+
+## Bootstrap Classes Support
+
+This library generates and works with standard Bootstrap 5 progress classes:
+- `progress` - Main progress container
+- `progress-bar` - Progress bar element
+- `progress-bar-striped` - Striped pattern
+- `progress-bar-animated` - Animated striped pattern
+- `progress-stacked` - Stacked progress bars
+- `bg-primary`, `bg-success`, etc. - Color variants
+
+## Color Options
+
+### Bootstrap Color Variants
+- `primary`, `secondary`, `success`, `danger`
+- `warning`, `info`, `light`, `dark`
+
+### Custom Colors
+- **CSS Colors**: Hex, RGB, HSL values
+- **CSS Classes**: Custom background classes
+- **Dynamic Colors**: Different colors for different progress ranges
+
+## Dependencies
+
+- **Angular**: ^20.2.1
+- **@angular/common**: ^20.2.1
+- **@pmeig/ngb-core**: ^0.0.1
+- **tslib**: ^2.3.0
+
+## Compatibility
+
+- Angular: 20.2.1+
+- Bootstrap: 5.3.3+
+- TypeScript: 5.8.3+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+
+
+## Troubleshooting
+
+### Common Issues
+
+**Progress not updating**
+- Ensure the observer value is changing
+- Check that the observable is emitting HttpEvent objects
+- Verify that percentage values are within 0-100 range
+
+**HTTP progress not working**
+- Confirm that `reportProgress: true` is set in HTTP options
+- Check that the server supports progress reporting
+- Verify that `observe: 'events'` is included in HTTP request options
+
+**Colors not applying**
+- Ensure Bootstrap CSS is properly loaded
+- Check that color names are valid Bootstrap variants
+- Verify custom color syntax for hex/rgb values
+
+**Animations not working**
+- Ensure both `striped` and `animated` are set to true for animated stripes
+- Check that Bootstrap animation CSS is loaded
+- Verify that the browser supports CSS animations
+
+**Load bar not animating**
+- Check that the component is properly initialized
+- Verify that speed value is a positive number
+- Ensure there are no conflicting CSS styles
+
+## License
+This project is licensed under the MIT License.
+
+## Support
+For issues and questions, please open an issue on the GitHub repository.
