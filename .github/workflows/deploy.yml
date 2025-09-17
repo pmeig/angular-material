@@ -42,30 +42,13 @@ jobs:
         uses: pmeig/github-actions/actions/github/diff@main
         with:
           includes: 'start=projects'
-      - name: prepare modules
-        if: ${{ github.event_name != 'workflow_dispatch' }}
-        id: isolates
-        run: |
-          files=''
-          for file in ${{ steps.modules-accepted.outputs.files }}
-          do
-            if [[ "$file" == *"/src/"* ]]
-            then
-              path=${file/\/src\//@}
-              module=$(echo $path | cut -d'@' -f1)
-              if [[ " $files " != *" $module "* ]]
-              then
-                files="$files $module"
-              fi
-            fi
-          done
-          echo "value=$files" >> $GITHUB_OUTPUT
+          parent: 'true'
       - name: retrieve modules change
         id: changed
         if: ${{ github.event_name != 'workflow_dispatch' }}
         run: |
           names=''
-          for module in ${{ steps.isolates.outputs.value }}
+          for module in ${{ steps.modules-accepted.outputs.parents }}
           do
             name=$(jq -rc --arg path "$module" '.projects | to_entries | map(select(.value.root == $path)) | .[] | .key' angular.json
             names="$names $name"
@@ -93,15 +76,16 @@ jobs:
           do
             name=$(echo $project | jq -rc '.name')
             path=$(echo $project | jq -rc '.package')
-            version=$(echo $project | jq -rc '.version')
+            version=$(echo $project | jq -rc '.version' | cut -d'-' -f1)
+            version="$version${{ steps.suffix.outputs.value }}"
             projectName=$(jq -rc '.name' $path/package.json)
             context="{\"name\": \"$name\", \"path\": \"$path\", \"project\": \"$projectName\", \"version\": \"$version\"}"
             json=$(echo $json | jq -rc --arg name "$name" --arg project "$projectName" context "$context" '. + {($name): $context, ($project): $context}')
           done
           echo "value=json" >> $GITHUB_OUTPUT)
     outputs:
-      env: ${{ steps.changed.outputs.value }}
-      modules: ${{ steps.changed.outputs.value }}${{ inputs.modules }}
+      env: ${{ steps.env.outputs.value }}
+      modules: ${{ steps.changed.outputs.value }}
       artifactory: ${{ steps.metadata.outputs.npm-target }}
       projects: ${{ steps.projects.outputs.value }}
       target: ${{ steps.metadata.outputs.target }}
@@ -131,17 +115,15 @@ jobs:
           secrets: |
             pmeig/server/data/cicd/jfrog/writer user | ARTIFACTORY_USER;
             pmeig/server/data/cicd/jfrog/writer password | ARTIFACTORY_PASSWORD;
-            pmeig/server/data/cicd/jfrog/reader user | ARTIFACTORY_READER_USER;
-            pmeig/server/data/cicd/jfrog/reader password | ARTIFACTORY_READER_PASSWORD;
             pmeig/server/data/cicd/npm user | REMOTE_USER;
-            pmeig/server/data/cicd/npm password | REMOTE_PASSWORD;
+            pmeig/server/data/cicd/npm token | REMOTE_TOKEN;
       - name: node setup
         uses: pmeig/github-actions/actions/node/setup@main
         id: node-setup
         with:
-          artifactory-password: ${{ env.ARTIFACTORY_READER_PASSWORD }}
-          artifactory-user: ${{ env.ARTIFACTORY_READER_USER }}
-          remote-token: ${{ env.REMOTE_PASSWORD }}
+          remote-token: ${{ env.REMOTE_TOKEN }}
+          artifactory-password: ${{ env.ARTIFACTORY_PASSWORD }}
+          artifactory-user: ${{ env.ARTIFACTORY_USER }}
           branch: ${{ needs.context.outputs.target }}
       - name: find dependencies internal
         id: dependencies
@@ -174,8 +156,10 @@ jobs:
       - name: build ${{ matrix.module }}
         id: build
         run: |
+          context=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "${{ matrix.module }}" '.[$key]')
+          npm version --allow-same-version $(echo $context | jq -r '.version')
           npm run ng -- build ${{ matrix.module }} --configuration=production
-          path=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "${{ matrix.module }}" '.[$key].path')
+          path=$(echo $context | jq -r '..path')
           cd $path
           dist=$(npm run tsc -- showConfig | jq -rc '.compilerOptions.outDir')
           cd dist
@@ -183,16 +167,18 @@ jobs:
           mv *.tgz ${{ matrix.module }}.tgz
           echo "pack=$(pwd)/${{ matrix.module }}.tgz" >> $GITHUB_OUTPUT
       - name: deploy on remote
-        if: ${{ needs.context.outputs.env == 'prod' }}
         run: |
           options='--no-git-checks'
           if [ '${{ needs.context.outputs.env }}' != 'prod' ]
           then
-           options="$options --tag snapshot"
+            options="$options --tag snapshot"
           fi
-          # npm publish ${{ steps.pack.outputs.path }}${{ steps.cli.outputs.path }} $options
-          npm config delete @pmeig:registry
-          npm publish ${{ steps.pack.outputs.path }}${{ steps.cli.outputs.path }} --access public $options
+          # pnpm publish ${{ steps.pack.outputs.path }}${{ steps.cli.outputs.path }} $options
+          if [ '${{ needs.context.outputs.env }}' == 'prod' ]
+          then
+            pnpm config delete @pmeig:registry
+            pnpm publish ${{ steps.pack.outputs.path }}${{ steps.cli.outputs.path }} --access public $options
+          fi
   prepare-tag:
     if: ${{ needs.context.outputs.env == 'prod' }}
     needs:
@@ -230,7 +216,7 @@ jobs:
       - name: tag
         id: tag
         run: |
-          current=$(date +YYYY_MM_JJ)
+          current=$(date +%Y_%m_%d)
           echo "value=release_$current" >> $GITHUB_OUTPUT
       - name: create tag
         uses: pmeig/github-actions/actions/github/release@main
@@ -260,10 +246,12 @@ jobs:
         run: |
           staging=''
           modules=''
+          workspace=$(pwd)
           for module in $(echo '${{ needs.context.outputs.modules }}' | jq -rc '.[]')
           do
             project=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$module" '.[$key]')
-            package="$(echo $project | jq -rc '.path')/package.json"
+            path=$(echo $project | jq -rc '.path')
+            package="$path/package.json"
             release=$(echo $project | jq -rc '.version' | cut -d'.' -f2)
             version=$(jq -r '.version' $package)
             version=$(echo "$version" | cut -d'-' -f1)
@@ -272,8 +260,10 @@ jobs:
 
             if (( $minor == $release ))
             then
-              jq --arg version "$major.$((minor + 1)).0-SNAPSHOT" '.version = $version' $package > $package
-              modules="$modules $(echo $module | jq -rc 'name')"
+              cd $path
+              npm version "$major.$((minor + 1)).0-SNAPSHOT"
+              cd $workspace
+              modules="$modules $(echo $project | jq -rc '.name')"
               staging="$staging $package"
             fi
           done
