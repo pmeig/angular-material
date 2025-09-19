@@ -46,7 +46,7 @@ jobs:
           accepted='${{ inputs.modules }}'
           if [ -z "$accepted" ]
           then
-            accepted=$(jq -rc '.projects | keys | .[]' angular.json)
+            accepted=$(jq -rc '.projects | keys | join(" ")' angular.json)
           fi
           modules='[]'
           for root in $(echo "$json" | jq -rc '.[]')

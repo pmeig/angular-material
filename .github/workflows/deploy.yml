@@ -6,14 +6,6 @@ on:
         description: modules do you want build separate by space
         required: false
         default: ''
-      env:
-        description: environment to build
-        required: false
-        type: choice
-        options:
-          - dev
-          - prod
-        default: 'dev'
   pull_request_target:
     types:
       - closed
@@ -50,7 +42,7 @@ jobs:
           names=''
           for module in ${{ steps.modules-accepted.outputs.parents }}
           do
-            name=$(jq -rc --arg path "$module" '.projects | to_entries | map(select(.value.root == $path)) | .[] | .key' angular.json
+            name=$(jq -rc --arg path "$module" '.projects | to_entries | map(select(.value.root == $path)) | .[] | .key' angular.json)
             names="$names $name"
           done
           echo "value=$names" >> $GITHUB_OUTPUT
@@ -68,26 +60,27 @@ jobs:
             env='dev'
           fi
           echo "value=$env" >> $GITHUB_OUTPUT
-      - name: projects context
-        id: projects
+      - name: build matrix
+        id: matrix
         run: |
-          json='{}'
-          for project in $(jq -rc '.projects | to_entries | map({"name": .key, "path": .value.root}) | .[]' angular.json)
+          json='[]'
+          names='${{ steps.changed.outputs.value }}${{ inputs.modules }}'
+          projects=$(jq -rc '.projects' angular.json)
+          for name in $names
           do
-            name=$(echo $project | jq -rc '.name')
-            path=$(echo $project | jq -rc '.package')
-            version=$(echo $project | jq -rc '.version' | cut -d'-' -f1)
+            context=$(echo $projects | jq -rc --arg key "$name" '.[$key]')
+            path=$(echo $context | jq -rc '.root')
+            version=$(jq -rc '.version' $path/package.json | cut -d'-' -f1)
             version="$version${{ steps.suffix.outputs.value }}"
             projectName=$(jq -rc '.name' $path/package.json)
             context="{\"name\": \"$name\", \"path\": \"$path\", \"project\": \"$projectName\", \"version\": \"$version\"}"
-            json=$(echo $json | jq -rc --arg name "$name" --arg project "$projectName" context "$context" '. + {($name): $context, ($project): $context}')
+            json=$(echo $json | jq -rc --argjson context "$context" '. + [$context]')
           done
-          echo "value=json" >> $GITHUB_OUTPUT)
+          echo value=$json >> $GITHUB_OUTPUT
     outputs:
       env: ${{ steps.env.outputs.value }}
-      modules: ${{ steps.changed.outputs.value }}
+      matrix: ${{ steps.matrix.outputs.value }}
       artifactory: ${{ steps.metadata.outputs.npm-target }}
-      projects: ${{ steps.projects.outputs.value }}
       target: ${{ steps.metadata.outputs.target }}
   build:
     needs: context
@@ -100,7 +93,7 @@ jobs:
       PMEIG_TOKEN: ${{ secrets.PMEIG_TOKEN }}
     strategy:
       matrix:
-        module: ${{ fromJSON(needs.context.outputs.modules) }}
+        module: ${{ fromJSON(needs.context.outputs.matrix) }}
       max-parallel: 3
     steps:
       - name: checkout project
@@ -131,41 +124,42 @@ jobs:
         with:
           dev: true
           prefix: '@pmeig/'
+          workspace: ${{ matrix.module.path }}
           subpath-resolver: |
-            package=(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$depend" '.[$key].path')
+            package=$(echo '${{ needs.context.outputs.matrix }}' | jq -rc --arg key "$depend" 'map(select(.project == $key)) | .[0] | .path')
       - name: install dependencies
         id: projects
         run: |
           npm install
-          cwd=$(pwd)
-          for depend in ${{ steps.dependencies.outputs.value }}
-          do
-            context=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$depend" '.[$key]')
-            name=$(echo $context | jq -rc '.name')
-            npm run ng -- build $name --configuration=production
-            path=$(echo $context | jq -rc '.path')
-            cd $path
-            dist=$(npm run tsc --showConfig | jq -rc '.compilerOptions.outDir')
-            cd $dist
-            npm pack
-            dist=$(pwd)
-            mv *.tgz $name.tgz
-            cd $cwd
-            npm install $dist/$name.tgz
-          done
-      - name: build ${{ matrix.module }}
+          if [ -n "${{ steps.dependencies.outputs.paths }}" ]
+          then
+            cwd=$(pwd)
+            for path in ${{ steps.dependencies.outputs.paths }}
+            do
+              name=$(echo '${{ needs.context.outputs.matrix }}' | jq -rc --arg key "$path" 'map(select(.path == $key)) | .[0].name')
+              npm run ng -- build $name --configuration=production
+              dist=${path/projects/dist}
+              cd $dist
+              npm pack
+              dist=$(pwd)
+              mv *.tgz $name.tgz
+              cd $cwd
+              npm install $dist/$name.tgz
+            done
+          fi
+      - name: build ${{ matrix.module.name }}
         id: build
         run: |
-          context=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "${{ matrix.module }}" '.[$key]')
-          npm version --allow-same-version $(echo $context | jq -r '.version')
-          npm run ng -- build ${{ matrix.module }} --configuration=production
-          path=$(echo $context | jq -r '..path')
+          workspace=$(pwd)
+          path='${{ matrix.module.path }}'
           cd $path
-          dist=$(npm run tsc -- showConfig | jq -rc '.compilerOptions.outDir')
-          cd dist
+          npm version --allow-same-version ${{ matrix.module.version }}
+          cd $workspace
+          npm run ng -- build ${{ matrix.module.name }} --configuration=production
+          cd ${path/projects/dist}
           npm pack
-          mv *.tgz ${{ matrix.module }}.tgz
-          echo "pack=$(pwd)/${{ matrix.module }}.tgz" >> $GITHUB_OUTPUT
+          mv *.tgz ${{ matrix.module.name }}.tgz
+          echo "pack=$(pwd)/${{ matrix.module.name }}.tgz" >> $GITHUB_OUTPUT
       - name: deploy on remote
         run: |
           options='--no-git-checks'
@@ -173,11 +167,11 @@ jobs:
           then
             options="$options --tag snapshot"
           fi
-          # pnpm publish ${{ steps.pack.outputs.path }}${{ steps.cli.outputs.path }} $options
+          # pnpm publish ${{ steps.build.outputs.pack }} $options
           if [ '${{ needs.context.outputs.env }}' == 'prod' ]
           then
-            pnpm config delete @pmeig:registry
-            pnpm publish ${{ steps.pack.outputs.path }}${{ steps.cli.outputs.path }} --access public $options
+            npm config delete @pmeig:registry
+            npm publish ${{ steps.build.outputs.pack }} --access public $options
           fi
   prepare-tag:
     if: ${{ needs.context.outputs.env == 'prod' }}
@@ -246,13 +240,11 @@ jobs:
         run: |
           staging=''
           modules=''
-          workspace=$(pwd)
-          for module in $(echo '${{ needs.context.outputs.modules }}' | jq -rc '.[]')
+          for module in $(echo '${{ needs.context.outputs.matrix }}' | jq -rc '.[]')
           do
-            project=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$module" '.[$key]')
-            path=$(echo $project | jq -rc '.path')
+            path=$(echo $module | jq -rc '.path')
             package="$path/package.json"
-            release=$(echo $project | jq -rc '.version' | cut -d'.' -f2)
+            release=$(echo $module | jq -rc '.version' | cut -d'.' -f2)
             version=$(jq -r '.version' $package)
             version=$(echo "$version" | cut -d'-' -f1)
             major=$(echo "$version" | cut -d'.' -f1)
@@ -260,10 +252,8 @@ jobs:
 
             if (( $minor == $release ))
             then
-              cd $path
-              npm version "$major.$((minor + 1)).0-SNAPSHOT"
-              cd $workspace
-              modules="$modules $(echo $project | jq -rc '.name')"
+              json=$(jq -r --arg version "$major.$((minor + 1)).0-SNAPSHOT" '. + {"version": $version}' $path/package.json
+              modules="$modules $(echo $module | jq -rc '.name')"
               staging="$staging $package"
             fi
           done

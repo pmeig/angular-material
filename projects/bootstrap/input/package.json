@@ -1,6 +1,6 @@
 {
   "name": "@pmeig/ngb-input",
-  "version": "0.0.1",
+  "version": "0.0.1-SNAPSHOT",
   "exports": {
     ".": {
       "sass": "./scss/b-input.scss"
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "@pmeig/ngb-core": "0.0.1"
+    "@pmeig/ngb-core": "0.0.1-SNAPSHOT"
   },
   "homepage": "https://github.com/pmeig/angular-material/tree/main/projects/bootstrap/input",
   "repository": {
