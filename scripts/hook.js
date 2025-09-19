@@ -19,8 +19,8 @@ var path = (0, node_path_1.resolve)(cwd, 'package.json');
 var packageJson = JSON.parse((0, node_fs_1.readFileSync)(path, { encoding: 'utf-8' }));
 var removeInternalDependencies = function (dependencies) {
     return Object.entries(dependencies).filter(function (_a) {
-        var key = _a[0];
-        return !key.startsWith('@pmeig/') || key.endsWith('/ng-core');
+        var key = _a[0], value = _a[1];
+        return !value.startsWith('file:');
     }).reduce(function (acc, entry) {
         acc[entry[0]] = entry[1];
         return acc;

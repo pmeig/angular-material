@@ -20,7 +20,7 @@ const packageJson = JSON.parse(readFileSync(path, {encoding: 'utf-8'}));
 
 
 const removeInternalDependencies = (dependencies: Record<string, string>) => {
-  return Object.entries(dependencies).filter(([key]) => !key.startsWith('@pmeig/') || key.endsWith('/ng-core')).reduce((acc, entry) => {
+  return Object.entries(dependencies).filter(([_, value]) => !value.startsWith('file:')).reduce((acc, entry) => {
     acc[entry[0]] = entry[1];
     return acc;
   }, {} as Record<string, string>);
