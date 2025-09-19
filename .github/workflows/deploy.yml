@@ -65,22 +65,28 @@ jobs:
         run: |
           json='[]'
           names='${{ steps.changed.outputs.value }}${{ inputs.modules }}'
-          projects=$(jq -rc '.projects' angular.json)
-          for name in $names
+          projects=$(jq -rc '.projects | to_entries | map({ ($key): $value.root}) | .[]' angular.json)
+          value='{}'
+          for name in $(echo $projects | jq -rc 'keys | join(" ")')
           do
-            context=$(echo $projects | jq -rc --arg key "$name" '.[$key]')
-            path=$(echo $context | jq -rc '.root')
+            path=$(echo $projects | jq -rc --arg key "$name" '.[$key]')
             version=$(jq -rc '.version' $path/package.json | cut -d'-' -f1)
             version="$version${{ steps.suffix.outputs.value }}"
             projectName=$(jq -rc '.name' $path/package.json)
             context="{\"name\": \"$name\", \"path\": \"$path\", \"project\": \"$projectName\", \"version\": \"$version\"}"
-            json=$(echo $json | jq -rc --argjson context "$context" '. + [$context]')
+            if [[ " $names " == *" $name "* ]]
+            then
+              json=$(echo $json | jq -rc --argjson context "$context" '. + [$context]')
+            fi
+            value=$(echo $value | jq -rc --argjson context "$context" --arg name "$name" '. + {($name): $context}')
           done
           echo value=$json >> $GITHUB_OUTPUT
+          echo "projects=$value" >> $GITHUB_OUTPUT
     outputs:
       env: ${{ steps.env.outputs.value }}
       matrix: ${{ steps.matrix.outputs.value }}
       artifactory: ${{ steps.metadata.outputs.npm-target }}
+      projects: ${{ steps.matrix.outputs.projects }}
       target: ${{ steps.metadata.outputs.target }}
   build:
     needs: context
@@ -126,7 +132,7 @@ jobs:
           prefix: '@pmeig/'
           workspace: ${{ matrix.module.path }}
           subpath-resolver: |
-            package=$(echo '${{ needs.context.outputs.matrix }}' | jq -rc --arg key "$depend" 'map(select(.project == $key)) | .[0] | .path')
+            package=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$depend" 'map(select(.project == $key)) | .[0] | .path')
       - name: install dependencies
         id: projects
         run: |
@@ -136,7 +142,7 @@ jobs:
             cwd=$(pwd)
             for path in ${{ steps.dependencies.outputs.paths }}
             do
-              name=$(echo '${{ needs.context.outputs.matrix }}' | jq -rc --arg key "$path" 'map(select(.path == $key)) | .[0].name')
+              name=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$path" 'map(select(.path == $key)) | .[0].name')
               npm run ng -- build $name --configuration=production
               dist=${path/projects/dist}
               cd $dist
