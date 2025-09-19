@@ -1,5 +1,5 @@
-import { booleanAttribute, computed, Directive, effect, Input, input, Optional } from '@angular/core';
-import { BooleanAttribute } from '@pmeig/ng-material-core';
+import { computed, Directive, Host, input, Optional } from '@angular/core';
+import { EmptyBooleanAttribute, emptyBooleanAttribute } from '@pmeig/ng-material-core';
 import { NoValidationCss } from './b-form.css';
 import { FormControl, FormControlName } from '@angular/forms';
 import { BTagDirective } from '@pmeig/ngb-core';
@@ -7,8 +7,6 @@ import { JsonPipe } from '@angular/common';
 import { isBlank } from '@pmeig/ng-core';
 
 interface ValidatorState {
-  decorator: boolean;
-  classSuffixTemplate: string;
   messages: {
     invalid?: Element;
     valid?: Element;
@@ -19,14 +17,27 @@ interface ValidatorState {
 @Directive({
   selector: '[error], [valid], [decorator], [formControl], [formControlName]',
   standalone: true,
-  providers: [JsonPipe]
+  providers: [JsonPipe],
 })
 export class BValidatorDirective extends BTagDirective<
   Element & { setCustomValidity?: (message: string) => void }
 > {
+
+  private state: ValidatorState = {
+    messages: {},
+  };
+  private lastObserveChange?: string;
+
   invalid = input<string>('', { alias: 'error' });
   valid = input<string>('');
   formControl = input<FormControl>();
+
+  validate = input<boolean | undefined, EmptyBooleanAttribute>(undefined,
+    {transform: emptyBooleanAttribute, alias: 'is-valid'});
+  decorator = input<boolean, EmptyBooleanAttribute>(true, {transform: emptyBooleanAttribute});
+  tooltip = input<'feedback' | 'tooltip', EmptyBooleanAttribute>('feedback',
+    {transform: suffix => emptyBooleanAttribute(suffix) ? 'tooltip' : 'feedback'});
+
   private readonly control = computed(() => {
     if (this.formControlName) {
       return this.formControlName.control;
@@ -35,118 +46,27 @@ export class BValidatorDirective extends BTagDirective<
     } else {
       return undefined;
     }
-  })
-
-  private state: ValidatorState = {
-    decorator: true,
-    classSuffixTemplate: '-feedback',
-    messages: {}
-  };
-  private lastObserveChange?: string;
-  private validate?: boolean;
+  });
 
   constructor(
     private json: JsonPipe,
-    @Optional() private formControlName?: FormControlName
+    @Host() @Optional() private formControlName?: FormControlName,
   ) {
-    super(true);
-    effect(() => this.checkMessage('invalid'));
-    effect(() => this.checkMessage('valid'));
-    effect(() => this.initValidityChange());
-  }
-
-  @Input('is-valid')
-  set isValid(isValid: BooleanAttribute) {
-    this.validate = booleanAttribute(isValid);
-    if (this.validate) {
-      this.putValidity('');
-    } else {
-      this.putValidity('manual-invalid');
-    }
-  }
-
-  @Input()
-  set decorator(decorator: BooleanAttribute | '') {
-    this.state.decorator =
-      decorator === '' ? true : booleanAttribute(decorator);
-    this.refreshDecorator();
-  }
-
-  @Input()
-  set tooltip(tooltip: BooleanAttribute | '') {
-    this.removeMessage('invalid');
-    this.removeMessage('valid');
-    this.state.classSuffixTemplate =
-      tooltip === '' || booleanAttribute(tooltip) ? '-tooltip' : '-feedback';
-    this.refreshMessageType();
+    super();
+    this.effect(() => this.checkMessage('invalid'));
+    this.effect(() =>  this.checkMessage('valid'));
+    this.effect(this.initValidityChange);
+    this.effect(this.refreshValidate);
+    this.effect(this.refreshDecorator);
+    this.effect(this.refreshTooltip);
   }
 
   protected override onInit() {
     this.insertStyle(NoValidationCss);
   }
 
-  protected override afterViewInit(): void {
-    this.refreshDecorator();
-    this.refreshMessageType();
-  }
-
-
-  protected override onOverride() {
-    this.removeMessage('invalid');
-    this.removeMessage('valid');
-  }
-
-  protected override onRemove() {
-  }
-
   private refreshDecorator() {
-    if (!this.state.decorator) this.putClass('decorator-none');
-  }
-
-  private refreshMessageType() {
-    this.checkMessage('invalid');
-    this.checkMessage('valid');
-  }
-
-  private checkMessage(id: 'valid' | 'invalid') {
-    this.removeMessage(id);
-    if (this[id]()) {
-      this.insertMessage(id);
-    }
-  }
-
-  private insertMessage(id: 'valid' | 'invalid') {
-    if (this.state.messages[id]) return;
-    const div = this.renderer.createElement('div') as HTMLDivElement;
-    const classname = `${id}${this.state.classSuffixTemplate}`;
-    div.innerHTML = this[id]();
-    div.id = `${this.element.id}-${classname}`;
-    this.state.messages[id] = div;
-    this.putClass(div, classname);
-    const parent = this.renderer.parentNode(this.element) as Element;
-    if (
-      ['form-check', 'form-floating'].find((classname) =>
-        parent.className.includes(classname)
-      )
-    ) {
-      this.renderer.appendChild(parent, div);
-    } else {
-      setTimeout(() =>
-        this.renderer.insertBefore(
-          this.element,
-          div,
-          this.renderer.nextSibling(this.element)
-        )
-      );
-    }
-  }
-
-  private removeMessage(id: 'valid' | 'invalid') {
-    const element = this.state.messages[id];
-    if (element) {
-      this.renderer.removeChild(this.renderer.parentNode(element), element);
-      this.state.messages[id] = undefined;
-    }
+    if (!this.decorator()) this.putClass('decorator-none');
   }
 
   private putValidity(validity: string) {
@@ -156,13 +76,14 @@ export class BValidatorDirective extends BTagDirective<
 
   private observeValueChange(control: FormControl) {
     if (this.lastObserveChange) {
-      this.clearSubscription(this.lastObserveChange)
+      this.clearSubscription(this.lastObserveChange);
     }
+    setTimeout(() => this.updateValidity(control), 100);
     this.lastObserveChange = this.addObservable(control.valueChanges, () => this.updateValidity(control));
   }
 
   private updateValidity(control: FormControl) {
-    if (isBlank(this.validate)) {
+    if (isBlank(this.validate())) {
       this.putValidity(control.invalid ? this.json.transform(control.errors) : '');
     }
   }
@@ -172,6 +93,99 @@ export class BValidatorDirective extends BTagDirective<
     if (control) {
       this.observeValueChange(control);
       this.updateValidity(control);
+    }
+  }
+
+  private refreshValidate() {
+    const validate = this.validate();
+    if (validate || validate === undefined) {
+      this.putValidity('');
+    } else {
+      this.putValidity('manual-invalid');
+    }
+  }
+
+  private checkMessage(key: 'valid' | 'invalid') {
+    const message = this[key]();
+    if (message) {
+      this.getOrCreateElement(key, message).innerHTML = message;
+    } else if (this.state.messages[key]) {
+      this.renderer.removeChild(this.renderer.parentNode(this.element), this.state.messages[key]);
+    }
+  }
+
+  private getOrCreateElement(key: 'valid' | 'invalid', message: string): Element {
+    let element = this.state.messages[key];
+    if (!element) {
+      const classname = `${key}-${this.tooltip()}`;
+      element = this.renderer.createElement('div') as Element;
+      element.id = `${this.element.id}-${key}`;
+      this.putClass(element, classname);
+      const parent = this.insertParent('form-field-validator');
+      this.createMarginMessage(parent, key, message, element);
+      this.renderer.appendChild(parent, element);
+      this.state.messages[key] = element;
+    }
+    return element as Element;
+  }
+
+  private removeLastClass(key?: 'valid' | 'invalid') {
+    if (key) {
+      const element = this.state.messages[key];
+      if (element) {
+        this.removeClass(element, `${key}-feedback`, `${key}-tooltip`);
+      }
+    } else {
+      this.removeLastClass('valid');
+      this.removeLastClass('invalid');
+    }
+  }
+
+  private createMarginMessage(parent: Element, key: 'valid' | 'invalid', message: string, element: Element) {
+    const margin = this.renderer.createElement('div') as Element;
+    margin.innerHTML = message;
+    this.putClass(margin, 'opacity-0');
+    this.renderer.appendChild(parent, margin);
+    const currentHeight = margin.getBoundingClientRect().height;
+    this.renderer.removeChild(parent, margin);
+    if (this.element.getAttribute('error') && this.element.getAttribute('valid')) {
+      this.putClass(margin, 'feedback-margin');
+      this.setMaxHeight(parent, currentHeight, key, element, margin);
+    } else {
+      this.putClass(margin, `feedback-margin-${key}`);
+      this.renderer.appendChild(parent, margin);
+    }
+  }
+
+  private setMaxHeight(parent: Element, currentHeight: number, key: 'valid' | 'invalid', element: Element, margin: Element) {
+    const otherMarginElement = parent.querySelector(`.feedback-margin`);
+    const otherMargin = otherMarginElement?.getBoundingClientRect().height;
+    if (!otherMargin) {
+      this.putClass(margin, 'feedback-margin');
+      this.renderer.appendChild(parent, margin);
+    } else {
+      if (otherMargin !== currentHeight) {
+        const otherMessage = parent.querySelector(`${key === 'valid' ? 'invalid' : 'valid'}-feedback`);
+        if (currentHeight > otherMargin) {
+          const style = {height: `${currentHeight}px`};
+          this.putStyle(otherMessage, style);
+          otherMarginElement!.innerHTML = margin.innerHTML;
+        } else {
+          const style = {height: `${otherMargin}px`};
+          this.putStyle(element, style);
+        }
+      }
+    }
+  }
+
+  private refreshTooltip(key?: 'valid' | 'invalid') {
+    if (key) {
+      const classname = `${key}-${this.tooltip()}`
+      this.removeLastClass(key);
+      this.putClass(this.state.messages[key], classname);
+    } else {
+      this.refreshTooltip('valid');
+      this.refreshTooltip('invalid');
     }
   }
 }

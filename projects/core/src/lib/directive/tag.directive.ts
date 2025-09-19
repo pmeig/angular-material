@@ -1,76 +1,102 @@
 import {
-  afterNextRender,
   AfterViewInit,
   Directive,
+  effect,
   ElementRef,
   inject,
+  input,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
-  Renderer2
+  Renderer2,
+  signal
 } from '@angular/core';
-import { isNotBlank, Optional } from '@pmeig/ng-core';
+import { isNotBlank } from '@pmeig/ng-core';
 import { EventHandler } from '../helper/event-handler';
 import { extractElementAndAddStyle, styleToRecord } from '../helper/internal.helper';
-import { stylesCss } from '../helper/style.helper';
-import { addLinkToHead, addStyleToHead, Css, Link, StyleElement } from '../helper/css.helper';
+import {
+  addAttribute,
+  addLinkToHead,
+  addStyleToHead,
+  Css,
+  Item,
+  Link,
+  putAttribute,
+  putClass,
+  putStyle,
+  removeAttribute,
+  removeClass,
+  removeStyle,
+  StyleElement
+} from '../helper/css.helper';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { getDocument } from '../helper/browser.helper';
-
-
-export type Item = Optional<Element>;
+import { InsertParent, insertParent, isTag, ParentExclude, removeParent, TagParent } from '../helper/component.helper';
+import { BehaviorSubject, debounceTime, take } from 'rxjs';
 
 @Directive()
 export abstract class TagDirective<T extends Element = Element> extends EventHandler implements AfterViewInit, OnDestroy, OnInit {
   readonly element: T;
-  protected isOverride = false;
-  protected renderer = inject(Renderer2);
-  private platform = inject(PLATFORM_ID);
+  readonly ignore = input<'' | undefined>(undefined, { alias: 'pmeig-ignore' });
+
+  protected readonly renderer = inject(Renderer2);
+  protected parent?: InsertParent;
+  protected readonly isReady = signal(false);
+
+
+  private readonly platform = inject(PLATFORM_ID);
+  private lastLifecycleExecutor = new BehaviorSubject(false).pipe(debounceTime(50), take(1));
 
 
   protected constructor(
-    elementRef: ElementRef<T> | boolean = inject(ElementRef),
-    listenDOMInteraction: boolean = false
+    elementRef: ElementRef<T> = inject(ElementRef),
   ) {
     super();
-    if (typeof elementRef === 'boolean') {
-      listenDOMInteraction = elementRef;
-      elementRef = inject(ElementRef);
-    }
     this.element = elementRef.nativeElement;
-    if (this.isSSR()) {
-      afterNextRender(
-        () => {
-          this.init(listenDOMInteraction);
-          this.onInit();
-          this.afterViewInit();
-        });
-    } else {
-      this.init(listenDOMInteraction);
-    }
   }
 
   ngOnInit(): void {
-    if (this.isBrowser()) {
-      this.onInit();
+    if (this.isBrowser() && this.ignore() !== '') {
+      this.lastLifecycleExecutor.subscribe(() => {
+        this.putClass(...this.getDefaultClassname());
+        this.onInit();
+      })
     }
   }
 
   ngAfterViewInit(): void {
-    if (this.isBrowser()) {
-      this.afterViewInit();
+    if (this.isBrowser() && this.ignore() !== '') {
+      this.lastLifecycleExecutor.subscribe(() => {
+        this.afterViewInit();
+        this.isReady.set(true);
+      })
     }
+
   }
 
   ngOnDestroy(): void {
-    this.clearEvent();
+    if (this.isBrowser()) {
+      this.lastLifecycleExecutor.subscribe(() => {
+        this.clearEvent();
+        this.removeParent();
+      })
+    }
+  }
+
+  protected effect(action: () => void) {
+    effect(() => this.onEffect(action));
   }
 
   protected onInit() {
   }
 
   protected afterViewInit() {
+  }
 
+  protected onEffect(action: () => void) {
+    if (this.isReady()) {
+      action.bind(this)();
+    }
   }
 
   protected insertLink(...links: Link[]) {
@@ -138,6 +164,17 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
     }
   }
 
+  protected addAttribute(name: string, value: any | undefined): void
+  protected addAttribute(element: Item, name: string, value: any | undefined): void
+  protected addAttribute(element: Item | string, name: any | undefined, value?: any) {
+    if (typeof element === 'string') {
+      value = name;
+      name = element;
+      element = this.element;
+    }
+    addAttribute(element, this.renderer, name, value);
+  }
+
   protected putAttribute(name: string, value: any | undefined): void
   protected putAttribute(element: Item, name: string, value: any | undefined): void
   protected putAttribute(element: Item | string, name: any | undefined, value?: any): void {
@@ -146,23 +183,8 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       name = element;
       element = this.element;
     }
-    if (element) {
-      let action = {
-        put: () => this.renderer.setAttribute(element, name, value),
-        remove: () => this.renderer.removeAttribute(element, name)
-      };
-      if (element.nodeType === Node.COMMENT_NODE) {
-        action = {
-          put: () => element.setAttribute(name, value.toString()),
-          remove: () => element.removeAttribute(name)
-        };
-      }
-      if (value) {
-        action.put();
-      } else {
-        action.remove();
-      }
-    }
+    putAttribute(element, this.renderer, name, value);
+
   }
 
   protected removeAttribute(...names: string[]): void
@@ -172,28 +194,7 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
       names.unshift(element);
       element = this.element;
     }
-    names.forEach(name => this.renderer.removeAttribute(element, name));
-  }
-
-  protected listen(onObserve: (mutations?: MutationRecord[]) => void): string;
-  protected listen(
-    onObserve: (mutations?: MutationRecord[]) => void,
-    options: MutationObserverInit): string;
-  protected listen(
-    onObserve: (mutations?: MutationRecord[]) => void,
-    name: string): string
-  protected listen(
-    onObserve: (mutations?: MutationRecord[]) => void,
-    name: string,
-    options: MutationObserverInit): string;
-  protected listen(onObserve: (mutations?: MutationRecord[]) => void,
-                   name: MutationObserverInit | string = Math.random().toString(36),
-                   options: MutationObserverInit = {}) {
-    if (typeof name === 'object') {
-      options = name;
-      name = Math.random().toString(36);
-    }
-    return this.onChange(this.element, onObserve, name, options);
+    removeAttribute(element, this.renderer, names);
   }
 
   protected onRemove() {
@@ -208,114 +209,134 @@ export abstract class TagDirective<T extends Element = Element> extends EventHan
     return isPlatformServer(this.platform);
   }
 
-  protected onOverride(): void {
-  }
-
-  protected onExecuted(): void {
-    this.afterViewInit();
-  }
-
   private execute(element: Item | string, classes: string[], apply: (element: Item, classes: string[]) => void): void {
     if (typeof element === 'string') {
-      classes.push(element);
+      if (element) {
+        classes.push(element);
+      }
       element = this.element;
     }
     apply(element, classes);
   }
 
   private putCSSClasses(element: Item, classes: string[]) {
-    if (element) {
-      const className = element.getAttribute('class')?.split(' ') ?? [];
-      const action = element.nodeType === Node.COMMENT_NODE
-        ? (value: string) => element.setAttribute('class', `${element.getAttribute('class')} ${value}`)
-        : (value: string) => this.renderer.addClass(element, value);
-      classes
-        .filter((value) => className.length === 0 || !className.includes(value))
-        .forEach((value) => action(value));
-    }
+    putClass(element, this.renderer, classes);
   }
 
   private removeCSSClasses(
     element: Item,
-    classes: string[]
+    classes: string[],
   ) {
-    if (element) {
-      const className = element.getAttribute('class')?.split(' ') ?? [];
-      const action = element.nodeType === Node.COMMENT_NODE
-        ? (value: string) => element.setAttribute('class', (element.getAttribute('class')?.split(value) ?? []).map(cssClass => cssClass.trim()).join(' '))
-        : (value: string) => this.renderer.removeClass(element, value);
-      classes
-        .filter((value) => className.includes(value))
-        .forEach((value) => action(value));
-    }
+    removeClass(element, this.renderer, classes);
   }
 
   private putCSSStyle(element: Item, cssStyles: Record<string, string>) {
-    if (element) {
-      if (element.nodeType === Node.COMMENT_NODE) {
-        element.setAttribute('style', stylesCss(cssStyles));
-      } else {
-        Object.entries(cssStyles).forEach(([name, value]) => this.renderer.setStyle(element, name, value));
-      }
-    }
+    putStyle(element, this.renderer, cssStyles);
   }
 
   private removeCSSStyle(element: Item, cssStyle: string[]) {
-    if (element) {
-      if (element.nodeType === Node.COMMENT_NODE) {
-        const styles = element.getAttribute('style')?.split(';')?.map(style => style.split(':').map(part => part.trim()))
-          .filter(([name]) => !cssStyle.includes(name))
-          .reduce((accumulator, [name, value]) => ({ ...accumulator, [name]: value }), {});
-        if (styles && Object.keys(styles).length > 0) {
-          element.setAttribute('style', stylesCss(styles));
-        } else {
-          element.removeAttribute('style');
-        }
-      } else {
-        cssStyle.forEach(value => this.renderer.removeStyle(element, value));
+    removeStyle(element, this.renderer, cssStyle);
+  }
+
+
+  protected insertParent(
+    element: Element, excludes: ParentExclude, classes?: string, styles?: string): Element
+  protected insertParent( element: Element,
+    classes: string, styles?: string): Element
+  protected insertParent(
+    element: Element,
+    tag: TagParent,
+    excludes?: ParentExclude, classes?: string, styles?: string): Element
+  protected insertParent(
+    element: Element,
+    tag: TagParent,
+    classes?: string, styles?: string): Element
+  protected insertParent(
+    excludes: ParentExclude, classes?: string, styles?: string): Element
+  protected insertParent(
+    classes: string, styles?: string): Element
+  protected insertParent(
+    tag: TagParent,
+    excludes?: ParentExclude, classes?: string, styles?: string): Element
+  protected insertParent(
+    tag: TagParent,
+    classes?: string, styles?: string): Element
+  protected insertParent(
+    element: TagParent | ParentExclude | string | Element = this.element,
+    tag: TagParent | ParentExclude | string = '',
+    excludes: ParentExclude | string = '',
+    classes: string = '',
+    styles: string = ''): Element {
+    if (!(element instanceof Element)) {
+      styles = classes;
+      classes = excludes as string;
+      excludes = tag;
+      tag = element;
+      element = this.element;
+    }
+    if (typeof tag === 'string') {
+      if (!isTag(tag)) {
+        styles = classes;
+        classes = excludes as string;
+        excludes = tag;
+        tag = 'div';
+      }
+    } else {
+      styles = classes;
+      classes = excludes as string;
+      excludes = tag;
+      tag = 'div';
+    }
+    if (typeof excludes === 'string') {
+      styles = classes;
+      classes = excludes as string;
+      excludes = {
+        styles: element.getAttribute('style')?.split(';')
+          ?.map(style => style.trimStart().split(':').shift()).filter(style => style) as string[] ?? [],
+        classes: element.className.split(' ')
+      };
+    }
+    if (this.parent) {
+      this.putClass(this.parent.parent, classes);
+      this.putStyle(this.parent.parent, styles);
+    } else {
+      this.parent = insertParent(element, tag as TagParent, this.renderer, excludes,
+        styleToRecord(styles as string), ...(classes === '' ? [] : classes.split(' ')));
+    }
+    return this.parent.parent;
+  }
+
+  protected updateParent(add: false, styles: string[], ...classes: string[]): void
+  protected updateParent(add: boolean, ...classes: string[]): void
+  protected updateParent(add: true, styles: Record<any, any>, ...classes: string[]): void
+  protected updateParent(add: boolean, styles: Record<string, string> | string[] | string, ...classes: string[]) {
+    if (typeof styles === 'string') {
+      classes.unshift(styles);
+      styles = {};
+    }
+    if (add) {
+      this.putClass(this.parent?.parent, ...classes);
+      this.putStyle(this.parent?.parent, styles as Record<string, string>);
+    } else {
+      this.removeClass(this.parent?.parent, ...classes);
+      if (Array.isArray(styles)) {
+        this.removeStyle(this.parent?.parent, ...styles);
       }
     }
   }
 
-  private foundElement(nodes: NodeList) {
-    let index = nodes.length;
-    let item = nodes[--index];
-    while (index-- > 0 && item !== this.element) {
-      item = nodes[index];
-    }
-    return item === this.element;
+  protected removeParent(): Element {
+    const element = removeParent(this.element, this.renderer, this.parent?.id ?? '')
+    this.parent = undefined;
+    return element;
   }
 
-  private init(listenDOMInteraction: boolean) {
-    const classname = [`pmeig-${this.element.tagName.toLowerCase()}`]
+  private getDefaultClassname() {
+    const classname = [`pmeig-${this.element.tagName.toLowerCase()}`];
     const id = this.element.getAttribute('id');
     if (id) {
       classname.push(`${classname[0]}-${id}`);
     }
-    this.putClass(...classname);
-    this.listen(mutations => {
-      this.isOverride = !!mutations?.find(mutation => mutation.attributeName === 'override');
-      if (this.isOverride) {
-        this.onOverride();
-      } else this.onExecuted();
-    }, {
-      attributeFilter: ['override']
-    });
-    if (listenDOMInteraction) {
-      this.onChange(
-        this.renderer.parentNode(this.element),
-        (mutations) => {
-          if (
-            mutations
-              ?.find((mutation) => this.foundElement(mutation.addedNodes))
-          ) {
-            this.afterViewInit();
-          } else if (mutations?.find((mutation) => this.foundElement(mutation.removedNodes))) {
-            this.onRemove();
-          }
-        },
-        { childList: true, subtree: true }
-      );
-    }
+    return classname;
   }
 }

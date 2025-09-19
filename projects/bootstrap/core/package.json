@@ -1,13 +1,33 @@
 {
   "name": "@pmeig/ngb-core",
-  "version": "0.0.1",
+  "version": "0.0.1-SNAPSHOT",
   "peerDependencies": {
-    "@angular/common": "^19.0.0",
-    "@angular/core": "^19.0.0"
+    "@angular/common": "^20.2.1",
+    "@angular/core": "^20.2.1"
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "@pmeig/ng-material-core": "0.0.1"
+    "@pmeig/ng-material-core": "^0.0.1-SNAPSHOT"
   },
+  "homepage": "https://github.com/pmeig/angular-material/tree/main/projects/bootstrap/core",
+  "repository": {
+    "url": "https://github.com/pmeig/angular-material"
+  },
+  "bugs": {
+    "url": "https://github.com/pmeig/angular-material/issues",
+    "email": "pierrick.workspace@gmail.com"
+  },
+  "keywords": [
+    "angular",
+    "pmeig",
+    "ng",
+    "angular@20.2",
+    "bootstrap",
+    "bootstrap@5.8",
+    "material",
+    "core",
+    "shared"
+  ],
+  "license": "MIT",
   "sideEffects": false
 }

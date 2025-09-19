@@ -1,4 +1,4 @@
-import { leftPad, NgpDate, ngpDateObjectToDate, NgpDatePipe, NgpDateTime, NgpTime, Optional } from '@pmeig/ng-core';
+import { leftPad, NgpDate, ngpDateObjectToDate, NgpDatePipe, NgpDateTime, NgpTime, Nullable, Optional } from '@pmeig/ng-core';
 import { InputValue, InputWeek } from './directive/b-input.directive';
 import { RGB } from '@pmeig/ng-material-core';
 
@@ -6,7 +6,7 @@ export type InputValueType = 'ts-date' | 'ngp-date' | 'rgb';
 
 export interface InputMapper {
   input: (item: InputValue) => string;
-  value: () => Optional<InputValue>;
+  value: () => Nullable<InputValue> | null;
 }
 
 export const findMapper = (

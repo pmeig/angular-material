@@ -1,0 +1,20 @@
+<div class="navbar-external" [style.background-color]="backgroundStyle"
+     [ngClass]="{'bg-body-tertiary': !backgroundClass}"
+     [class]="backgroundClass"  *collapse="collapse()">
+  <div class="container-fluid">
+    @if (brandAttribute(); as brandText) {
+      <a [id]="'nav-brand-' + name()" class="navbar-brand" href="#">{{ brandText }}</a>
+    }
+    <div class="navbar-brand" *hasChildren>
+      <ng-content select="[brand]"></ng-content>
+    </div>
+    <div class="navbar-body">
+      <div class="navbar-start" *hasChildren>
+        <ng-content></ng-content>
+      </div>
+      <ng-content select="[next]"></ng-content>
+    </div>
+  </div>
+</div>
+<navbar toggler="xxl" [scroll]="scroll()" [name]="name()" (togglerClicked)="collapse.set(!collapse())" [class]="backgroundClass" [style.background-color]="backgroundStyle">
+</navbar>

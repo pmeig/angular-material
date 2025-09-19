@@ -1,4 +1,4 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import { findMapper, InputValueType } from '../b-input.mapper';
 import { BInputDirective } from './b-input.directive';
 import { NgpDatePipe } from '@pmeig/ng-core';
@@ -8,21 +8,24 @@ import { NgpDatePipe } from '@pmeig/ng-core';
   selector:
     'input[type=date], input[type=datetime-local], input[type=month], input[type=week], input[type=time], input[type=datetime], input[type=datetime-local]',
   standalone: true,
-  providers: [NgpDatePipe]
+  providers: [NgpDatePipe],
 })
 export class BInputDateDirective extends BInputDirective {
+
+  dateType = input<Omit<InputValueType, 'rgb'>>('ts-date', {alias: 'date-type'});
+
   constructor(
-    dateParser: NgpDatePipe
+    dateParser: NgpDatePipe,
   ) {
     super(dateParser);
+    this.effect(this.restoreMapper)
   }
 
-  @Input('value-type')
-  set valueType(valueType: InputValueType | undefined) {
+  private restoreMapper() {
     this.mapper = findMapper(
-      valueType || 'ts-date',
+      this.dateType(),
       this.element,
-      this.dateParser
-    );
+      this.dateParser,
+    )
   }
 }

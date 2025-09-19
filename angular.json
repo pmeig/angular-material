@@ -5,35 +5,40 @@
   "schematics": {
     "@schematics/angular:interceptor": {
       "skipTests": true,
-      "functional": true
+      "functional": true,
+      "typeSeparator": "."
     },
     "@schematics/angular:resolver": {
       "functional": true,
-      "skipTests": true
+      "skipTests": true,
+      "typeSeparator": "."
     },
     "@schematics/angular:guard": {
       "skipTests": true,
-      "functional": true
+      "functional": true,
+      "typeSeparator": "."
     },
     "@schematics/angular:interface": {
-      "prefix": "ngp"
+      "prefix": ""
     },
     "@schematics/angular:class": {
       "skipTests": true
     },
     "@schematics/angular:service": {
-      "skipTests": true
+      "skipTests": true,
+      "type": "service"
     },
     "@schematics/angular:pipe": {
       "skipTests": true,
-      "standalone": true
+      "standalone": true,
+      "typeSeparator": "."
     },
     "@schematics/angular:library": {
       "standalone": true,
-      "prefix": "ngp"
+      "prefix": "pmeig"
     },
     "@schematics/angular:application": {
-      "prefix": "ngp",
+      "prefix": "",
       "standalone": true,
       "skipTests": true,
       "ssr": true,
@@ -44,24 +49,29 @@
     "@schematics/angular:directive": {
       "skipTests": true,
       "standalone": true,
-      "prefix": "ngp"
+      "prefix": "",
+      "type": "directive"
     },
     "@schematics/angular:component": {
-      "prefix": "ngp",
+      "prefix": "",
       "standalone": true,
       "skipTests": true,
       "style": "scss",
-      "changeDetection": "OnPush"
+      "changeDetection": "OnPush",
+      "type": "component"
     },
     "@schematics/angular:ng-new": {
       "style": "scss",
       "skipTests": true,
       "standalone": true,
-      "prefix": "ngp",
+      "prefix": "@pmeig",
       "strict": true,
       "routing": true,
       "ssr": true,
       "createApplication": false
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
     }
   },
   "cli": {
@@ -78,7 +88,7 @@
       "prefix": "ngp",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/core/ng-package.json"
           },
@@ -93,7 +103,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/core/tsconfig.spec.json",
             "polyfills": [
@@ -106,29 +116,29 @@
     },
     "b-modal": {
       "projectType": "library",
-      "root": "projects/bootstrap/modal",
-      "sourceRoot": "projects/bootstrap/modal/src",
+      "root": "projects/bootstrap/components/modal",
+      "sourceRoot": "projects/bootstrap/components/modal/src",
       "prefix": "ngp",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
-            "project": "projects/bootstrap/modal/ng-package.json"
+            "project": "projects/bootstrap/components/modal/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/bootstrap/modal/tsconfig.lib.prod.json"
+              "tsConfig": "projects/bootstrap/components/modal/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/bootstrap/modal/tsconfig.lib.json"
+              "tsConfig": "projects/bootstrap/components/modal/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
-            "tsConfig": "projects/bootstrap/modal/tsconfig.spec.json",
+            "tsConfig": "projects/bootstrap/components/modal/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -137,31 +147,31 @@
         }
       }
     },
-    "b-btn": {
+    "b-button": {
       "projectType": "library",
-      "root": "projects/bootstrap/btn",
-      "sourceRoot": "projects/bootstrap/btn/src",
+      "root": "projects/bootstrap/button",
+      "sourceRoot": "projects/bootstrap/button/src",
       "prefix": "ngp",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
-            "project": "projects/bootstrap/btn/ng-package.json"
+            "project": "projects/bootstrap/button/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/bootstrap/btn/tsconfig.lib.prod.json"
+              "tsConfig": "projects/bootstrap/button/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/bootstrap/btn/tsconfig.lib.json"
+              "tsConfig": "projects/bootstrap/button/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
-            "tsConfig": "projects/bootstrap/btn/tsconfig.spec.json",
+            "tsConfig": "projects/bootstrap/button/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -177,7 +187,7 @@
       "prefix": "ngp",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/bootstrap/input/ng-package.json"
           },
@@ -192,7 +202,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/bootstrap/input/tsconfig.spec.json",
             "polyfills": [
@@ -210,7 +220,7 @@
       "prefix": "ngp",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/bootstrap/form/ng-package.json"
           },
@@ -225,7 +235,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/bootstrap/form/tsconfig.spec.json",
             "polyfills": [
@@ -243,7 +253,7 @@
       "prefix": "ngp",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/bootstrap/label/ng-package.json"
           },
@@ -258,7 +268,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/bootstrap/label/tsconfig.spec.json",
             "polyfills": [
@@ -273,10 +283,10 @@
       "projectType": "library",
       "root": "projects/bootstrap/core",
       "sourceRoot": "projects/bootstrap/core/src",
-      "prefix": "ngp",
+      "prefix": "ngb",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/bootstrap/core/ng-package.json"
           },
@@ -291,7 +301,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/bootstrap/core/tsconfig.spec.json",
             "polyfills": [
@@ -309,7 +319,7 @@
       "prefix": "ngp",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/bootstrap/material/ng-package.json"
           },
@@ -324,9 +334,579 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/bootstrap/material/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-select": {
+      "projectType": "library",
+      "root": "projects/bootstrap/select",
+      "sourceRoot": "projects/bootstrap/select/src",
+      "prefix": "ngp",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/select/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/select/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/select/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/select/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-collapse": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/collapse",
+      "sourceRoot": "projects/bootstrap/components/collapse/src",
+      "prefix": "ngp",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/collapse/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/collapse/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/collapse/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/collapse/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-accordion": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/accordion",
+      "sourceRoot": "projects/bootstrap/components/accordion/src",
+      "prefix": "ngp",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/accordion/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/accordion/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/accordion/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/accordion/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-alert": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/alert",
+      "sourceRoot": "projects/bootstrap/components/alert/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/alert/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/alert/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/alert/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/alert/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-badge": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/badge",
+      "sourceRoot": "projects/bootstrap/components/badge/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/badge/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/badge/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/badge/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/badge/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-breadcrumb": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/breadcrumb",
+      "sourceRoot": "projects/bootstrap/components/breadcrumb/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/breadcrumb/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/breadcrumb/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/breadcrumb/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/breadcrumb/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-card": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/card",
+      "sourceRoot": "projects/bootstrap/components/card/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/card/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/card/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/card/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/card/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-carousel": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/carousel",
+      "sourceRoot": "projects/bootstrap/components/carousel/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/carousel/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/carousel/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/carousel/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/carousel/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-dropdown": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/dropdown",
+      "sourceRoot": "projects/bootstrap/components/dropdown/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/dropdown/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/dropdown/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/dropdown/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/dropdown/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-list": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/list",
+      "sourceRoot": "projects/bootstrap/components/list/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/bootstrap/components/list/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/list/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/list/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/list/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-navbar": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/navbar",
+      "sourceRoot": "projects/bootstrap/components/navbar/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/navbar/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/navbar/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/navbar/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-offcanvas": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/offcanvas",
+      "sourceRoot": "projects/bootstrap/components/offcanvas/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/offcanvas/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/offcanvas/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/offcanvas/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-pagination": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/pagination",
+      "sourceRoot": "projects/bootstrap/components/pagination/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/pagination/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/pagination/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/pagination/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-progress": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/progress",
+      "sourceRoot": "projects/bootstrap/components/progress/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/progress/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/progress/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/progress/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-tooltip": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/tooltip",
+      "sourceRoot": "projects/bootstrap/components/tooltip/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/tooltip/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/tooltip/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/tooltip/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-toast": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/toast",
+      "sourceRoot": "projects/bootstrap/components/toast/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/toast/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/toast/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/toast/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-spinner": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/spinner",
+      "sourceRoot": "projects/bootstrap/components/spinner/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/spinner/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/spinner/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/spinner/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "b-table": {
+      "projectType": "library",
+      "root": "projects/bootstrap/components/table",
+      "sourceRoot": "projects/bootstrap/components/table/src",
+      "prefix": "pmeig",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bootstrap/components/table/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bootstrap/components/table/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/bootstrap/components/table/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

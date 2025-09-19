@@ -1,7 +1,7 @@
 {
   "arrowParens": "avoid",
   "useTabs": false,
-  "trailingComma": "none",
+  "trailingComma": "es5",
   "tabWidth": 2,
   "singleQuote": true,
   "semi": true,
@@ -13,5 +13,6 @@
   "htmlWhitespaceSensitivity": "strict",
   "jsxSingleQuote": true,
   "parser": "angular",
-  "printWidth": 160
+  "vueIndentScriptAndStyle": true,
+  "printWidth": 90
 }

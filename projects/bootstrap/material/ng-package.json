@@ -5,9 +5,28 @@
     "entryFile": "src/public-api.ts"
   },
   "allowedNonPeerDependencies": [
-    "@pmeig/ngb-btn",
+    "@pmeig/ngb-button",
     "@pmeig/ngb-form",
     "@pmeig/ngb-input",
-    "@pmeig/ngb-label"
+    "@pmeig/ngb-select",
+    "@pmeig/ngb-label",
+    "@pmeig/ngb-accordion",
+    "@pmeig/ngb-collapse",
+    "@pmeig/ngb-badge",
+    "@pmeig/ngb-alert",
+    "@pmeig/ngb-breadcrumb",
+    "@pmeig/ngb-card",
+    "@pmeig/ngb-carousel",
+    "@pmeig/ngb-collapse",
+    "@pmeig/ngb-dropdown",
+    "@pmeig/ngb-list",
+    "@pmeig/ngb-offcanvas",
+    "@pmeig/ngb-navbar",
+    "@pmeig/ngb-pagination",
+    "@pmeig/ngb-progress",
+    "@pmeig/ngb-tooltip",
+    "@pmeig/ngb-toast",
+    "@pmeig/ngb-spinner",
+    "@pmeig/ngb-table"
   ]
 }
