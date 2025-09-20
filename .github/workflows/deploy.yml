@@ -115,7 +115,6 @@ jobs:
           secrets: |
             pmeig/server/data/cicd/jfrog/writer user | ARTIFACTORY_USER;
             pmeig/server/data/cicd/jfrog/writer password | ARTIFACTORY_PASSWORD;
-            pmeig/server/data/cicd/npm user | REMOTE_USER;
             pmeig/server/data/cicd/npm token | REMOTE_TOKEN;
       - name: node setup
         uses: pmeig/github-actions/actions/node/setup@main
