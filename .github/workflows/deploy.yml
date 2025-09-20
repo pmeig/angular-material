@@ -122,8 +122,6 @@ jobs:
         id: node-setup
         with:
           remote-token: ${{ env.REMOTE_TOKEN }}
-          artifactory-password: ${{ env.ARTIFACTORY_PASSWORD }}
-          artifactory-user: ${{ env.ARTIFACTORY_USER }}
           branch: ${{ needs.context.outputs.target }}
       - name: find dependencies internal
         id: dependencies
