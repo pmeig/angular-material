@@ -120,7 +120,6 @@ jobs:
         uses: pmeig/github-actions/actions/node/setup@main
         id: node-setup
         with:
-          remote-token: ${{ env.REMOTE_TOKEN }}
           branch: ${{ needs.context.outputs.target }}
       - name: find dependencies internal
         id: dependencies
