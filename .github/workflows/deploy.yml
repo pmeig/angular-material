@@ -134,7 +134,6 @@ jobs:
       - name: install dependencies
         id: projects
         run: |
-          cat package.json
           npm install
           if [ -n "${{ steps.dependencies.outputs.paths }}" ]
           then
@@ -143,7 +142,7 @@ jobs:
             do
               name=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$path" 'values | map(select(.path == $key)) | .[0].name')
               npm run ng -- build $name --configuration=production
-              dist=${path/projects/dist}
+              dist="dist/$(basename $path)"
               cd $dist
               npm pack
               dist=$(pwd)
