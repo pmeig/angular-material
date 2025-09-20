@@ -79,6 +79,7 @@ jobs:
               json=$(echo $json | jq -rc --argjson context "$context" '. + [$context]')
             fi
             value=$(echo $value | jq -rc --argjson context "$context" --arg name "$name" '. + {($name): $context}')
+            value=$(echo $value | jq -rc --argjson context "$context" --arg name "$projectName" '. + {($name): $context}')
           done
           echo value=$json >> $GITHUB_OUTPUT
           echo "projects=$value" >> $GITHUB_OUTPUT
@@ -132,7 +133,7 @@ jobs:
           prefix: '@pmeig/'
           workspace: ${{ matrix.module.path }}
           subpath-resolver: |
-            package=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$depend" 'map(select(.project == $key)) | .[0] | .path')
+            package=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$depend" '.[$key].path')
       - name: install dependencies
         id: projects
         run: |
