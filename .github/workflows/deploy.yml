@@ -65,7 +65,7 @@ jobs:
         run: |
           json='[]'
           names='${{ steps.changed.outputs.value }}${{ inputs.modules }}'
-          projects=$(jq -rc '.projects | to_entries | map({ ($key): $value.root}) | .[]' angular.json)
+          projects=$(jq -rc '.projects | to_entries | map({ (.key): .value.root}) | reduce .[] as $item ({}; . + $item)' angular.json)
           value='{}'
           for name in $(echo $projects | jq -rc 'keys | join(" ")')
           do
