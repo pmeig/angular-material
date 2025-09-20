@@ -133,23 +133,9 @@ jobs:
       - name: install dependencies
         id: projects
         run: |
+          cat package.json
           npm install
-          if [ -n "${{ steps.dependencies.outputs.paths }}" ]
-          then
-            cwd=$(pwd)
-            for path in ${{ steps.dependencies.outputs.paths }}
-            do
-              name=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$path" 'map(select(.path == $key)) | .[0].name')
-              npm run ng -- build $name --configuration=production
-              dist=${path/projects/dist}
-              cd $dist
-              npm pack
-              dist=$(pwd)
-              mv *.tgz $name.tgz
-              cd $cwd
-              npm install $dist/$name.tgz
-            done
-          fi
+
       - name: build ${{ matrix.module.name }}
         id: build
         run: |
