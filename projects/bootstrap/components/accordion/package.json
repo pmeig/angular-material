@@ -1,6 +1,6 @@
 {
   "name": "@pmeig/ngb-accordion",
-  "version": "0.0.1-SNAPSHOT",
+  "version": "0.0.2-SNAPSHOT",
   "peerDependencies": {
     "@angular/common": "^20.2.1",
     "@angular/core": "^20.2.1"

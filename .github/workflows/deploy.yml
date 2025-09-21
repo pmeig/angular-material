@@ -256,7 +256,7 @@ jobs:
 
             if (( $minor == $release ))
             then
-              json=$(jq -r --arg version "$major.$((minor + 1)).0-SNAPSHOT" '. + {"version": $version}' $path/package.json
+              json=$(jq -r --arg version "$major.$((minor + 1)).0-SNAPSHOT" '. + {"version": $version}' $path/package.json)
               modules="$modules $(echo $module | jq -rc '.name')"
               staging="$staging $package"
             fi
