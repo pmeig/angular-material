@@ -27,7 +27,13 @@ export class BProgressComponent extends BTagComponent {
   striped = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute});
   animated =  input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute});
   label = input<boolean, BooleanAttribute>(true, {transform: booleanAttribute, alias: 'label-enabled'});
-  observer = input<Observable<HttpEvent<any>> | number | `${number}`>(0);
+  observer = input<Observable<HttpEvent<any>> | number, Observable<HttpEvent<any>> | number | `${number}`>(0, {transform: value => {
+    // noinspection SuspiciousTypeOfGuard
+      if (typeof value === 'string') {
+      return Number(value);
+    }
+    return value;
+  }});
   color = input<ColorConfig, ColorAttribute>({style: ''}, {transform: color => colorAttribute(color, 'bg')});
   various= input<Record<`${number}`, ColorAttribute>>({})
 
@@ -61,13 +67,7 @@ export class BProgressComponent extends BTagComponent {
   }
 
   private observe() {
-    let observer = this.observer();
-    if ( typeof observer === 'string') {
-      observer = Number(observer);
-      if (isNaN(observer)) {
-        observer = '';
-      }
-    }
+    const observer = this.observer();
     if (typeof observer === 'number') {
       if (observer < 0 && this.progress() !== '0%') {
         this.progress.set('0%');
@@ -76,7 +76,7 @@ export class BProgressComponent extends BTagComponent {
       } else if (observer >= 0 && observer <= 100) {
         this.progress.set(`${observer}%`);
       }
-    } else if (observer instanceof Observable) {
+    } else {
       this.unsubscribeLastObservable();
       const id = this.addObservable(observer, (event) => {
         switch (event.type) {

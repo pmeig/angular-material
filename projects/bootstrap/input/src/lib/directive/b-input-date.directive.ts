@@ -23,7 +23,7 @@ export class BInputDateDirective extends BInputDirective {
 
   private restoreMapper() {
     this.mapper = findMapper(
-      this.dateType(),
+      this.dateType() as InputValueType,
       this.element,
       this.dateParser,
     )
