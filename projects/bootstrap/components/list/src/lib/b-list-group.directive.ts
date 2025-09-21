@@ -1,6 +1,11 @@
 import { Directive, input } from '@angular/core';
 import { BTagParentDirective } from '@pmeig/ngb-core';
-import { ColorAttribute, colorAttributeToString } from '@pmeig/ng-material-core';
+import {
+  ColorAttribute,
+  colorAttributeToString,
+  emptyBooleanAttribute,
+  EmptyBooleanAttribute
+} from '@pmeig/ng-material-core';
 
 const LIST_GROUP = 'list-group';
 const LIST_GROUP_ITEM = `${LIST_GROUP}-item`;
