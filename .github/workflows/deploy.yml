@@ -196,7 +196,7 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        module: ${{ fromJSON(needs.context.outputs.modules) }}
+        module: ${{ fromJSON(needs.context.outputs.matrix) }}
     steps:
       - name: create tag
         uses: pmeig/github-actions/actions/github/release@main
