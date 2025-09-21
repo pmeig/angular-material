@@ -6,7 +6,6 @@
     "@angular/core": "^20.2.1",
     "@pmeig/ngb-offcanvas": "^1.0.0-SNAPSHOT"
   },
-
   "dependencies": {
     "tslib": "^2.3.0",
     "@pmeig/ngb-collapse": "^1.0.0-SNAPSHOT",
