@@ -1,0 +1,31 @@
+{
+  "name": "@pmeig/ng-material-core",
+  "version": "0.0.1-SNAPSHOT",
+  "peerDependencies": {
+    "@angular/common": "^20.2.1",
+    "@angular/core": "^20.2.1"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "@pmeig/ng-core": "^1.0.0"
+  },
+  "homepage": "https://github.com/pmeig/angular-material/tree/main/projects/core",
+  "repository": {
+    "url": "https://github.com/pmeig/angular-material"
+  },
+  "bugs": {
+    "url": "https://github.com/pmeig/angular-material/issues",
+    "email": "pierrick.workspace@gmail.com"
+  },
+  "keywords": [
+    "angular",
+    "pmeig",
+    "ng",
+    "angular@20.2",
+    "material",
+    "core",
+    "shared"
+  ],
+  "license": "MIT",
+  "sideEffects": false
+}

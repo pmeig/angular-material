@@ -1,0 +1,20 @@
+@if (state.display.layout()) {
+<div [id]="name()" [class]="'toast fade ' + colorClass()  + ' ' + classes()"
+     [style]="styles()"
+     [style.background-color]="colorStyle()"
+     [ngClass]="{show: state.display.show(),
+ showing: state.display.showing(), hide: !state.display.show() && !state.display.showing()}" role="alert">
+  <div class="toast-header" *hasChildren>
+    <ng-content select="[header]"></ng-content>
+    @for (header of headers; track header) {
+      <ng-container [ngTemplateOutlet]="header"></ng-container>
+    }
+  </div>
+  <div class="toast-body">
+    <ng-content></ng-content>
+    @for (body of bodies; track body) {
+      <ng-container [ngTemplateOutlet]="body"></ng-container>
+    }
+  </div>
+</div>
+}

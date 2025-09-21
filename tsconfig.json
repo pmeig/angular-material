@@ -1,0 +1,168 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "paths": {
+      "b-accordion": [
+        "./dist/b-accordion"
+      ],
+      "b-alert": [
+        "./dist/b-alert"
+      ],
+      "b-badge": [
+        "./dist/b-badge"
+      ],
+      "b-breadcrumb": [
+        "./dist/b-breadcrumb"
+      ],
+      "b-btn": [
+        "./dist/b-btn"
+      ],
+      "b-card": [
+        "./dist/b-card"
+      ],
+      "b-carousel": [
+        "./dist/b-carousel"
+      ],
+      "b-core": [
+        "./dist/b-core"
+      ],
+      "b-form": [
+        "./dist/b-form"
+      ],
+      "b-dropdown": [
+        "./dist/b-dropdown"
+      ],
+      "b-input": [
+        "./dist/b-input",
+      ],
+      "b-label": [
+        "./dist/b-label"
+      ],
+      "b-material": [
+        "./dist/b-material"
+      ],
+      "b-list": [
+        "./dist/b-list"
+      ],
+      "b-modal": [
+        "./dist/b-modal"
+      ],
+      "b-select": [
+        "./dist/b-select"
+      ],
+      "b-navbar": [
+        "./dist/b-navbar"
+      ],
+      "b-offcanvas": [
+        "./dist/b-offcanvas"
+      ],
+      "b-pagination": [
+        "./dist/b-pagination"
+      ],
+      "b-progress": [
+        "./dist/b-progress"
+      ],
+      "b-collapse": [
+        "./dist/b-collapse"
+      ],
+      "b-spinner": [
+        "./dist/b-spinner"
+      ],
+      "b-table": [
+        "./dist/b-table"
+      ],
+      "b-toast": [
+        "./dist/b-toast"
+      ],
+      "b-tooltip": [
+        "./dist/b-tooltip"
+      ],
+      "core": [
+        "./dist/core"
+      ],
+      "dropdown": [
+        "./dist/dropdown"
+      ],
+      "form": [
+        "./dist/form"
+      ]
+    },
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": [
+      "ES2022",
+      "dom"
+    ]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "references": [
+    {
+      "path": "./projects/bootstrap/components/navbar/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/navbar/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/offcanvas/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/offcanvas/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/pagination/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/pagination/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/progress/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/progress/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/tooltip/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/tooltip/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/toast/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/toast/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/spinner/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/spinner/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/table/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/bootstrap/components/table/tsconfig.spec.json"
+    }
+  ]
+}

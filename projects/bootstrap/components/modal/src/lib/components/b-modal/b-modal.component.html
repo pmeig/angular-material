@@ -1,0 +1,70 @@
+@if (display.container()) {
+  <div
+    [id]="name()"
+    [class]="'modal ' + animation() + ' ' + classes()"
+    (click)="closeByClick(modalTemplate, $event)"
+    [ngClass]="{
+      show: display.show(),
+      'd-block': display.container(),
+      'no-backdrop': !backdrop(),
+      'modal-static': display.animation.static(),
+    }">
+    <div
+      [class]="'modal-dialog ' + size()"
+      [ngClass]="{
+        'modal-dialog-centered': center(),
+        'modal-dialog-scrollable': scrollable(),
+      }">
+      <div class="modal-content" #modalTemplate>
+          <div class="modal-header" *hasChildren>
+            <div class="modal-content-header" *hasChildren>
+              <ng-content select="[header]"></ng-content>
+              <ng-container
+                [ngTemplateOutlet]="container"
+                [ngTemplateOutletContext]="{ templates: headers }"></ng-container>
+              @if (title(); as modalTitle) {
+                <div class="modal-title">{{ modalTitle }}</div>
+              }
+            </div>
+            <btn-group *hasChildren>
+              <ng-content select="[btn]"></ng-content>
+              <ng-container
+                [ngTemplateOutlet]="container"
+                [ngTemplateOutletContext]="{ templates: buttons }"></ng-container>
+              @if (cross()) {
+                <button close [id]="name() + '-close'" (click)="close()"></button>
+              }
+            </btn-group>
+          </div>
+        <div class="modal-body" *hasChildren>
+          <ng-content></ng-content>
+          <ng-container
+            [ngTemplateOutlet]="container"
+            [ngTemplateOutletContext]="{ templates: bodies }"></ng-container>
+        </div>
+        <div class="modal-footer" *hasChildren>
+          <ng-content select="[footer]"></ng-content>
+          <ng-container
+            [ngTemplateOutlet]="container"
+            [ngTemplateOutletContext]="{ templates: footers }"></ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+  @if (backdrop()) {
+    <div
+      class="modal-backdrop fade"
+      [ngClass]="{ show: display.show(), 'd-block': display.container() }">
+    </div>
+  }
+}
+
+<ng-template let-templates="templates" #container>
+  @if (templates.length) {
+    @for (item of templates; track $index) {
+      <ng-container
+        [ngTemplateOutlet]="item"
+        [ngTemplateOutletContext]="{ close: closeBind }"></ng-container>
+    }
+  }
+</ng-template>

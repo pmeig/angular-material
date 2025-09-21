@@ -1,0 +1,24 @@
+.navbar-external .container-fluid {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  .navbar-brand {
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  .navbar-body {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+  }
+
+}
+
+.navbar-start {
+  display: flex;
+  gap: .5rem;
+}
+
+.navbar-toggler {
+  display: inline-block!important;
+}
