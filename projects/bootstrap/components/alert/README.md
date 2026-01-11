@@ -166,8 +166,8 @@ export class AppModule { }
 
 
 ## Dependencies
-- **Angular**: ^20.2.1
-- : ^20.2.1 **@angular/common**
+- **Angular**: >=20.2.1
+- : >=20.2.1 **@angular/common**
 - : ^0.0.1 **@pmeig/ngb-core**
 - **tslib**: ^2.3.0
 

@@ -204,8 +204,8 @@ Available size configurations:
 
 ## Dependencies
 
-- **Angular**: ^20.2.1
-- **@angular/common**: ^20.2.1
+- **Angular**: >=20.2.1
+- **@angular/common**: >=20.2.1
 - **@pmeig/ngb-button**: ^0.0.1
 - **tslib**: ^2.3.0
 

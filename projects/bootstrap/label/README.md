@@ -114,8 +114,8 @@ This library generates and works with standard Bootstrap 5 form classes:
 
 ## Dependencies
 
-- **Angular**: ^20.2.1
-- **@angular/common**: ^20.2.1
+- **Angular**: >=20.2.1
+- **@angular/common**: >=20.2.1
 - **@pmeig/ngb-core**: ^0.0.1
 - **tslib**: ^2.3.0
 
