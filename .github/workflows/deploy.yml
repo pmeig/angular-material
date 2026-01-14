@@ -161,6 +161,28 @@ jobs:
           cd $workspace
           npm run ng -- build ${{ matrix.module.name }} --configuration=production
           cd "dist/${{ matrix.module.name }}"
+          dependencies=$(jq -rc '.dependencies // {}' package.json)
+          peers=$(jq -rc '.peerDependencies // {}' package.json)
+          for path in ${{ steps.dependencies.outputs.paths }}
+          do
+            project=$(echo '${{ needs.context.outputs.projects }}' | jq -rc --arg key "$path" 'values | map(select(.path == $key)) | .[0]')
+            version=$(echo $project | jq -rc '.version')
+            name=$(echo $project | jq -rc '.project')
+            insert=''
+            if [ ! "$(echo $dependencies | jq -rc --arg dep "$name" 'has($dep)')" == 'true' ]
+            then
+              insert='.dependencies += {($dep): $version}'
+            fi
+            if [ ! "$(echo $peers | jq -rc --arg dep "$name" 'has($dep)')" == 'true' ]
+            then
+              insert='.peerDependencies += {($dep): $version}'
+            fi
+            if [ -n "$insert" ]
+            then
+              jq -r --arg dep "$name" --arg version "^$version" $insert package.json > package.new.json
+              mv package.new.json package.json
+            fi
+          done
           npm pack
           mv *.tgz ${{ matrix.module.name }}.tgz
           echo "pack=$(pwd)/${{ matrix.module.name }}.tgz" >> $GITHUB_OUTPUT
