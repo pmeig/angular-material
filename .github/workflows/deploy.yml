@@ -169,11 +169,11 @@ jobs:
             version=$(echo $project | jq -rc '.version')
             name=$(echo $project | jq -rc '.project')
             insert=''
-            if [ ! "$(echo $dependencies | jq -rc --arg dep "$name" 'has($dep)')" == 'true' ]
+            if [ "$(echo $dependencies | jq -rc --arg dep "$name" 'has($dep)')" == 'true' ]
             then
               jq -r --arg dep "$name" --arg version "^$version" '.dependencies += {($dep): $version}' package.json > package.new.json
             fi
-            if [ ! "$(echo $peers | jq -rc --arg dep "$name" 'has($dep)')" == 'true' ]
+            if [ "$(echo $peers | jq -rc --arg dep "$name" 'has($dep)')" == 'true' ]
             then
               jq -r --arg dep "$name" --arg version "^$version" '.peerDependencies += {($dep): $version}' package.json > package.new.json
             fi
