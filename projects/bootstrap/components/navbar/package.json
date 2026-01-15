@@ -1,14 +1,17 @@
 {
   "name": "@pmeig/ngb-navbar",
-  "version": "1.3.0-SNAPSHOT",
+  "version": "1.4.0-SNAPSHOT",
   "peerDependencies": {
     "@angular/common": ">=20.2.1",
     "@angular/core": ">=20.2.1"
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "@pmeig/ngb-collapse": "^1.3.0-SNAPSHOT",
-    "@pmeig/ngb-offcanvas": "^1.3.0-SNAPSHOT"
+    "@pmeig/ngb-collapse": "^1.4.0-SNAPSHOT",
+    "@pmeig/ngb-core": "^1.4.0-SNAPSHOT",
+    "@pmeig/ng-material-core": "^1.4.0-SNAPSHOT",
+    "@pmeig/ng-core": "^1.1.0",
+    "@pmeig/ngb-offcanvas": "^1.4.0-SNAPSHOT"
   },
   "homepage": "https://github.com/pmeig/angular-material/tree/main/projects/bootstrap/components/navbar",
   "repository": {
