@@ -5,6 +5,7 @@
     "entryFile": "src/public-api.ts"
   },
   "allowedNonPeerDependencies": [
-    "@pmeig/ng-material-core"
+    "@pmeig/ng-material-core",
+    "@pmeig/ng-core"
   ]
 }

@@ -17,7 +17,6 @@
     "@pmeig/ngb-breadcrumb",
     "@pmeig/ngb-card",
     "@pmeig/ngb-carousel",
-    "@pmeig/ngb-collapse",
     "@pmeig/ngb-dropdown",
     "@pmeig/ngb-list",
     "@pmeig/ngb-offcanvas",
@@ -27,6 +26,8 @@
     "@pmeig/ngb-tooltip",
     "@pmeig/ngb-toast",
     "@pmeig/ngb-spinner",
-    "@pmeig/ngb-table"
+    "@pmeig/ngb-table",
+    "@pmeig/ng-material-core",
+    "@pmeig/ng-core"
   ]
 }

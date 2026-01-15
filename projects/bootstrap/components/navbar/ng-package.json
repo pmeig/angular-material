@@ -6,6 +6,9 @@
   },
   "allowedNonPeerDependencies": [
     "@pmeig/ngb-collapse",
-    "@pmeig/ngb-offcanvas"
+    "@pmeig/ngb-offcanvas",
+    "@pmeig/ngb-core",
+    "@pmeig/ng-material-core",
+    "@pmeig/ng-core"
   ]
 }

@@ -5,6 +5,9 @@
     "entryFile": "src/public-api.ts"
   },
   "allowedNonPeerDependencies": [
-    "@pmeig/ngb-button"
+    "@pmeig/ngb-button",
+    "@pmeig/ngb-core",
+    "@pmeig/ng-material-core",
+    "@pmeig/ng-core"
   ]
 }
