@@ -18,7 +18,7 @@ import { BTagDirective } from '@pmeig/ngb-core';
 export class BBtnDirective extends BTagDirective implements OnInit {
 
   btn = input<boolean, Empty<'close'>>(false, {transform: closes => closes === 'close'})
-  outline = input<string, EmptyBooleanAttribute>('btn-',
+  outline = input<string, EmptyBooleanAttribute>('btn',
     {transform: outline => emptyBooleanAttribute(outline) ? 'btn-outline' : 'btn'})
   close = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute})
   disabled = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute})
