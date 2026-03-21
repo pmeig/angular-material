@@ -85,7 +85,7 @@ export class BDropdownComponent extends BTagComponent {
   });
 
   @HostListener('document:click', ['$event'])
-  private whenDocumentClick(event: MouseEvent) {
+  protected whenDocumentClick(event: MouseEvent) {
     if (this.state.visible()) {
       const isInside = this.element.contains(event.target as Node);
       if (this.autoClose() === 'both' ||

@@ -12,7 +12,7 @@ export class ListGroupActionDirective extends TagDirective {
   }
 
   @HostListener('click')
-  private onClick( ) {
+  protected whenClick( ) {
     if (this.listGroup) {
       if (this.element.classList.contains('active')) {
         this.removeClass('active')

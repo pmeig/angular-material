@@ -70,7 +70,7 @@ export class OffcanvasMaterial extends BTagComponent {
   }
 
   @HostListener('document:click', ['$event'])
-  private onClick(event: MouseEvent) {
+  protected onClick(event: MouseEvent) {
     if (!this.backdrop() && !this.static() && this.state.show()) {
       const info = this.element.getBoundingClientRect();
       switch (this.position()) {

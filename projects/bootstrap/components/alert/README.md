@@ -16,7 +16,7 @@ A powerful Angular library that provides Bootstrap-styled alert components with 
 - ⏱️ **Auto-dismiss** - Configurable timeout for automatic dismissal
 - ✨ **Smooth Animations** - Bootstrap fade transitions
 - 🎨 **All Bootstrap Colors** - Support for all Bootstrap alert variants
-- 🚀 **Angular 20.2.1 support** with signals
+- 🚀 **Angular 21.2.0 support** with signals
 - 📱 **Responsive design**
 - ♿ **Accessibility friendly**
 - 🔄 **Dynamic Control** - Programmatic show/hide control
@@ -166,13 +166,13 @@ export class AppModule { }
 
 
 ## Dependencies
-- **Angular**: >=20.2.1
-- : >=20.2.1 **@angular/common**
+- **Angular**: >=21.2.0
+- : >=21.2.0 **@angular/common**
 - : ^0.0.1 **@pmeig/ngb-core**
 - **tslib**: ^2.3.0
 
 ## Compatibility
-- Angular: 20.2.1+
+- Angular: 21.2.0+
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)

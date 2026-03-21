@@ -15,7 +15,7 @@ A powerful Angular library that provides Bootstrap-styled pagination components 
 - 🎨 **Alignment Options** - Left, center, and right alignment support
 - 🔢 **Disabled Pages** - Support for disabling specific pages
 - 📱 **Responsive Design** - Mobile-friendly pagination controls
-- 🚀 Angular 20.2.1 support with signals
+- 🚀 Angular 21.2.0 support with signals
 - ♿ Accessibility friendly with proper ARIA attributes
 - 🛠️ Flexible configuration with between-page ranges
 
@@ -215,14 +215,14 @@ Control pagination alignment:
 
 ## Dependencies
 
-- **Angular**: ^20.2.1
-- **@angular/common**: ^20.2.1
+- **Angular**: >=21.2
+- **@angular/common**: >=21.2
 - **@pmeig/ngb-core**: ^0.0.1
 - **tslib**: ^2.3.0
 
 ## Compatibility
 
-- Angular: 20.2.1+
+- Angular: 21.2
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)

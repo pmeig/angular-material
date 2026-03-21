@@ -1,15 +1,15 @@
 {
   "name": "@pmeig/ngb-progress",
-  "version": "1.4.0-SNAPSHOT",
+  "version": "2.0.0-SNAPSHOT",
   "peerDependencies": {
-    "@angular/common": ">=20.2.1",
-    "@angular/core": ">=20.2.1"
+        "@angular/common": ">=21.2.0",
+        "@angular/core": ">=21.2.0"
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "@pmeig/ngb-core": "^1.4.0-SNAPSHOT",
-    "@pmeig/ng-material-core": "^1.4.0-SNAPSHOT",
-    "@pmeig/ng-core": "^1.1.0"
+    "@pmeig/ngb-core": "^2.0.0-SNAPSHOT",
+    "@pmeig/ng-material-core": "^2.0.0-SNAPSHOT",
+    "@pmeig/ng-core": "^2.0.0"
   },
   "homepage": "https://github.com/pmeig/angular-material/tree/main/projects/bootstrap/components/progress",
   "repository": {
@@ -23,7 +23,7 @@
     "angular",
     "pmeig",
     "ng",
-    "angular@20.2",
+    "angular@21.2",
     "bootstrap",
     "bootstrap@5.8",
     "material",

@@ -16,11 +16,11 @@ import { ListMaterial } from '@pmeig/ngb-list';
 import { OffcanvasMaterial } from '@pmeig/ngb-offcanvas';
 import { NavbarMaterial } from '@pmeig/ngb-navbar';
 import { PaginationMaterial } from '@pmeig/ngb-pagination';
-import { ProgressMaterial } from '@pmeig/ngb-progress';
 import { PopoverMaterial, TooltipMaterial } from '@pmeig/ngb-tooltip';
 import { ToastMaterial } from '@pmeig/ngb-toast';
 import { SpinnerMaterial } from '@pmeig/ngb-spinner';
 import { TableMaterial } from '@pmeig/ngb-table';
+import { ProgressMaterial } from '@pmeig/ngb-progress';
 
 const excludeModule = <T>(excludes: T[], modules: T[]) => {
   const imports = modules.filter(module => !excludes.includes(module));

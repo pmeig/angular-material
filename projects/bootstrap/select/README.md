@@ -15,7 +15,7 @@ A powerful Angular library that provides Bootstrap-styled select components with
 - ✨ **Size Variants** - Support for small and large select components
 - 🛡️ **Disabled State Management** - Built-in disabled state handling with event prevention
 - 🎨 Bootstrap 5.3.3 compatible styling
-- 🚀 Angular 20.2.1 support with signals
+- 🚀 Angular 21.2.0 support with signals
 - 📱 Responsive design
 - ♿ Accessibility friendly
 - 🛠️ Smart parent element management
@@ -180,14 +180,14 @@ This library generates and works with standard Bootstrap 5 select classes:
 
 ## Dependencies
 
-- **Angular**: >=20.2.1
-- **@angular/common**: >=20.2.1
+- **Angular**: >=21.2
+- **@angular/common**: >=21.2
 - **@pmeig/ngb-core**: ^0.0.1
 - **tslib**: ^2.3.0
 
 ## Compatibility
 
-- Angular: 20.2.1+
+- Angular: 21.2
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)

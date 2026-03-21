@@ -13,7 +13,7 @@ A powerful Angular library that provides Bootstrap-styled loading spinners with 
 - 🔄 **Size Options** - Small, default, and large spinner sizes
 - ✨ **Color Theming** - Bootstrap color variants and custom color support
 - 🎨 **CSS Integration** - Full Bootstrap 5.3.3 spinner compatibility
-- 🚀 Angular 20.2.1 support with signals
+- 🚀 Angular 21.2.0 support with signals
 - 📱 **Responsive Design** - Scalable spinners for all screen sizes
 - ♿ **Accessibility Friendly** - Screen reader support with proper markup
 - 🛠️ **Flexible Implementation** - Easy integration with existing elements
@@ -143,14 +143,14 @@ This library generates and works with standard Bootstrap 5 spinner classes:
 
 ## Dependencies
 
-- **Angular**: ^20.2.1
-- **@angular/common**: ^20.2.1
+- **Angular**: >=21.2
+- **@angular/common**: >=21.2
 - **@pmeig/ngb-core**: ^0.0.1
 - **tslib**: ^2.3.0
 
 ## Compatibility
 
-- Angular: 20.2.1+
+- Angular: 21.2
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)

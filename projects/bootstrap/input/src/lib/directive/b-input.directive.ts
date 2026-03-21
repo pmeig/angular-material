@@ -139,7 +139,7 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
 
 
   @HostListener('input')
-  private onValueChange() {
+  protected onValueChange() {
     if (!this.formControl?.disabled && !this.readonly()) {
       this.valueChange.emit(this.mapper.value());
     } else {
@@ -148,7 +148,7 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
   }
 
   @HostListener('keydown', ['$event'])
-  private onKeyDown(event: KeyboardEvent) {
+  protected onKeyDown(event: KeyboardEvent) {
     if (this.formControl?.disabled || this.readonly()) {
       event.preventDefault();
       event.stopPropagation();

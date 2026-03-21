@@ -17,7 +17,7 @@ A powerful Angular library that provides Bootstrap-styled modal dialogs with adv
 - 🎨 **Backdrop Control** - Customizable backdrop and outside-click behavior
 - 🔢 **Auto-close Timer** - Optional timeout-based automatic closing
 - 📱 **Responsive Design** - Fullscreen modes for mobile devices
-- 🚀 Angular 20.2.1 support with signals
+- 🚀 Angular 21.2.0 support with signals
 - ♿ Accessibility friendly with ARIA attributes
 - 🛠️ Programmatic control with Modal interface
 - 🎭 Centering and scrollable content support
@@ -204,14 +204,14 @@ Available size configurations:
 
 ## Dependencies
 
-- **Angular**: >=20.2.1
-- **@angular/common**: >=20.2.1
+- **Angular**: >=21.2
+- **@angular/common**: >=21.2
 - **@pmeig/ngb-button**: ^0.0.1
 - **tslib**: ^2.3.0
 
 ## Compatibility
 
-- Angular: 20.2.1+
+- Angular: 21.2
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)
