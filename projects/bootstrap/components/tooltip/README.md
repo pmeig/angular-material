@@ -15,7 +15,7 @@ A powerful Angular library that provides Bootstrap-styled tooltip and popover co
 - 🎨 **Smart Positioning** - Automatic placement adjustment based on viewport
 - 🔢 **Timeout Control** - Auto-dismiss functionality with configurable timing
 - 📱 **Touch Support** - Mobile-friendly interaction patterns
-- 🚀 Angular 20.2.1 support with signals
+- 🚀 Angular 21.2.0 support with signals
 - ♿ Accessibility friendly with ARIA attributes
 - 🛠️ Advanced mouse tracking and hover zones
 
@@ -232,14 +232,14 @@ This library generates and works with standard Bootstrap 5 tooltip and popover c
 
 ## Dependencies
 
-- **Angular**: ^20.2.1
-- **@angular/common**: ^20.2.1
+- **Angular**: >=21.2
+- **@angular/common**: >=21.2
 - **@pmeig/ngb-core**: ^0.0.1
 - **tslib**: ^2.3.0
 
 ## Compatibility
 
-- Angular: 20.2.1+
+- Angular: 21.2
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)

@@ -23,12 +23,12 @@ export class TooltipMaterial extends BAbstractTooltipDirective<TooltipFactory> {
   }
 
   @HostListener('mouseenter', ['$event'])
-  private onMouseEnter(_: MouseEvent) {
+  protected onMouseEnter(_: MouseEvent) {
     this.show();
   }
 
   @HostListener('mouseleave', ['$event'])
-  private onMouseLeave(event: MouseEvent) {
+  protected onMouseLeave(event: MouseEvent) {
     this.hide(event);
   }
 

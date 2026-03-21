@@ -15,7 +15,7 @@ A powerful Angular library that provides Bootstrap-styled list group components 
 - 🎨 **Color Theming** - Bootstrap color variants and custom background colors
 - 🔢 **Numbered Lists** - Automatic numbering for ordered lists
 - 📱 **Striped Styling** - Alternating row colors for better readability
-- 🚀 Angular 20.2.1 support with signals
+- 🚀 Angular 21.2.0 support with signals
 - 📱 Responsive design
 - ♿ Accessibility friendly
 - 🛠️ Interactive action elements
@@ -150,15 +150,15 @@ Supports all Bootstrap color variants:
 
 ## Dependencies
 
-- **Angular**: >=20.2.1
-- **@angular/common**: >=20.2.1
+- **Angular**: >=21.2
+- **@angular/common**: >=21.2
 - **@pmeig/ngb-core**: ^0.0.1
 - **@pmeig/ng-material-core**: ^0.0.1
 - **tslib**: ^2.3.0
 
 ## Compatibility
 
-- Angular: 20.2.1+
+- Angular: 21.2
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)

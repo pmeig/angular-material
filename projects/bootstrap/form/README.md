@@ -13,7 +13,7 @@ A powerful Angular library that provides Bootstrap-styled form validation with a
 - ✨ **Hover Validation** - Show validation states on submit button hover
 - 🔄 **Dynamic State Management** - Reactive form validation states
 - 🎨 Bootstrap 5.3.3 compatible styling
-- 🚀 Angular 20.2.1 support with signals
+- 🚀 Angular 21.2.0 support with signals
 - ♿ Accessibility friendly
 - 📱 Responsive design
 
@@ -125,13 +125,13 @@ This library enhances standard Bootstrap 5 form validation classes:
 - `valid-feedback` / `invalid-feedback` - Display validation messages
 
 ## Dependencies
-- Angular: >=20.2.1
-- @angular/common: >=20.2.1
+- Angular: >=21.2
+- @angular/common: >=21.2
 - @pmeig/ngb-core: ^0.0.1
 - tslib: ^2.3.0
 
 ## Compatibility
-- Angular: 20.2.1+
+- Angular: 21.2+
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)

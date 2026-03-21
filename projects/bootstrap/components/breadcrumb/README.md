@@ -15,7 +15,7 @@ A powerful Angular library that provides Bootstrap-styled breadcrumb navigation 
 - 🎨 **Auto-styling** - Automatic Bootstrap breadcrumb styling for child elements
 - 🔄 **Dynamic State Management** - Active item tracking with events
 - 🎨 Bootstrap 5.3.3 compatible styling
-- 🚀 Angular 20.2.1 support with signals
+- 🚀 Angular 21.2.0 support with signals
 - 📱 Responsive design
 - ♿ Accessibility friendly with ARIA support
 - 🛠️ Event-driven navigation system
@@ -155,14 +155,14 @@ This library generates and works with standard Bootstrap 5 breadcrumb classes:
 
 ## Dependencies
 
-- **Angular**: ^20.2.1
-- **@angular/common**: ^20.2.1
+- **Angular**: >=21.2
+- **@angular/common**: >=21.2
 - **@pmeig/ngb-core**: ^0.0.1
 - **tslib**: ^2.3.0
 
 ## Compatibility
 
-- Angular: 20.2.1+
+- Angular: 21.2
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)

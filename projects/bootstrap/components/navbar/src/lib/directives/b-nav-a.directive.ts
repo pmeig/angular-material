@@ -31,7 +31,7 @@ export class BNavADirective extends TagDirective {
   }
 
   @HostListener('click')
-  private onClick() {
+  protected onClick() {
     if (this.nav && !this.disabled()) {
       if (!this.element.classList.contains('active')) {
         navAEventClick.next({nav: this.nav, a: this.ref})

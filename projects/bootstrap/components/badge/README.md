@@ -16,7 +16,7 @@ A powerful Angular library that provides Bootstrap-styled badge components with 
 - 📍 **Annotation Mode** - Notification badges with automatic positioning
 - ✨ **Dynamic Color Management** - Automatic color switching and cleanup
 - 🎨 Bootstrap 5.3.3 compatible styling
-- 🚀 Angular 20.2.1 support with signals
+- 🚀 Angular 21.2.0 support with signals
 - 📱 Responsive design
 - ♿ Accessibility friendly
 - 🛠️ Smart parent element positioning
@@ -111,14 +111,14 @@ typescript import { BadgeMaterial } from '@pmeig/ngb-badge';
 
 ## Dependencies
 
-- **Angular**: >=20.2.1
-- **@angular/common**: >=20.2.1
+- **Angular**: >=21.2
+- **@angular/common**: >=21.2
 - **@pmeig/ngb-core**: ^0.0.1
 - **tslib**: ^2.3.0
 
 ## Compatibility
 
-- Angular: 20.2.1+
+- Angular: 21.2+
 - Bootstrap: 5.3.3+
 - TypeScript: 5.8.3+
 - Modern browsers (Chrome, Firefox, Safari, Edge)

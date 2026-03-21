@@ -40,7 +40,7 @@ export class BNavbarComponent extends BTagComponent {
   @ViewChild('button') private readonly button!: ElementRef<HTMLButtonElement>;
 
   @HostListener('window:resize')
-  private onResize() {
+  protected onResize() {
     if (getComputedStyle(this.button.nativeElement).display === 'none') {
       this.orchestrator.set(true)
     } else {
