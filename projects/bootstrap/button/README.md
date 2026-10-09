@@ -64,21 +64,37 @@ export class AppModule { }
 ```
 ### Button Sizes
 ```html
-<!-- Extra small buttons -->
-<button size="xs" color="primary">Extra Small</button>
-
-<!-- Small buttons -->
+<!-- Small buttons (btn-sm) -->
 <button size="sm" color="primary">Small</button>
 
 <!-- Default size -->
 <button color="primary">Default</button>
 
-<!-- Large buttons -->
+<!-- Large buttons (btn-lg) -->
 <button size="lg" color="primary">Large</button>
+```
+Bootstrap has two size classes only, `btn-sm` and `btn-lg`
+([docs](https://getbootstrap.com/docs/5.3/components/buttons/#sizes)). `size="xs"`, `"xl"`, `"xxl"` add `btn-xs`,
+`btn-xl`, `btn-xxl`, which neither Bootstrap nor this library style. For another size, use Bootstrap's CSS variables:
+```html
+<button color="primary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+  Custom size
+</button>
+```
 
-<!-- Extra large buttons -->
-<button size="xl" color="primary">Extra Large</button>
-<button size="xxl" color="primary">XXL</button>
+### Link Buttons
+Bootstrap's `btn-link` variant: `color="link"`, or the Bootstrap class (a `<button class="btn-link">` without `color`
+keeps it and gets no `btn-primary`). There is no `btn-outline-link` in Bootstrap: `outline` is ignored for it.
+```html
+<button color="link">Looks like a link</button>
+<button class="btn-link">Looks like a link too</button>
+```
+
+### Buttons that must not become `.btn`
+The selector is `button`: once `ButtonMaterial` is imported, **every** `<button>` of the component gets `btn`. Add
+`pmeig-ignore` to the ones that are something else (tabs, list items, custom widgets):
+```html
+<button type="button" pmeig-ignore class="nav-link">Tab</button>
 ```
 ### Disabled Buttons
 ```html
@@ -183,19 +199,21 @@ Applied automatically to `button` elements and `[btn]` attributes.
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `color` | `ColorConfig` | `{ style: 'primary', color: 'btn-primary' }` | Button color variant or custom color |
-| `outline` | `boolean` | `false` | Uses outline button styling |
-| `size` | `SizeAttribute` | `''` | Button size variant |
-| `disabled` | `boolean` | `false` | Disabled state with event prevention |
-| `close` | `boolean` | `false` | Creates a close button |
-| `btn` | `boolean \| 'close'` | `false` | Forces button styling or close button |
+| `color` | `ColorAttribute \| 'link'` | `primary` | Bootstrap color name, `link` (`btn-link`), or a CSS color / RGB applied as `background-color` |
+| `outline` | `boolean` | `false` | Uses outline button styling (`btn-outline-<color>`) |
+| `size` | `SizeAttribute` | `''` | `sm` or `lg` (other values give classes Bootstrap does not style) |
+| `disabled` | `boolean` | `false` | Sets the `disabled` attribute; clicks, double clicks and submits are stopped |
+| `close` | `boolean` | `false` | Creates a close button (`btn-close` instead of `btn`) |
+| `btn` | `'close'` | | `btn="close"` = `close`; on a non-button element (`<a btn>`), selects the directive |
+| `pmeig-ignore` | attribute | | The directive leaves this button alone (see `@pmeig/ngb-core`) |
 
 #### Color Options
 - **Bootstrap colors**: `primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`
-- **Custom colors**: Hex values, RGB values, color names
+- **Custom colors**: any other string is a CSS color (`#ff6b6b`, `tomato`), a JSON string `{"red":255,"green":107,"blue":107}`
+  or an `RGB` object is an RGB color: set as inline `background-color` (no hover/active colors, `outline` ignored)
 
 #### Size Options
-- `xs`, `sm`, `md` (default), `lg`, `xl`, `xxl`
+- `sm`, `lg` (Bootstrap); `xs`, `xl`, `xxl` produce `btn-xs`, `btn-xl`, `btn-xxl` without any style
 
 ### BBtnGroupDirective
 
@@ -254,7 +272,7 @@ This library generates and works with standard Bootstrap 5 button classes:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility
@@ -284,9 +302,20 @@ This library generates and works with standard Bootstrap 5 button classes:
 - Ensure proper button group structure
 
 **Custom colors not working**
-- Use the color object format: `[color]="{ style: '#ff0000' }"`
-- Check that custom color values are valid CSS colors
-- Verify outline buttons work with custom colors
+- Pass the color as a string (`color="#ff0000"`) or an `RGB` object (`[color]="{ red: 255, green: 0, blue: 0 }"`)
+- A custom color is an inline `background-color`: `outline` has no effect on it
+
+**Buttons look unstyled for an instant**
+- Classes are added ~50 ms after the first render (see `@pmeig/ngb-core`), then Bootstrap's 0.15 s transition runs:
+  a page shows native buttons for a moment, and a test or a screenshot taken right away sees them unstyled
+
+## Fixed in 2.0.1
+
+- A `<button>` without `color` is `btn-primary` (2.0.0 wrote `btn-btn-primary`: no color).
+- `close` buttons get no color class.
+- A CSS color (`color="#ff0000"`, `color="tomato"`) is painted (2.0.0 threw `Cannot read properties of undefined`).
+- `color="link"` gives Bootstrap's `btn-link`.
+- A button alone inserts the Bootstrap `<link>` like the other directives (see `@pmeig/ngb-core` to turn it off).
 
 ## License
 

@@ -1,63 +1,69 @@
-# BMaterial
+# @pmeig/ngb-material
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.0.
+All the `@pmeig/ngb-*` libraries in one package, grouped in modules. Import a group when a component uses many of them;
+import the single libraries (`@pmeig/ngb-button`, `@pmeig/ngb-card`...) otherwise: each one styles every element its
+selector matches (`button`, `input`, `select`, `option`...), so a group may style more than you expect (see
+`pmeig-ignore` in [`@pmeig/ngb-core`](../core/README.md)).
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Installation
 
 ```bash
-ng generate --help
+  npm install @pmeig/ngb-material
 ```
 
-## Building
+## Modules
 
-To build the library, run:
+| Module | Contains |
+|--------|----------|
+| `PmeigSimpleMaterial` | `InputMaterial`, `LabelMaterial`, `ButtonMaterial`, `SelectMaterial` |
+| `PmeigFormsMaterial` | `PmeigSimpleMaterial`, `FormMaterial`, `AlertMaterial`, `DropdownMaterial`, `ProgressMaterial`, `TooltipMaterial`, `PopoverMaterial`, `ToastMaterial`, `SpinnerMaterial`, `ModalMaterial` |
+| `PmeigNavigationMaterial` | `PmeigSimpleMaterial`, `NavbarMaterial`, `CollapseMaterial`, `OffcanvasMaterial`, `BreadcrumbMaterial`, `PaginationMaterial` |
+| `PmeigDesignMaterial` | `PmeigSimpleMaterial`, `CardMaterial`, `CarouselMaterial`, `AccordionMaterial`, `CollapseMaterial`, `ListMaterial`, `TableMaterial` |
+| `PmeigMaterial` | the three groups above and `BadgeMaterial` |
 
-```bash
-ng build b-material
+
+```typescript
+import { PmeigDesignMaterial } from '@pmeig/ngb-material';
+
+@Component({
+  imports: [PmeigDesignMaterial],
+  // ...
+})
+export class MyComponent { }
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+## Excluding libraries
 
-### Publishing the Library
+Each group has a static `excludes(...)` that returns the lists of the group without the libraries given, as
+`{ imports, exports }`, to spread in an `@NgModule`:
 
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/b-material
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```typescript
+@NgModule(PmeigFormsMaterial.excludes(ToastMaterial, AlertMaterial))
+export class MyFormsMaterial { }
 ```
 
-## Running end-to-end tests
+`PmeigMaterial.excludes({ forms, navigation, design, default })` does the same for every group (`default: true` leaves
+`BadgeMaterial` out):
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```typescript
+@NgModule(PmeigMaterial.excludes({ forms: [ToastMaterial], design: [CarouselMaterial] }))
+export class MyMaterial { }
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Fixed in 2.0.1
 
-## Additional Resources
+- `PmeigNavigationMaterial.excludes` and `PmeigDesignMaterial.excludes` filter their own group (2.0.0 returned the
+  forms group).
+- `PmeigMaterial.excludes({...})` returns module classes only: it can be given to `@NgModule` (2.0.0 put an object in
+  `imports`).
+- `excludes(...)` takes the module classes (`typeof AlertMaterial`): TypeScript refuses anything else.
+- `ModalMaterial` (`@pmeig/ngb-modal`) is in `PmeigFormsMaterial`.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Dependencies
+
+- **Angular**: >=21.2
+- every `@pmeig/ngb-*` library: ^2.0.0
+
+## License
+
+This project is licensed under the MIT License.

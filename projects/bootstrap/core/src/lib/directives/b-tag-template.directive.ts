@@ -1,9 +1,11 @@
 import { Directive, inject, TemplateRef } from '@angular/core';
 import { TagTemplateDirective } from '@pmeig/ng-material-core';
-import { bootstrapLink } from '../b-tag.constant';
+import { injectBootstrapLinks } from '../b-tag.constant';
 
 @Directive()
 export class BTagTemplateDirective extends TagTemplateDirective {
+  private readonly bootstrapLinks = injectBootstrapLinks();
+
 
   protected constructor(templateRef: TemplateRef<any> = inject(TemplateRef<any>)) {
     super(templateRef);
@@ -11,7 +13,7 @@ export class BTagTemplateDirective extends TagTemplateDirective {
 
   protected override onInit() {
     super.onInit();
-    this.insertLink(bootstrapLink);
+    this.insertLink(...this.bootstrapLinks);
   }
 
 }

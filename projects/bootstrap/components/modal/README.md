@@ -18,7 +18,6 @@ A powerful Angular library that provides Bootstrap-styled modal dialogs with adv
 - 🔢 **Auto-close Timer** - Optional timeout-based automatic closing
 - 📱 **Responsive Design** - Fullscreen modes for mobile devices
 - 🚀 Angular 21.2.0 support with signals
-- ♿ Accessibility friendly with ARIA attributes
 - 🛠️ Programmatic control with Modal interface
 - 🎭 Centering and scrollable content support
 
@@ -47,41 +46,35 @@ export class MyComponent { }
 
 
 ### Modal with Custom Header and Footer
+Two ways, both work: an **element** with the attribute `header` / `footer` / `btn` (projected with `ng-content`), or an
+`ng-template` with the **template reference** `#header` / `#footer` / `#btn` (it receives `close` in its context).
+`<ng-template header>` (attribute, not `#header`) is **not** a header: it is rendered in the body.
 ```html
 <modal #customModal>
-  <ng-template header>
-    <h4 class="modal-title">Custom Header</h4>
-  </ng-template>
-  
-  <div>
-    <p>Modal body content goes here.</p>
-    <p>You can include any HTML content.</p>
-  </div>
-  
-  <ng-template footer>
-    <button type="button" class="btn btn-secondary" (click)="customModal.close()">
-      Cancel
-    </button>
-    <button type="button" class="btn btn-primary">
-      Save Changes
-    </button>
+  <h4 header class="modal-title">Custom Header</h4>
+
+  <p>Modal body content goes here.</p>
+
+  <ng-template #footer let-close="close">
+    <button type="button" color="secondary" (click)="close()">Cancel</button>
+    <button type="button" color="primary">Save Changes</button>
   </ng-template>
 </modal>
 ```
 
 
 ### Controlled Modal
+`[(show)]`: the modal opens when the value becomes `true`, closes when it becomes `false`, and `showChange` gives the
+value back whatever closed it (cross, click outside, Escape, `timeout`), so that it can be opened again.
 ```html
-<modal [show]="isModalOpen" 
-       title="Controlled Modal"
-       (close)="isModalOpen = false">
-  <p>This modal is controlled by a component property.</p>
+<modal title="Delete?" [(show)]="confirming">
+  <p>This cannot be undone.</p>
+  <button footer type="button" color="danger" (click)="remove(); confirming.set(false)">Delete</button>
 </modal>
 
-<button class="btn btn-primary" (click)="isModalOpen = true">
-  Open Controlled Modal
-</button>
+<button type="button" color="primary" (click)="confirming.set(true)">Delete</button>
 ```
+The template reference works too: `#confirm` then `confirm.open()` / `confirm.close()`, and its `visible` signal.
 
 
 ### Modal with Different Sizes
@@ -110,6 +103,7 @@ export class MyComponent { }
 
 ### Modal with Auto-close Timer
 ```html
+<!-- a number is in milliseconds; a Timeout object ({ value: 5, unit: TimeoutUnit.SECOND }) works too -->
 <modal #timedModal 
        title="Auto-close Modal" 
        [timeout]="5000">
@@ -135,16 +129,17 @@ export class MyComponent { }
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `title` | `string` | `undefined` | Modal title text |
-| `show` | `boolean` | `false` | Controls modal visibility |
+| `show` | `boolean` | `false` | Opens (`true`) / closes (`false`) the modal; two-way with `[(show)]` (see Controlled Modal) |
 | `animation` | `'zoom' \| 'fade'` | `'zoom'` | Animation type for show/hide transitions |
 | `cross` | `boolean` | `true` | Shows close button (×) in header |
 | `backdrop` | `boolean` | `true` | Shows backdrop overlay |
-| `closeOutside` | `boolean` | `true` | Allows closing by clicking outside modal |
-| `fullscreen` | `boolean \| string` | `false` | Fullscreen mode or size breakpoint |
-| `timeout` | `number` | `undefined` | Auto-close timeout in milliseconds |
-| `sizeAttribute` | `'sm' \| 'lg' \| 'xl'` | `undefined` | Modal size variant |
+| `close-outside` | `boolean` | `true` | A click outside closes the modal; `false` = a "static" shake instead |
+| `fullscreen` | `boolean` | `false` | `modal-fullscreen`; with `size`, `modal-fullscreen-<size>-down` (`sm`, `md`, `lg`, `xl`, `xxl`: fullscreen below that breakpoint) |
+| `timeout` | `number \| Timeout` | `undefined` | Auto-close: a number is in milliseconds |
+| `size` | `'sm' \| 'lg' \| 'xl'` | `undefined` | Modal size variant (`xs` → `sm`, `xxl` → `xl`) |
 | `center` | `boolean` | `true` | Centers modal vertically |
 | `scrollable` | `boolean` | `true` | Makes modal body scrollable |
+| `keyboard` | `boolean` | `true` | Escape closes the modal (Bootstrap's `keyboard` option) |
 
 ### Modal Interface Methods
 
@@ -156,10 +151,17 @@ export class MyComponent { }
 | `reference` | `string` | Unique reference identifier for the modal |
 
 #### Content Projection Slots
-- **Default slot**: Main modal body content
-- **`[header]` slot**: Custom header content
-- **`[footer]` slot**: Custom footer content
-- **`[btn]` slot**: Custom button content in header
+- **Default slot**: Main modal body content (and any `ng-template` without one of the references below)
+- **`[header]` element / `#header` template**: Custom header content
+- **`[footer]` element / `#footer` template**: Custom footer content
+- **`[btn]` element / `#btn` template**: buttons in the header, before the cross
+- Templates receive `{ close }` (`let-close="close"`)
+
+#### Events
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `showChange` | `boolean` | Every open (`true`) and close (`false`), whatever the cause |
 
 ## How It Works
 
@@ -171,11 +173,18 @@ The modal component automatically:
 4. **Event Management**: Handles click events for backdrop and close actions
 5. **Timeout Management**: Automatically closes modal when timeout is set
 
-### Accessibility Features
-- **ARIA Attributes**: Automatically manages `aria-expanded` and `aria-controls`
-- **Focus Management**: Maintains proper focus within modal
-- **Keyboard Support**: ESC key support for closing (via backdrop click handling)
-- **Screen Reader Support**: Proper markup structure for assistive technologies
+### Accessibility
+The component replaces Bootstrap's JavaScript and does what it does on show
+([Bootstrap modal](https://getbootstrap.com/docs/5.3/components/modal/#options)): `role="dialog"`, `aria-modal="true"`
+and `tabindex="-1"` on `.modal`, `aria-labelledby` pointing to the `title`, Escape closes it (`keyboard`), and the focus
+moves into the modal once it is shown. A title given in your own `[header]` content needs its own `aria-labelledby`.
+
+## Fixed in 2.0.1
+
+- `showChange` output: `[(show)]` works, and a modal closed by the user can be opened again.
+- `role="dialog"`, `aria-modal`, `aria-labelledby`, Escape and focus, like Bootstrap's JavaScript.
+- `fullscreen` alone gives Bootstrap's `modal-fullscreen` (2.0.0 wrote `modal-`); `size="md"` gives no class (the
+  default width) instead of the nonexistent `modal-md`.
 
 ## Bootstrap Classes Support
 
@@ -206,7 +215,7 @@ Available size configurations:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-button**: ^0.0.1
+- **@pmeig/ngb-button**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility
@@ -227,7 +236,7 @@ Available size configurations:
 - Verify that there are no conflicting z-index styles
 
 **Modal not closing on backdrop click**
-- Check that `closeOutside` is set to `true` (default)
+- Check that `close-outside` is `true` (default)
 - Ensure `backdrop` is enabled
 - Verify that event propagation is not being stopped
 

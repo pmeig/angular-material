@@ -1,10 +1,15 @@
 import {
+  afterNextRender,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
   ContentChildren,
+  HostListener,
+  inject,
+  Injector,
   input,
+  output,
   QueryList,
   TemplateRef,
   ViewContainerRef
@@ -66,6 +71,16 @@ export class ModalMaterial extends BTagComponent implements Modal {
   size = computed(() => this.compileClassSize());
   center = input<boolean, EmptyBooleanAttribute>(true, {transform: emptyBooleanAttribute});
   scrollable = input<boolean, EmptyBooleanAttribute>(true, {transform: emptyBooleanAttribute});
+  /** Escape closes the modal, like Bootstrap's `keyboard` option. */
+  keyboard = input<boolean, BooleanAttribute>(true, {transform: booleanAttribute});
+  /** Every open and close, whatever the cause (`[show]`, cross, click outside, Escape, timeout): `[(show)]` works. */
+  showChange = output<boolean>();
+
+  private readonly injector = inject(Injector);
+  private static count = 0;
+  private readonly generatedId = `modal-${++ModalMaterial.count}`;
+  /** Id of `.modal` (its title is `<id>-title`): the `name`, otherwise one generated. */
+  protected readonly modalId = computed(() => this.name() || this.generatedId);
 
 
 
@@ -97,6 +112,7 @@ export class ModalMaterial extends BTagComponent implements Modal {
       this.clearTimeout(this.timeoutConfig.animation.show);
       this.display.show.set(false);
       this.timeoutConfig.animation.show = this.addTimeout(() => this.display.container.set(false), TIMEOUT_ANIMATION).id;
+      this.showChange.emit(false);
     }
   }
 
@@ -104,8 +120,21 @@ export class ModalMaterial extends BTagComponent implements Modal {
     if (!this.display.show()) {
       this.display.container.update(() => true);
       this.clearTimeout(this.timeoutConfig.animation.show);
-      this.timeoutConfig.animation.show = this.addTimeout(() => this.display.show.set(true), TIMEOUT_ANIMATION).id;
+      this.timeoutConfig.animation.show = this.addTimeout(() => {
+        this.display.show.set(true);
+        // like Bootstrap's `focus` option: the focus goes into the modal, once it is rendered
+        afterNextRender({ write: () => this.element.querySelector<HTMLElement>(':scope > .modal')?.focus() },
+          { injector: this.injector });
+      }, TIMEOUT_ANIMATION).id;
       this.applyTimeout();
+      this.showChange.emit(true);
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  protected closeByEscape() {
+    if (this.keyboard()) {
+      this.close();
     }
   }
 
@@ -165,17 +194,19 @@ export class ModalMaterial extends BTagComponent implements Modal {
     }
   }
 
+  /**
+   * Bootstrap classes of `.modal-dialog`: `modal-sm|lg|xl`, `modal-fullscreen`, or `modal-fullscreen-<bp>-down`
+   * (fullscreen below the breakpoint `sm|md|lg|xl|xxl`).
+   */
   private compileClassSize() {
-    let template: string = this.fullscreen();
-    let size = this.sizeAttribute();
-    const isFullscreen = template !== 'modal-size';
-    if (size) {
-      if (!isFullscreen) {
-        size = size.endsWith('xs') ? 'sm' : size === 'xxl' ? 'xl' : size;
-      }
-    } else {
-      template = isFullscreen ? 'modal-size' : '';
+    const size = this.sizeAttribute();
+    if (this.fullscreen() !== 'modal-size') {
+      return size ? `modal-fullscreen-${size.endsWith('xs') ? 'sm' : size}-down` : 'modal-fullscreen';
     }
-    return template.replace('size', size ?? '');
+    // md is Bootstrap's default width: no class
+    if (!size || size === 'md') {
+      return '';
+    }
+    return `modal-${size.endsWith('xs') ? 'sm' : size === 'xxl' ? 'xl' : size}`;
   }
 }

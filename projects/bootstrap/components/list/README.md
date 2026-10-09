@@ -128,7 +128,6 @@ The list group directive automatically:
 ### Interactive Behavior
 - **Active states**: Click to toggle active state on action items
 - **Button styling**: Automatically removes conflicting button classes
-- **Accessibility**: Maintains proper ARIA attributes and keyboard navigation
 
 ## Bootstrap Classes Support
 
@@ -152,8 +151,8 @@ Supports all Bootstrap color variants:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
-- **@pmeig/ng-material-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
+- **@pmeig/ng-material-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility
@@ -272,3 +271,16 @@ This project is licensed under the MIT License.
 
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
+
+## Fixed in 2.0.1
+
+- Items added after the first render (`@for` after a load, a filter...) get `list-group-item` and the `background`
+  color too (2.0.0 styled the first items only).
+
+## Known issues (2.0.0)
+
+- **Every click toggles `active`**: `ListGroupActionDirective` (selector `button, a` inside a `list-group`) adds or
+  removes `active` on each click and never removes it from the other items: a picker list keeps several items active.
+  Use `pmeig-ignore` on the items whose state you drive yourself.
+- **No keyboard navigation and no ARIA** are added, contrary to the former "Accessibility" claim: the items are plain
+  `li` / `button` / `a`.

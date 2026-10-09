@@ -102,6 +102,23 @@ export class MyComponent {
 | `unvalidated` | `boolean` | `false` | Disables automatic validation styling |
 | `status-hover` | `Element[]` | `boolean` | `true` | Controls hover validation behavior |
 
+### BValidatorDirective
+
+Applied to elements with `error`, `valid` or `decorator`, and to `[formControl]` / `[formControlName]` (not to `ngModel`).
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `error` | `string` | `''` | Message of an `invalid-feedback` element added after the field |
+| `valid` | `string` | `''` | Message of a `valid-feedback` element added after the field |
+| `is-valid` | `boolean` | `undefined` | Forces the state: `false` sets a custom validity (`:invalid`), `true` clears it; `undefined` follows the reactive control |
+| `tooltip` | `boolean` | `false` | `invalid-tooltip` / `valid-tooltip` instead of `-feedback` |
+| `decorator` | `boolean` | `true` | `false` adds `decorator-none` (no Bootstrap validation icon) |
+
+The messages only show inside a form that has `was-validated` (after a submit, or while the mouse is over a submit
+button, see `status-hover`): it is the `:invalid` / `:valid` CSS of Bootstrap. A field without any constraint is
+`:valid`, so a submitted form shows **every** field green: put `is-valid` only where you want a state, or
+`[unvalidated]="true"` on a form whose fields are validated by your own code.
+
 ## How It Works
 ### Automatic Validation States
 The directive automatically:
@@ -127,7 +144,7 @@ This library enhances standard Bootstrap 5 form validation classes:
 ## Dependencies
 - Angular: >=21.2
 - @angular/common: >=21.2
-- @pmeig/ngb-core: ^0.0.1
+- @pmeig/ngb-core: ^2.0.0
 - tslib: ^2.3.0
 
 ## Compatibility

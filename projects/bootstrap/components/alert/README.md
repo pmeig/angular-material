@@ -90,7 +90,7 @@ By default alerts stay in DOM 3 seconds
   **Auto-dismiss!** This alert will disappear after 5 seconds.
 </div>
 
-<div *alert="!alert(); timeout: {value: 5, unit: TimeoutUnit.SECOND}">
+<div *alert="alert(); timeout: fiveSeconds"> <!-- fiveSeconds = { value: 5, unit: TimeoutUnit.SECOND } in the component -->
   **Auto-dismiss!** This alert will disappear  after 5 seconds too.
 </div>
 ``` 
@@ -101,6 +101,8 @@ By default alerts stay in DOM 3 seconds
   **Dismissible!** Click the × button to close this alert.
 </div>
 ```
+With `timeout: null` the close button is **always** added (`close: false` is ignored): an alert cannot stay without
+either a timeout or a close button.
 
 ### Programmatic Control
 ```typescript 
@@ -109,10 +111,14 @@ export class MyComponent {
 }
 ```
 ```html
-<div *alert="alert()">
-</div>
-<button class="btn btn-primary" (click)="alert.update(last => !last)">Show Alert <button class="btn btn-secondary" (click)="hideAlert()">Hide Alert
-``` 
+<div *alert="alert()">Saved!</div>
+<button color="primary" (click)="alert.set(true)">Show Alert</button>
+<button color="secondary" (click)="alert.set(false)">Hide Alert</button>
+```
+The alert hides itself (timeout, close button) without telling the parent: `alert()` stays `true`, and setting it to
+`true` again does not show it again. Set it to `false` first (or use a value that changes, such as a message).
+
+`*alert` (empty) and `*alert="''"` are **hidden**: pass `true` or a condition.
 
 ## API Reference
 
@@ -120,25 +126,23 @@ export class MyComponent {
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `alert` | `boolean` | `false` | Controls alert visibility |
-| `alertColor` | `string` | `'alert-danger'` | Bootstrap alert color variant |
-| `alertClose` | `boolean` | `false` | Shows close button for manual dismissal |
-| `alertTimeout` | `Timeout \| null` | `{value: 3, unit: 'second'}` | Auto-dismiss timeout configuration |
+In the microsyntax, `color:`, `close:` and `timeout:` set `alertColor`, `alertClose` and `alertTimeout`.
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `alert` | `boolean` | `false` | Shows (`true`) / hides (`false`) the alert when it changes |
+| `alertColor` (`color:`) | `ColorAttribute` | `'danger'` | Bootstrap color name |
+| `alertClose` (`close:`) | `boolean` | `false` | Shows a close button (always shown when there is no timeout) |
+| `alertTimeout` (`timeout:`) | `number \| Timeout \| null` | 3 seconds | Auto-dismiss: a number is in milliseconds; `null` = never |
 
 #### Color Options
-- `primary` / `alert-primary`
-- `secondary` / `alert-secondary` 
-- `success` / `alert-success`
-- `danger` / `alert-danger` // is default value
-- `warning` / `alert-warning`
-- `info` / `alert-info`
-- `light` / `alert-light`
-- `dark` / `alert-dark`
+`primary`, `secondary`, `success`, `danger` (default), `warning`, `info`, `light`, `dark`. Write the color name only:
+`'alert-primary'` is not recognized (it is read as a custom color and gives no class).
 
 #### Timeout Configuration
-```typescript 
-// 5 seconds [alertTimeout]="{value: 5, unit: 'second'}"
-// 2000 milliseconds [alertTimeout]="{value: 2000, unit: 'millisecond'}"
+```html
+<div *alert="shown(); timeout: 5000">5 seconds (a number is in milliseconds)</div>
+<div *alert="shown(); timeout: fiveSeconds">5 seconds, with fiveSeconds = { value: 5, unit: TimeoutUnit.SECOND }</div>
 ```
 
 
@@ -154,11 +158,11 @@ This library generates and works with standard Bootstrap 5 alert classes:
 ## Integration with Other Modules
 Works seamlessly with other @pmeig modules:
 ```typescript
-import { PmeigComponentsMaterial } from '@pmeig/ngb-material';
+import { PmeigFormsMaterial } from '@pmeig/ngb-material';
 
 @NgModule({
   imports: [
-    PmeigComponentsMaterial // Includes AlertMaterial + other components
+    PmeigFormsMaterial // AlertMaterial + inputs, labels, buttons, selects, forms, dropdown, progress, tooltip, toast, spinner
   ]
 })
 export class AppModule { }
@@ -167,8 +171,8 @@ export class AppModule { }
 
 ## Dependencies
 - **Angular**: >=21.2.0
-- : >=21.2.0 **@angular/common**
-- : ^0.0.1 **@pmeig/ngb-core**
+- **@angular/common**: >=21.2.0
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility

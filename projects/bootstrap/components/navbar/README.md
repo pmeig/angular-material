@@ -183,8 +183,8 @@ Available responsive breakpoints:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-collapse**: ^0.0.1
-- **@pmeig/ngb-offcanvas**: ^0.0.1
+- **@pmeig/ngb-collapse**: ^2.0.0
+- **@pmeig/ngb-offcanvas**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility

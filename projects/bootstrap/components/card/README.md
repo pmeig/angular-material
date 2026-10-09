@@ -145,7 +145,7 @@ This library generates and works with standard Bootstrap 5 card classes:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility
@@ -187,3 +187,10 @@ This project is licensed under the MIT License.
 ## Support
 
 For issues and questions, please open an issue on the GitHub repository.
+
+## Notes
+
+- The `.card-header`, `.card-body` and `.card-footer` elements are written by the component: classes cannot be added
+  to them from the template. Use Bootstrap's card variables on the `<card>` (the `.card-body` padding is
+  `var(--bs-card-spacer-y) var(--bs-card-spacer-x)`, [docs](https://getbootstrap.com/docs/5.3/components/card/#variables)):
+  `<card style="--bs-card-spacer-y: .5rem">`.
