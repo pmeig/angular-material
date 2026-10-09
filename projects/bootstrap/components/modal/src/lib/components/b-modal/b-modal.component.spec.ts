@@ -9,10 +9,17 @@ import { ModalMaterial } from './b-modal.component';
     <modal id="full" fullscreen [show]="true"><p>Full</p></modal>
     <modal id="full-md" fullscreen size="md" [show]="true"><p>Full below md</p></modal>
     <modal id="large" size="lg" [show]="true"><p>Large</p></modal>
+    <modal id="flow" [show]="true">
+      @if (flow()) {
+        <p class="flow">Control flow</p>
+      }
+      <ng-template #body><p class="tpl">Template body</p></ng-template>
+    </modal>
   `,
 })
 class ModalsComponent {
   readonly shown = signal(false);
+  readonly flow = signal(true);
 }
 
 /** First render + 50 ms of TagComponent + the 170 ms animation of the modal. */
@@ -64,6 +71,13 @@ describe('ModalMaterial', () => {
     (first()!.querySelector('button[close]') as HTMLButtonElement).click();
     await settled(fixture);
     expect(fixture.componentInstance.shown()).toBeFalse();
+  });
+
+  it('renders a control-flow block of its content once, and a #body template', async () => {
+    await settled(fixture);
+    const flow = fixture.nativeElement.querySelector('modal#flow') as HTMLElement;
+    expect(flow.querySelectorAll('.flow').length).toBe(1);
+    expect(flow.querySelectorAll('.tpl').length).toBe(1);
   });
 
   it('writes the Bootstrap size classes', async () => {

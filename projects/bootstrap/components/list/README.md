@@ -272,15 +272,20 @@ This project is licensed under the MIT License.
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
 
+## Fixed in 2.0.2
+
+- Only the **direct children** of a `<list-group>` that are not `pmeig-ignore` are list actions: a button inside a row
+  (a delete button) keeps its own classes and no longer toggles `active` (2.0.0 and 2.0.1 took every descendant, even
+  with `pmeig-ignore`).
+
 ## Fixed in 2.0.1
 
 - Items added after the first render (`@for` after a load, a filter...) get `list-group-item` and the `background`
   color too (2.0.0 styled the first items only).
 
-## Known issues (2.0.0)
+## Known issues
 
-- **Every click toggles `active`**: `ListGroupActionDirective` (selector `button, a` inside a `list-group`) adds or
-  removes `active` on each click and never removes it from the other items: a picker list keeps several items active.
-  Use `pmeig-ignore` on the items whose state you drive yourself.
+- **A click toggles `active`** on a list action and never removes it from the other items: a picker list keeps several
+  items active. Use `pmeig-ignore` on the items whose state you drive yourself.
 - **No keyboard navigation and no ARIA** are added, contrary to the former "Accessibility" claim: the items are plain
   `li` / `button` / `a`.

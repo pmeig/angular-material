@@ -48,7 +48,9 @@ export class MyComponent { }
 ### Modal with Custom Header and Footer
 Two ways, both work: an **element** with the attribute `header` / `footer` / `btn` (projected with `ng-content`), or an
 `ng-template` with the **template reference** `#header` / `#footer` / `#btn` (it receives `close` in its context).
-`<ng-template header>` (attribute, not `#header`) is **not** a header: it is rendered in the body.
+`<ng-template header>` (attribute, not `#header`) is **not** a header, and an `ng-template` is a body only with `#body`
+(`<ng-template #body let-close="close">`; since 2.0.2: before, every template of the content was rendered, including
+the ones of `@if` and `@for`, which showed twice).
 ```html
 <modal #customModal>
   <h4 header class="modal-title">Custom Header</h4>
@@ -151,7 +153,7 @@ The template reference works too: `#confirm` then `confirm.open()` / `confirm.cl
 | `reference` | `string` | Unique reference identifier for the modal |
 
 #### Content Projection Slots
-- **Default slot**: Main modal body content (and any `ng-template` without one of the references below)
+- **Default slot**: Main modal body content (and the `<ng-template #body>` templates)
 - **`[header]` element / `#header` template**: Custom header content
 - **`[footer]` element / `#footer` template**: Custom footer content
 - **`[btn]` element / `#btn` template**: buttons in the header, before the cross
@@ -178,6 +180,11 @@ The component replaces Bootstrap's JavaScript and does what it does on show
 ([Bootstrap modal](https://getbootstrap.com/docs/5.3/components/modal/#options)): `role="dialog"`, `aria-modal="true"`
 and `tabindex="-1"` on `.modal`, `aria-labelledby` pointing to the `title`, Escape closes it (`keyboard`), and the focus
 moves into the modal once it is shown. A title given in your own `[header]` content needs its own `aria-labelledby`.
+
+## Fixed in 2.0.2
+
+- An `@if` / `@for` directly in `<modal>` is rendered once (2.0.0 and 2.0.1 rendered it a second time, with the context
+  of a template: `[object Object]` for an `as` alias). **Behavior change**: a body template needs `#body`.
 
 ## Fixed in 2.0.1
 
