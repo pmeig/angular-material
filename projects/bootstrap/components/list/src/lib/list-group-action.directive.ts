@@ -11,9 +11,14 @@ export class ListGroupActionDirective extends TagDirective {
     super();
   }
 
+  /** A list action: a button or link that is a direct child of the list group and not marked `pmeig-ignore`. */
+  private get isAction() {
+    return !!this.listGroup && this.ignore() !== '' && this.element.parentElement?.tagName === 'LIST-GROUP';
+  }
+
   @HostListener('click')
   protected whenClick( ) {
-    if (this.listGroup) {
+    if (this.isAction) {
       if (this.element.classList.contains('active')) {
         this.removeClass('active')
       } else  this.putClass('active')
@@ -21,7 +26,7 @@ export class ListGroupActionDirective extends TagDirective {
   }
 
   protected override afterViewInit() {
-    if (this.listGroup) {
+    if (this.isAction) {
       this.putClass('list-group-item-action')
       setTimeout(() => {
         this.removeClass('btn')

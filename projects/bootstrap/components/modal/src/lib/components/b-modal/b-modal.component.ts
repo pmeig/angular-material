@@ -95,7 +95,8 @@ export class ModalMaterial extends BTagComponent implements Modal {
 
   @ContentChildren('header') protected headers!: QueryList<TemplateRef<any>>;
   @ContentChildren('footer') protected footers!: QueryList<TemplateRef<any>>;
-  @ContentChildren(TemplateRef) private modalBodies!: QueryList<TemplateRef<any>>;
+  /** Only `<ng-template #body>`: the template of every control-flow block (@if, @for) is a TemplateRef too, and was rendered a second time. */
+  @ContentChildren('body') private modalBodies!: QueryList<TemplateRef<any>>;
   @ContentChildren('btn') protected buttons!: QueryList<TemplateRef<any>>;
 
 
