@@ -23,11 +23,16 @@ export class BBtnDirective extends BTagDirective implements OnInit {
   close = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute})
   disabled = input<boolean, EmptyBooleanAttribute>(false, {transform: emptyBooleanAttribute})
   size = input<string, SizeAttribute>('', {transform: size => sizeToString(size, 'btn')})
-  color = input<ColorConfig, Empty<ColorAttribute>>({
-    style: 'primary',
-    color: 'btn-primary',
-  }, {transform: color => colorAttribute(color)})
+  /** A Bootstrap color, `link` (Bootstrap's btn-link variant) or a CSS color; primary when not given. */
+  color = input<ColorConfig, Empty<ColorAttribute | 'link'>>(colorAttribute('primary'), {
+    transform: color => {
+      this.colorGiven = true;
+      return color === 'link' ? { style: 'link', color: 'link' } : colorAttribute(color as ColorAttribute);
+    }
+  })
 
+  private colorGiven = false;
+  private linkByClass = false;
   private buttonClass = computed(() => (this.btn() || this.close()) ? 'btn-close' : 'btn');
 
   constructor() {
@@ -43,6 +48,9 @@ export class BBtnDirective extends BTagDirective implements OnInit {
   }
 
   override onInit(): void {
+    super.onInit();
+    // <button class="btn-link"> without color keeps Bootstrap's link variant
+    this.linkByClass = this.element.classList.contains('btn-link');
     this.overrideEvent('click', this.eventClickBind);
     this.overrideEvent('dblclick', this.eventClickBind);
     this.overrideEvent('submit', this.eventClickBind);
@@ -73,14 +81,23 @@ export class BBtnDirective extends BTagDirective implements OnInit {
   private refreshColor() {
     this.removeClass(...['primary', 'success', 'warning', 'danger', 'info', 'light', 'dark', 'secondary']
       .flatMap(value => [`btn-${value}`, `btn-outline-${value}`]));
+    if (!this.linkByClass) {
+      this.removeClass('btn-link');
+    }
     this.removeStyle('background-color');
+    // a close button has no color; a btn-link class is the color unless another one is given
+    if (this.close() || this.btn() || (this.linkByClass && !this.colorGiven)) {
+      return;
+    }
     const color = this.color();
-    if (color.style) {
-      if (color.color) {
-        this.putClass(this.outline() + '-' + color.color);
-      } else {
-        this.putStyle('background-color', color.rgb ?? color.style as string);
-      }
+    if (color.color === 'link') {
+      // Bootstrap has no btn-outline-link
+      this.putClass('btn-link');
+    } else if (color.color) {
+      this.putClass(this.outline() + '-' + color.color);
+    } else if (color.style) {
+      // a CSS color: rgb is '' when the color is not an RGB one
+      this.putStyle('background-color', color.rgb || color.style as string);
     }
   }
 

@@ -19,8 +19,10 @@ page, whichever one you use.
 | `BTagTemplateDirective` | `TagTemplateDirective` | structural directives (`*alert`) |
 | `BTagComponent` | `TagComponent` | components with a template (`card`, `modal`, `offcanvas`, `toast`...) |
 | `bootstrapLink` | | the `<link>` of the Bootstrap stylesheet described below |
+| `NGB_BOOTSTRAP_LINK`, `provideNgbBootstrapLink()` | | turn the `<link>` off (see below) |
 
-Each class adds one thing to its parent: on init it inserts `bootstrapLink` in the `<head>` of the document.
+Each class adds one thing to its parent: on init it inserts `bootstrapLink` in the `<head>` of the document, unless
+`provideNgbBootstrapLink(false)` turned it off.
 
 ## Behavior common to every `@pmeig/ngb-*` directive
 
@@ -35,8 +37,17 @@ The first directive initialized adds this element to `<head>` (once: it is found
 
 It is appended **after** the styles of the application, so its rules win over the application's rules of the same
 specificity (a `.btn-primary { --bs-btn-bg: ... }` of your theme, for example). To keep your own Bootstrap (bundled from
-`angular.json > styles`: needed for an offline PWA or a strict Content-Security-Policy), declare an element with the
-same id in `index.html`: the library finds it and adds nothing.
+`angular.json > styles`: needed for an offline PWA or a strict Content-Security-Policy), turn it off in the providers
+of the application (since 2.0.1):
+
+```typescript
+import { provideNgbBootstrapLink } from '@pmeig/ngb-core';
+
+bootstrapApplication(App, { providers: [provideNgbBootstrapLink(false)] });
+```
+
+(`NGB_BOOTSTRAP_LINK` is the token behind it.) With 2.0.0, declare instead an element with the same id in
+`index.html`: the library finds it and adds nothing.
 
 ```html
 <!-- index.html: Bootstrap comes from angular.json > styles, @pmeig/ngb-* must not load it again from the CDN -->

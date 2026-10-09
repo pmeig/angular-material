@@ -16,12 +16,11 @@ selector matches (`button`, `input`, `select`, `option`...), so a group may styl
 | Module | Contains |
 |--------|----------|
 | `PmeigSimpleMaterial` | `InputMaterial`, `LabelMaterial`, `ButtonMaterial`, `SelectMaterial` |
-| `PmeigFormsMaterial` | `PmeigSimpleMaterial`, `FormMaterial`, `AlertMaterial`, `DropdownMaterial`, `ProgressMaterial`, `TooltipMaterial`, `PopoverMaterial`, `ToastMaterial`, `SpinnerMaterial` |
+| `PmeigFormsMaterial` | `PmeigSimpleMaterial`, `FormMaterial`, `AlertMaterial`, `DropdownMaterial`, `ProgressMaterial`, `TooltipMaterial`, `PopoverMaterial`, `ToastMaterial`, `SpinnerMaterial`, `ModalMaterial` |
 | `PmeigNavigationMaterial` | `PmeigSimpleMaterial`, `NavbarMaterial`, `CollapseMaterial`, `OffcanvasMaterial`, `BreadcrumbMaterial`, `PaginationMaterial` |
 | `PmeigDesignMaterial` | `PmeigSimpleMaterial`, `CardMaterial`, `CarouselMaterial`, `AccordionMaterial`, `CollapseMaterial`, `ListMaterial`, `TableMaterial` |
 | `PmeigMaterial` | the three groups above and `BadgeMaterial` |
 
-`@pmeig/ngb-modal` is in no group: import `ModalMaterial` from `@pmeig/ngb-modal`.
 
 ```typescript
 import { PmeigDesignMaterial } from '@pmeig/ngb-material';
@@ -43,18 +42,22 @@ Each group has a static `excludes(...)` that returns the lists of the group with
 export class MyFormsMaterial { }
 ```
 
-See Known issues before using it with the other groups.
+`PmeigMaterial.excludes({ forms, navigation, design, default })` does the same for every group (`default: true` leaves
+`BadgeMaterial` out):
 
-## Known issues (2.0.0)
+```typescript
+@NgModule(PmeigMaterial.excludes({ forms: [ToastMaterial], design: [CarouselMaterial] }))
+export class MyMaterial { }
+```
 
-- **`PmeigNavigationMaterial.excludes` and `PmeigDesignMaterial.excludes` filter the forms modules**: both call
-  `excludeModule(excludes, FORMS_MATERIAL_MODULES)`, so they return the forms group instead of their own. Fix: use
-  `NAVIGATION_MATERIAL_MODULES` and `DESIGN_MATERIAL_MODULES`.
-- **`PmeigMaterial.excludes({...})` cannot be imported**: as soon as one group has excludes, `exclude()` puts a
-  `{ imports, exports }` object (not a module class) in `imports`, which Angular refuses.
-- **The exclude types are instance types** (`AlertMaterial` instead of `typeof AlertMaterial`): every module class is
-  an empty object type, so TypeScript accepts any module, or any object, in `excludes(...)`.
-- **`@pmeig/ngb-modal` is missing** from every group.
+## Fixed in 2.0.1
+
+- `PmeigNavigationMaterial.excludes` and `PmeigDesignMaterial.excludes` filter their own group (2.0.0 returned the
+  forms group).
+- `PmeigMaterial.excludes({...})` returns module classes only: it can be given to `@NgModule` (2.0.0 put an object in
+  `imports`).
+- `excludes(...)` takes the module classes (`typeof AlertMaterial`): TypeScript refuses anything else.
+- `ModalMaterial` (`@pmeig/ngb-modal`) is in `PmeigFormsMaterial`.
 
 ## Dependencies
 

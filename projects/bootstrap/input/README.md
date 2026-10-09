@@ -262,13 +262,14 @@ This project is licensed under the MIT License.
 
 For issues and questions, please open an issue on the GitHub repository.
 
-## Known issues (2.0.0)
+## Fixed in 2.0.1
 
-- **Values written by `ngModel` / `formControl` are erased**: when `value` is not bound, the `refreshValue` effect still
-  runs once the directive is ready (~50 ms after the first render) and sets `element.value = ''`, after `ngModel` wrote
-  its value. A field prefilled with `[ngModel]` or `formControlName` shows empty (checked with Angular 21.2, `[ngModel]="'kept'"`
-  → `''`). Fix: do nothing while `value()` is `undefined`.
-- **`0` is shown empty**: `if (value)` treats `0` (and `false`) as no value. Fix: `value !== undefined && value !== null`.
-- **Readonly / disabled fields lose their value on input**: `onValueChange` sets `element.value = ''` instead of keeping it.
+- A value written by `ngModel` / `formControlName` is kept: 2.0.0 erased it ~50 ms after the first render when `value`
+  was not bound. `value` only writes the field when it is bound (`null` empties it).
+- `0` and `false` are shown (2.0.0 showed them empty).
+- A readonly or disabled field keeps its value on input (2.0.0 emptied it).
+
+## Notes
+
 - **Every `<input>` of the component** is taken (selector `input`): checkboxes get a new `form-check` parent element,
   which breaks a layout written with `form-check` already. Use `pmeig-ignore` on the inputs you lay out yourself.
