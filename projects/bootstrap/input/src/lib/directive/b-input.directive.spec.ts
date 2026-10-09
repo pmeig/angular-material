@@ -11,12 +11,15 @@ import { BInputDirective } from './b-input.directive';
     <input id="text" [value]="text()" />
     <input id="free" />
     <input id="readonly" readonly [value]="'kept'" />
+    <input id="described" describe="Your name in this session" aria-describedby="mine" />
+    <input [describe]="hint()" />
   `,
 })
 class InputsComponent {
   readonly model = signal('written by ngModel');
   readonly text = signal('first');
   readonly zero = 0;
+  readonly hint = signal('First hint');
 }
 
 /** The directives work once the first render is over plus 50 ms (TagDirective). */
@@ -58,6 +61,23 @@ describe('BInputDirective', () => {
     input('free').dispatchEvent(new Event('input'));
     await rendered(fixture);
     expect(input('free').value).toBe('typed');
+  });
+
+  it('describes a field with its help text: the id of the text is in aria-describedby, after the one of the application', () => {
+    const help = fixture.nativeElement.querySelector('#described-describe') as HTMLElement;
+    expect(help.textContent).toBe('Your name in this session');
+    expect(help.classList).toContain('form-text');
+    expect(input('described').getAttribute('aria-describedby')).toBe('mine described-describe');
+  });
+
+  it('names the help text of a field without id, and replaces it when it changes', async () => {
+    const nameless = () => fixture.nativeElement.querySelectorAll('input')[6] as HTMLInputElement;
+    const helpOf = () => document.getElementById(nameless().getAttribute('aria-describedby') ?? '');
+    expect(helpOf()?.textContent).toBe('First hint');
+    fixture.componentInstance.hint.set('Second hint');
+    await rendered(fixture);
+    expect(helpOf()?.textContent).toBe('Second hint');
+    expect(fixture.nativeElement.querySelectorAll('.form-text').length).toBe(2);
   });
 
   it('does not empty a readonly field on input', () => {

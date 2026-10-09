@@ -1,5 +1,5 @@
 import { Directive, inject, input, signal, TemplateRef } from '@angular/core';
-import { BTagDirective } from '@pmeig/ngb-core';
+import { addDescribedBy, BTagDirective, removeDescribedBy } from '@pmeig/ngb-core';
 import { PopoverFactory, TooltipFactory, TooltipPlacement, TooltipRendered, TooltipRenderer } from '../tooltip.type';
 import { TooltipPlacementOtherwise } from '../tooltip.builder';
 import { timeoutAttribute, TimeoutAttribute } from '@pmeig/ng-material-core';
@@ -52,6 +52,8 @@ export abstract class BAbstractTooltipDirective<T extends TooltipFactory | Popov
     this.isShown = true;
     if (!this.instance) {
       this.instance = this.factory.render(this.element);
+      // the tooltip describes its trigger while it is shown: a screen reader reads it with the element
+      addDescribedBy(this.element, this.instance.tooltip.id);
       const timeout = this.timeout();
       if (timeout) {
         this.timeoutId = this.addTimeout(() => {
@@ -76,6 +78,9 @@ export abstract class BAbstractTooltipDirective<T extends TooltipFactory | Popov
         this.onHover = true;
       }, 500).id;
     } else {
+      if (this.instance) {
+        removeDescribedBy(this.element, this.instance.tooltip.id);
+      }
       this.instance?.destroy();
       this.instance = undefined;
       this.clearTimeout(this.timeoutId);
