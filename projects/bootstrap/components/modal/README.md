@@ -181,6 +181,11 @@ The component replaces Bootstrap's JavaScript and does what it does on show
 and `tabindex="-1"` on `.modal`, `aria-labelledby` pointing to the `title`, Escape closes it (`keyboard`), and the focus
 moves into the modal once it is shown. A title given in your own `[header]` content needs its own `aria-labelledby`.
 
+## Fixed in 2.0.2
+
+- An `@if` / `@for` directly in `<modal>` is rendered once (2.0.0 and 2.0.1 rendered it a second time, with the context
+  of a template: `[object Object]` for an `as` alias). **Behavior change**: a body template needs `#body`.
+
 ## Fixed in 2.0.1
 
 - `showChange` output: `[(show)]` works, and a modal closed by the user can be opened again.
