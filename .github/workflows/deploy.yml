@@ -6,6 +6,11 @@ on:
         description: modules do you want build separate by space
         required: false
         default: ''
+      release:
+        description: publish the modules on npm as a release (run from main only), e.g. after a release Deploy that stopped half way
+        type: boolean
+        required: false
+        default: false
   pull_request_target:
     types:
       - closed
@@ -46,20 +51,29 @@ jobs:
             names="$names $name"
           done
           echo "value=$names" >> $GITHUB_OUTPUT
-      - name: suffix version
-        id: suffix
-        uses: pmeig/github-actions/actions/context/version/suffix@main
-        with:
-          env: ${{ steps.metadata.outputs.env-target }}
       - name: env accepted
         id: env
         run: |
           env='${{ steps.metadata.outputs.env-target }}'
+          release='false'
           if [ '${{ github.event_name }}' == 'workflow_dispatch' ]
           then
             env='dev'
+            # a manual release: prod environment and the version without suffix, only from main
+            if [ '${{ inputs.release }}' == 'true' ] && [ '${{ github.ref }}' == 'refs/heads/main' ]
+            then
+              env='prod'
+              release='true'
+            fi
           fi
           echo "value=$env" >> $GITHUB_OUTPUT
+          echo "release=$release" >> $GITHUB_OUTPUT
+      - name: suffix version
+        id: suffix
+        uses: pmeig/github-actions/actions/context/version/suffix@main
+        with:
+          env: ${{ steps.env.outputs.release == 'true' && 'prod' || steps.metadata.outputs.env-target }}
+          dispatch: ${{ steps.env.outputs.release == 'true' && 'false' || 'true' }}
       - name: build matrix
         id: matrix
         run: |
@@ -99,6 +113,8 @@ jobs:
     env:
       PMEIG_TOKEN: ${{ secrets.PMEIG_TOKEN }}
     strategy:
+      # one module that fails (already published, registry down...) must not cancel the publication of the others
+      fail-fast: false
       matrix:
         module: ${{ fromJSON(needs.context.outputs.matrix) }}
       max-parallel: 3
@@ -215,6 +231,7 @@ jobs:
       - Linux
       - pmeig
     strategy:
+      fail-fast: false
       max-parallel: 3
       matrix:
         module: ${{ fromJSON(needs.context.outputs.matrix) }}
