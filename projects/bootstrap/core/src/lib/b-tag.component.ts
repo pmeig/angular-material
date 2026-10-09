@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
 import { TagComponent } from '@pmeig/ng-material-core';
-import { bootstrapLink } from './b-tag.constant';
+import { injectBootstrapLinks } from './b-tag.constant';
 
 @Component({
   template: '',
 })
 export abstract class BTagComponent extends TagComponent {
+  private readonly bootstrapLinks = injectBootstrapLinks();
+
   protected constructor() {
     super();
   }
 
   protected override onInit() {
     super.onInit();
-    this.insertLink(bootstrapLink);
+    this.insertLink(...this.bootstrapLinks);
   }
 }

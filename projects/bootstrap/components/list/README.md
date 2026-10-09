@@ -272,12 +272,13 @@ This project is licensed under the MIT License.
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
 
+## Fixed in 2.0.1
+
+- Items added after the first render (`@for` after a load, a filter...) get `list-group-item` and the `background`
+  color too (2.0.0 styled the first items only).
+
 ## Known issues (2.0.0)
 
-- **Items added later are not styled**: `list-group-item` (and the `background` color) is put on the children once,
-  after the first render. Items rendered afterwards by `@for` (data loaded later, a filter, a new month) have no class.
-  Until it is fixed, keep `class="list-group-item"` on the items of a dynamic list. Fix: a `MutationObserver` on the
-  host, or `contentChildren` instead of the DOM children.
 - **Every click toggles `active`**: `ListGroupActionDirective` (selector `button, a` inside a `list-group`) adds or
   removes `active` on each click and never removes it from the other items: a picker list keeps several items active.
   Use `pmeig-ignore` on the items whose state you drive yourself.

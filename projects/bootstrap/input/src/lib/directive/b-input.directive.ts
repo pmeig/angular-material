@@ -130,11 +130,12 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
 
   private refreshValue() {
     const value = this.value();
-    if (value) {
-      this.element.value = this.mapper.input(value);
-    } else {
-      this.element.value = '';
+    // not bound: the value belongs to ngModel / formControl or to the user, it must not be erased
+    if (value === undefined) {
+      return;
     }
+    // 0 and false are values
+    this.element.value = value === null ? '' : this.mapper.input(value);
   }
 
 
@@ -143,7 +144,8 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
     if (!this.formControl?.disabled && !this.readonly()) {
       this.valueChange.emit(this.mapper.value());
     } else {
-      this.element.value = '';
+      // a field that cannot be changed keeps its value
+      this.refreshValue();
     }
   }
 

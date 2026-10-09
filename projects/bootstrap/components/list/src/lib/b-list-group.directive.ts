@@ -22,6 +22,8 @@ export class BListGroupDirective extends BTagParentDirective {
 
   private removeColor = () => {
   };
+  /** Items rendered later (`@for` after a load, a filter...) get their classes too. */
+  private childrenObserver?: MutationObserver;
 
   constructor() {
     super();
@@ -38,6 +40,20 @@ export class BListGroupDirective extends BTagParentDirective {
     this.putClass(LIST_GROUP);
     this.putClassChildren(LIST_GROUP_ITEM);
     setTimeout(() => this.removeClass(LIST_GROUP_ITEM, `${LIST_GROUP_ITEM}-action`), 250);
+    if (typeof MutationObserver !== 'undefined') {
+      this.childrenObserver = new MutationObserver(mutations => {
+        if (mutations.some(mutation => [...mutation.addedNodes].some(node => node instanceof Element))) {
+          this.putClassChildren(LIST_GROUP_ITEM);
+          this.onChangeBackground();
+        }
+      });
+      this.childrenObserver.observe(this.element, { childList: true });
+    }
+  }
+
+  override ngOnDestroy() {
+    this.childrenObserver?.disconnect();
+    super.ngOnDestroy();
   }
 
   private onChangeDirection() {

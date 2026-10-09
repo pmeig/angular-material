@@ -19,6 +19,7 @@
     "@pmeig/ngb-carousel",
     "@pmeig/ngb-dropdown",
     "@pmeig/ngb-list",
+    "@pmeig/ngb-modal",
     "@pmeig/ngb-offcanvas",
     "@pmeig/ngb-navbar",
     "@pmeig/ngb-pagination",

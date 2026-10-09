@@ -1,7 +1,12 @@
 @if (display.container()) {
+  <!-- role, aria-modal and tabindex: what Bootstrap's JavaScript sets on a shown .modal -->
   <div
-    [id]="name()"
+    [id]="modalId()"
     [class]="'modal ' + animation() + ' ' + classes()"
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    [attr.aria-labelledby]="title() ? modalId() + '-title' : null"
     (click)="closeByClick(modalTemplate, $event)"
     [ngClass]="{
       show: display.show(),
@@ -23,7 +28,7 @@
                 [ngTemplateOutlet]="container"
                 [ngTemplateOutletContext]="{ templates: headers }"></ng-container>
               @if (title(); as modalTitle) {
-                <div class="modal-title">{{ modalTitle }}</div>
+                <div class="modal-title" [id]="modalId() + '-title'">{{ modalTitle }}</div>
               }
             </div>
             <btn-group *hasChildren>

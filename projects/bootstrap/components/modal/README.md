@@ -64,18 +64,17 @@ Two ways, both work: an **element** with the attribute `header` / `footer` / `bt
 
 
 ### Controlled Modal
-`[show]` opens the modal when it becomes `true` and closes it when it becomes `false`. The modal has **no output**: when
-the user closes it (cross, click outside, `timeout`), the bound value stays `true`, and setting it to `true` again does
-not reopen it (the signal did not change). Drive it with the template reference instead:
+`[(show)]`: the modal opens when the value becomes `true`, closes when it becomes `false`, and `showChange` gives the
+value back whatever closed it (cross, click outside, Escape, `timeout`), so that it can be opened again.
 ```html
-<modal #confirm title="Delete?" [cross]="false" [close-outside]="false">
+<modal title="Delete?" [(show)]="confirming">
   <p>This cannot be undone.</p>
-  <button footer type="button" color="danger" (click)="remove(); confirm.close()">Delete</button>
+  <button footer type="button" color="danger" (click)="remove(); confirming.set(false)">Delete</button>
 </modal>
 
-<button type="button" color="primary" (click)="confirm.open()">Delete</button>
+<button type="button" color="primary" (click)="confirming.set(true)">Delete</button>
 ```
-or with `viewChild(ModalMaterial)` and its `visible` signal to know whether it is open.
+The template reference works too: `#confirm` then `confirm.open()` / `confirm.close()`, and its `visible` signal.
 
 
 ### Modal with Different Sizes
@@ -130,16 +129,17 @@ or with `viewChild(ModalMaterial)` and its `visible` signal to know whether it i
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `title` | `string` | `undefined` | Modal title text |
-| `show` | `boolean` | `false` | Opens (`true`) / closes (`false`) the modal when it changes; no output back (see Controlled Modal) |
+| `show` | `boolean` | `false` | Opens (`true`) / closes (`false`) the modal; two-way with `[(show)]` (see Controlled Modal) |
 | `animation` | `'zoom' \| 'fade'` | `'zoom'` | Animation type for show/hide transitions |
 | `cross` | `boolean` | `true` | Shows close button (×) in header |
 | `backdrop` | `boolean` | `true` | Shows backdrop overlay |
 | `close-outside` | `boolean` | `true` | A click outside closes the modal; `false` = a "static" shake instead |
-| `fullscreen` | `boolean` | `false` | With `size`, Bootstrap's `modal-fullscreen-<size>-down` (`sm`, `md`, `lg`, `xl`, `xxl`: fullscreen below that breakpoint); alone, see Known issues |
+| `fullscreen` | `boolean` | `false` | `modal-fullscreen`; with `size`, `modal-fullscreen-<size>-down` (`sm`, `md`, `lg`, `xl`, `xxl`: fullscreen below that breakpoint) |
 | `timeout` | `number \| Timeout` | `undefined` | Auto-close: a number is in milliseconds |
 | `size` | `'sm' \| 'lg' \| 'xl'` | `undefined` | Modal size variant (`xs` → `sm`, `xxl` → `xl`) |
 | `center` | `boolean` | `true` | Centers modal vertically |
 | `scrollable` | `boolean` | `true` | Makes modal body scrollable |
+| `keyboard` | `boolean` | `true` | Escape closes the modal (Bootstrap's `keyboard` option) |
 
 ### Modal Interface Methods
 
@@ -158,7 +158,10 @@ or with `viewChild(ModalMaterial)` and its `visible` signal to know whether it i
 - Templates receive `{ close }` (`let-close="close"`)
 
 #### Events
-None: there is no `close` / `showChange` output (see Known issues).
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `showChange` | `boolean` | Every open (`true`) and close (`false`), whatever the cause |
 
 ## How It Works
 
@@ -171,20 +174,17 @@ The modal component automatically:
 5. **Timeout Management**: Automatically closes modal when timeout is set
 
 ### Accessibility
-The component replaces Bootstrap's JavaScript, which on show sets `role="dialog"` and `aria-modal="true"` on `.modal`,
-closes on Escape (`keyboard: true`) and moves the focus into the modal (`focus: true`)
-([Bootstrap modal](https://getbootstrap.com/docs/5.3/components/modal/#options)). The component does **none** of it
-yet, and Bootstrap asks for `aria-labelledby` on the title: add what you need in your content (see Known issues).
+The component replaces Bootstrap's JavaScript and does what it does on show
+([Bootstrap modal](https://getbootstrap.com/docs/5.3/components/modal/#options)): `role="dialog"`, `aria-modal="true"`
+and `tabindex="-1"` on `.modal`, `aria-labelledby` pointing to the `title`, Escape closes it (`keyboard`), and the focus
+moves into the modal once it is shown. A title given in your own `[header]` content needs its own `aria-labelledby`.
 
-## Known issues (2.0.0)
+## Fixed in 2.0.1
 
-- **No output when the modal closes itself** (cross, click outside, `timeout`): a parent driving it with `[show]`
-  stays at `true` and cannot reopen it. Fix: a `showChange` output (two-way `[(show)]`), like `@pmeig/ngb-offcanvas`.
-- **What Bootstrap's JavaScript does is missing**: `role="dialog"`, `aria-modal="true"`, Escape, focus (see
-  Accessibility).
-- **`fullscreen` alone gives the class `modal-`** instead of Bootstrap's `modal-fullscreen`: without `size`,
-  `compileClassSize` replaces `size` with `''` in `'modal-size'`. Use `fullscreen size="xxl"` (fullscreen below
-  1400px) meanwhile. Fix: return `modal-fullscreen` when `fullscreen` has no size.
+- `showChange` output: `[(show)]` works, and a modal closed by the user can be opened again.
+- `role="dialog"`, `aria-modal`, `aria-labelledby`, Escape and focus, like Bootstrap's JavaScript.
+- `fullscreen` alone gives Bootstrap's `modal-fullscreen` (2.0.0 wrote `modal-`); `size="md"` gives no class (the
+  default width) instead of the nonexistent `modal-md`.
 
 ## Bootstrap Classes Support
 

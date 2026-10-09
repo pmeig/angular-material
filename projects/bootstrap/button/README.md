@@ -83,10 +83,11 @@ Bootstrap has two size classes only, `btn-sm` and `btn-lg`
 ```
 
 ### Link Buttons
-Bootstrap's `btn-link` variant is not a `color` of the library (`color="link"` is read as a CSS color): keep the
-Bootstrap class. There is no `btn-outline-link` in Bootstrap.
+Bootstrap's `btn-link` variant: `color="link"`, or the Bootstrap class (a `<button class="btn-link">` without `color`
+keeps it and gets no `btn-primary`). There is no `btn-outline-link` in Bootstrap: `outline` is ignored for it.
 ```html
-<button class="btn-link">Looks like a link</button>
+<button color="link">Looks like a link</button>
+<button class="btn-link">Looks like a link too</button>
 ```
 
 ### Buttons that must not become `.btn`
@@ -198,7 +199,7 @@ Applied automatically to `button` elements and `[btn]` attributes.
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `color` | `ColorAttribute` | none (see Known issues) | Bootstrap color name, or a CSS color / RGB applied as `background-color` |
+| `color` | `ColorAttribute \| 'link'` | `primary` | Bootstrap color name, `link` (`btn-link`), or a CSS color / RGB applied as `background-color` |
 | `outline` | `boolean` | `false` | Uses outline button styling (`btn-outline-<color>`) |
 | `size` | `SizeAttribute` | `''` | `sm` or `lg` (other values give classes Bootstrap does not style) |
 | `disabled` | `boolean` | `false` | Sets the `disabled` attribute; clicks, double clicks and submits are stopped |
@@ -308,16 +309,13 @@ This library generates and works with standard Bootstrap 5 button classes:
 - Classes are added ~50 ms after the first render (see `@pmeig/ngb-core`), then Bootstrap's 0.15 s transition runs:
   a page shows native buttons for a moment, and a test or a screenshot taken right away sees them unstyled
 
-## Known issues (2.0.0)
+## Fixed in 2.0.1
 
-- **No color by default**: the default value of `color` is not passed through the transform, the class written is
-  `btn-btn-primary`, which does not exist. A `<button>` without `color` has `btn` only (no color), not `btn-primary`.
-  Fix: default `colorAttribute('primary')`.
-- **Close buttons get a color class**: `refreshColor` runs for `close` buttons too (today `btn-btn-primary`, harmless;
-  once the default is fixed, `btn-close btn-primary`). Fix: skip the color when `close()`.
-- **No CDN link from a button alone**: `BBtnDirective.onInit` does not call `super.onInit()`, so a page with buttons
-  only never inserts the Bootstrap `<link>` while the other directives do: the result depends on which directive comes
-  first.
+- A `<button>` without `color` is `btn-primary` (2.0.0 wrote `btn-btn-primary`: no color).
+- `close` buttons get no color class.
+- A CSS color (`color="#ff0000"`, `color="tomato"`) is painted (2.0.0 threw `Cannot read properties of undefined`).
+- `color="link"` gives Bootstrap's `btn-link`.
+- A button alone inserts the Bootstrap `<link>` like the other directives (see `@pmeig/ngb-core` to turn it off).
 
 ## License
 

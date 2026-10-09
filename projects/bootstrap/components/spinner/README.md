@@ -195,3 +195,8 @@ This project is licensed under the MIT License.
 
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
+
+## Fixed in 2.0.1
+
+- A CSS color (`color="#ff6b35"`, `color="white"`) is painted: 2.0.0 threw `Cannot read properties of undefined` (the
+  RGB value of a non-RGB color is `''`, and `'' ?? style` kept `''`).

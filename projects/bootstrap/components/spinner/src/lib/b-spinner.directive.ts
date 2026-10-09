@@ -45,7 +45,8 @@ export class SpinnerMaterial extends BTagDirective {
       }
     } else if (color.style) {
       this.removeLastColor = () => this.removeStyle('color');
-      this.putStyle('color', color.rgb ?? color.style as string)
+      // a CSS color: rgb is '' when the color is not an RGB one
+      this.putStyle('color', color.rgb || color.style as string)
     }
   }
 }
