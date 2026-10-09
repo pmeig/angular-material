@@ -220,7 +220,7 @@ This library generates and works with standard Bootstrap 5 input classes:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility
@@ -261,3 +261,14 @@ This project is licensed under the MIT License.
 ## Support
 
 For issues and questions, please open an issue on the GitHub repository.
+
+## Known issues (2.0.0)
+
+- **Values written by `ngModel` / `formControl` are erased**: when `value` is not bound, the `refreshValue` effect still
+  runs once the directive is ready (~50 ms after the first render) and sets `element.value = ''`, after `ngModel` wrote
+  its value. A field prefilled with `[ngModel]` or `formControlName` shows empty (checked with Angular 21.2, `[ngModel]="'kept'"`
+  → `''`). Fix: do nothing while `value()` is `undefined`.
+- **`0` is shown empty**: `if (value)` treats `0` (and `false`) as no value. Fix: `value !== undefined && value !== null`.
+- **Readonly / disabled fields lose their value on input**: `onValueChange` sets `element.value = ''` instead of keeping it.
+- **Every `<input>` of the component** is taken (selector `input`): checkboxes get a new `form-check` parent element,
+  which breaks a layout written with `form-check` already. Use `pmeig-ignore` on the inputs you lay out yourself.

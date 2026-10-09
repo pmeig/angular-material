@@ -1,63 +1,89 @@
-# BCore
+# @pmeig/ngb-core
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.0.
+Base classes shared by every `@pmeig/ngb-*` library (button, input, card, modal...). An application does not import it:
+each `@pmeig/ngb-*` package depends on it. Read this page to know what **every** directive of the family does to the
+page, whichever one you use.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Installation
 
 ```bash
-ng generate --help
+  npm install @pmeig/ngb-core
 ```
 
-## Building
+## What it contains
 
-To build the library, run:
+| Class | Extends (`@pmeig/ng-material-core`) | Used by |
+|-------|-------------------------------------|---------|
+| `BTagDirective` | `TagDirective` | directives on one element (`button`, `input`, `spinner`, `badge`...) |
+| `BTagParentDirective` | `TagParentDirective` | directives that style their children (`btn-group`, `list-group`, `select`...) |
+| `BTagTemplateDirective` | `TagTemplateDirective` | structural directives (`*alert`) |
+| `BTagComponent` | `TagComponent` | components with a template (`card`, `modal`, `offcanvas`, `toast`...) |
+| `bootstrapLink` | | the `<link>` of the Bootstrap stylesheet described below |
 
-```bash
-ng build b-core
+Each class adds one thing to its parent: on init it inserts `bootstrapLink` in the `<head>` of the document.
+
+## Behavior common to every `@pmeig/ngb-*` directive
+
+### The Bootstrap stylesheet is loaded from a CDN
+
+The first directive initialized adds this element to `<head>` (once: it is found again by its id):
+
+```html
+<link id="ngb-css" rel="stylesheet" crossorigin="anonymous" integrity="sha384-..."
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css">
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+It is appended **after** the styles of the application, so its rules win over the application's rules of the same
+specificity (a `.btn-primary { --bs-btn-bg: ... }` of your theme, for example). To keep your own Bootstrap (bundled from
+`angular.json > styles`: needed for an offline PWA or a strict Content-Security-Policy), declare an element with the
+same id in `index.html`: the library finds it and adds nothing.
 
-### Publishing the Library
-
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/b-core
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```html
+<!-- index.html: Bootstrap comes from angular.json > styles, @pmeig/ngb-* must not load it again from the CDN -->
+<link id="ngb-css" rel="stylesheet" href="data:text/css," />
 ```
 
-## Running end-to-end tests
+### Classes are applied after the first render
 
-For end-to-end (e2e) testing, run:
+In the browser, the directives wait for the end of the first change detection plus 50 ms (`debounceTime(50)`) before
+adding their classes and starting their effects; on the server (SSR) they do nothing. A unit test waits for it
+(`await fixture.whenStable()`, then `vi.advanceTimersByTime(50)` or `tick(50)`).
 
-```bash
-ng e2e
+### Marker classes
+
+Every host element gets the class `pmeig-<tag name>`, plus `pmeig-<tag name>-<id>` when it has an id
+(`<button id="save">` gets `pmeig-button pmeig-button-save`): use them to target an element in CSS or in tests.
+
+### `pmeig-ignore`: leave an element alone
+
+Most selectors are element names (`button`, `input`, `select`, `option`, `label[for]`...): importing a library styles
+**every** such element of the component. Put the empty attribute `pmeig-ignore` on an element the directive must not
+touch: no class, no effect, no event listener.
+
+```html
+<!-- ButtonMaterial is imported: these tabs stay .nav-link, they do not become .btn -->
+<button type="button" pmeig-ignore class="nav-link" [class.active]="tab() === 'a'">A</button>
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Attribute values
 
-## Additional Resources
+- An empty attribute is `true` (`<button outline>`), `"false"` is `false`.
+- Colors: the Bootstrap names (`primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`) give the
+  Bootstrap classes; any other string is used as a CSS color (`#ff6b35`, `white`), a JSON string
+  `{"red":255,"green":0,"blue":0}` or an `RGB` object as an RGB color.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Dependencies
+
+- **Angular**: >=21.2
+- **@pmeig/ng-material-core**: ^2.0.0
+- **@pmeig/ng-core**: ^2.0.0
+- **tslib**: ^2.3.0
+
+## Compatibility
+
+- Angular: 21.2+
+- Bootstrap: 5.3 (the stylesheet loaded from the CDN is 5.3.4)
+
+## License
+
+This project is licensed under the MIT License.

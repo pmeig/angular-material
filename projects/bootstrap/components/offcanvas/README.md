@@ -10,7 +10,7 @@ A powerful Angular library that provides Bootstrap-styled offcanvas sidebar comp
 
 - 🎯 **OffcanvasMaterial Component** - Full-featured offcanvas with Bootstrap styling
 - 📦 **Position Control** - Start, end, top, and bottom positioning options
-- 🔄 **Responsive Behavior** - Breakpoint-based visibility with responsive classes
+- 🔄 **Responsive Behavior** - Bootstrap responsive offcanvas (`offcanvas-sm` … `offcanvas-xxl`)
 - ✨ **Backdrop Options** - Customizable backdrop and click-outside behavior
 - 🎨 **Static Mode** - Non-dismissible offcanvas for persistent sidebars
 - 📱 **Scrollable Content** - Optional body scrolling when offcanvas is open
@@ -88,7 +88,7 @@ Toggle Offcanvas
 ```
 ### Responsive Offcanvas
 ```html
-<!-- Only show offcanvas below large breakpoint -->
+<!-- an offcanvas below lg (992px), shown in the page from lg -->
 <offcanvas responsive="lg" title="Responsive Menu">
   <nav class="nav flex-column">
     <a class="nav-link" href="#">Home</a>
@@ -129,7 +129,7 @@ Toggle Offcanvas
 |----------|------|---------|-------------|
 | `show` | `boolean \| Element` | `false` | Controls visibility - boolean for programmatic control, Element for trigger-based |
 | `position` | `'start' \| 'end' \| 'top' \| 'bottom'` | `'start'` | Position where offcanvas appears from |
-| `responsive` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'xxl'` | `'offcanvas'` | Breakpoint below which offcanvas is hidden |
+| `responsive` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'xxl'` | `'offcanvas'` | Bootstrap `offcanvas-<bp>`: an offcanvas below the breakpoint, in the page above it |
 | `backdrop` | `boolean` | `true` | Shows backdrop overlay |
 | `scrollable` | `boolean` | `false` | Allows body scrolling when offcanvas is open |
 | `static` | `boolean` | `false` | Prevents dismissing by clicking outside |
@@ -161,7 +161,7 @@ The offcanvas component automatically:
 5. **Click Handling**: Manages outside clicks and backdrop dismissal
 
 ### Responsive Behavior
-- **Breakpoint Control**: Shows/hides based on screen size
+- **Breakpoint Control**: offcanvas below the breakpoint, in the page above it (Bootstrap `offcanvas-<bp>`)
 - **Position Awareness**: Handles click detection based on position
 - **Touch Support**: Works with touch interactions on mobile devices
 
@@ -188,18 +188,20 @@ Available positioning configurations:
 
 ## Responsive Breakpoints
 
-Control when offcanvas is hidden:
-- **Small**: `responsive="sm"` - Hidden above 576px
-- **Medium**: `responsive="md"` - Hidden above 768px
-- **Large**: `responsive="lg"` - Hidden above 992px
-- **Extra Large**: `responsive="xl"` - Hidden above 1200px
-- **XXL**: `responsive="xxl"` - Hidden above 1400px
+Bootstrap's responsive offcanvas (`.offcanvas-<breakpoint>`, [docs](https://getbootstrap.com/docs/5.3/components/offcanvas/#responsive)):
+**below** the breakpoint the content is an offcanvas (hidden until opened); **above** it, the content is shown in the
+page, not as an offcanvas.
+- **Small**: `responsive="sm"` - offcanvas below 576px, in the page from 576px
+- **Medium**: `responsive="md"` - offcanvas below 768px, in the page from 768px
+- **Large**: `responsive="lg"` - offcanvas below 992px, in the page from 992px
+- **Extra Large**: `responsive="xl"` - offcanvas below 1200px, in the page from 1200px
+- **XXL**: `responsive="xxl"` - offcanvas below 1400px, in the page from 1400px
 
 ## Dependencies
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility
@@ -242,3 +244,12 @@ This project is licensed under the MIT License.
 
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
+
+## Known issues (2.0.0)
+
+- **`open()` is `protected`**: it cannot be called from a template reference or a parent; use `[(show)]`.
+- **15 px are added to the right of the body** while it is open (`padding-right: 15px`, for a desktop scrollbar): on
+  mobile, and with overlay scrollbars, the page jumps 15 px. Fix: measure `window.innerWidth - documentElement.clientWidth`.
+  That is what Bootstrap's JavaScript does (`ScrollBarHelper.getWidth()`).
+- **What Bootstrap's JavaScript does on show is missing**: `role="dialog"`, `aria-modal="true"`, close on Escape
+  (`keyboard: true`) and focus inside the offcanvas.

@@ -198,7 +198,7 @@ Available Bootstrap color variants:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility
@@ -242,3 +242,10 @@ This project is licensed under the MIT License.
 
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
+
+## Known issues (2.0.0)
+
+- **Custom RGB colors are ignored**: `colorStyle = rgb ?? color ? '' : style` is read as `(rgb ?? color) ? '' : style`:
+  with an RGB color the background is never set. Fix: `rgb ?? (color ? '' : style)`.
+- **`orchestrator` does nothing**: the input is declared but never read; drive the toast with `[show]`.
+- **No auto-hide and no output**: the toast stays until `show` becomes `false` (or `hide()` is called).
