@@ -273,3 +273,10 @@ For issues and questions, please open an issue on the GitHub repository.
 
 - **Every `<input>` of the component** is taken (selector `input`): checkboxes get a new `form-check` parent element,
   which breaks a layout written with `form-check` already. Use `pmeig-ignore` on the inputs you lay out yourself.
+
+## Fixed in 2.0.2
+
+- **`describe` works**: the help text (`describe="..."`) was removed as soon as the directive was ready (`refreshType` took
+  down the wrapper that holds it). It is now kept, and linked to the field: its id (`<id>-describe`, or a generated one
+  when the field has no id) is in the `aria-describedby` of the input, after the ids the application wrote. A new
+  `describe` replaces the previous text (2.0.0 and 2.0.1 left both).

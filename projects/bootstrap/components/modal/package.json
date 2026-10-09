@@ -1,6 +1,6 @@
 {
   "name": "@pmeig/ngb-modal",
-  "version": "2.0.2-SNAPSHOT",
+  "version": "2.0.3-SNAPSHOT",
   "peerDependencies": {
         "@angular/common": ">=21.2.0",
         "@angular/core": ">=21.2.0"

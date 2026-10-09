@@ -98,3 +98,15 @@ touch: no class, no effect, no event listener.
 ## License
 
 This project is licensed under the MIT License.
+
+## ARIA helpers (since 2.0.2)
+
+The libraries that put an element next to a field (a help text, an error message, a tooltip) link it with
+`aria-describedby` through these functions, so that several of them can describe the same field without overwriting
+each other, and so can your own code:
+
+| Function | Description |
+|----------|-------------|
+| `addDescribedBy(element, id)` | adds `id` to the `aria-describedby` of `element`, after the ids already there; once, whatever the number of calls |
+| `removeDescribedBy(element, id)` | removes `id`, and the attribute with the last one |
+| `uniqueId(prefix)` | a new id (`ngb-describe-3`) for an element a component creates when its host has no id |

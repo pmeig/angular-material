@@ -166,3 +166,14 @@ This project is licensed under the MIT License.
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
 
+
+## Accessibility (since 2.0.2)
+
+`BValidatorDirective` tells the assistive technologies what Bootstrap shows with CSS:
+- `aria-invalid="true"` while the field is invalid, and `aria-describedby` points to the **error** message
+  (`<id>-invalid`) while it is invalid, to the **valid** message (`<id>-valid`) while it is valid. Only the message that
+  applies is linked.
+- A validator is announced once the user went through the field (blur or input): an empty required field is not an error
+  before. A forced `is-valid="false"` is announced at once.
+- A field without `id` gets its messages named with a generated id (`ngb-field-3-invalid`): in 2.0.0 and 2.0.1 two fields
+  without id shared the id `-invalid`.

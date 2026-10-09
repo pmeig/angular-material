@@ -1,8 +1,8 @@
-import { computed, Directive, Host, input, Optional } from '@angular/core';
+import { computed, Directive, Host, HostListener, input, Optional } from '@angular/core';
 import { EmptyBooleanAttribute, emptyBooleanAttribute } from '@pmeig/ng-material-core';
 import { NoValidationCss } from './b-form.css';
 import { FormControl, FormControlName } from '@angular/forms';
-import { BTagDirective } from '@pmeig/ngb-core';
+import { addDescribedBy, BTagDirective, removeDescribedBy, uniqueId } from '@pmeig/ngb-core';
 import { JsonPipe } from '@angular/common';
 import { isBlank } from '@pmeig/ng-core';
 
@@ -27,6 +27,12 @@ export class BValidatorDirective extends BTagDirective<
     messages: {},
   };
   private lastObserveChange?: string;
+  /** Id the messages are named after: the one of the field, otherwise one generated. */
+  private generatedId?: string;
+  /** The field is invalid (a validator, or `is-valid="false"`); `refreshAria` tells it to the assistive technologies. */
+  private invalidState = false;
+  /** The user went through the field: before, an empty required field is not announced as an error. */
+  private interacted = false;
 
   invalid = input<string>('', { alias: 'error' });
   valid = input<string>('');
@@ -72,6 +78,46 @@ export class BValidatorDirective extends BTagDirective<
   private putValidity(validity: string) {
     if (this.element.setCustomValidity)
       this.element.setCustomValidity(validity);
+    this.invalidState = validity !== '';
+    this.refreshAria();
+  }
+
+  /** The user leaves or edits the field: from now on its errors are announced. */
+  @HostListener('blur')
+  @HostListener('input')
+  protected onInteract() {
+    if (!this.interacted) {
+      this.interacted = true;
+      this.refreshAria();
+    }
+  }
+
+  private get baseId() {
+    return this.element.id || (this.generatedId ??= uniqueId('ngb-field'));
+  }
+
+  /**
+   * `aria-invalid` and the link to the message that applies (`aria-describedby`): the error message while the field is
+   * invalid, the valid message while it is valid. A manual `is-valid="false"` counts at once, a validator once the user
+   * went through the field.
+   */
+  private refreshAria() {
+    const announced = this.validate() === false || this.interacted;
+    const invalid = this.invalidState && announced;
+    if (invalid) {
+      this.element.setAttribute('aria-invalid', 'true');
+    } else {
+      this.element.removeAttribute('aria-invalid');
+    }
+    for (const key of ['invalid', 'valid'] as const) {
+      const message = this.state.messages[key];
+      if (!message) continue;
+      if (announced && (key === 'invalid') === this.invalidState) {
+        addDescribedBy(this.element, message.id);
+      } else {
+        removeDescribedBy(this.element, message.id);
+      }
+    }
   }
 
   private observeValueChange(control: FormControl) {
@@ -110,7 +156,9 @@ export class BValidatorDirective extends BTagDirective<
     if (message) {
       this.getOrCreateElement(key, message).innerHTML = message;
     } else if (this.state.messages[key]) {
+      removeDescribedBy(this.element, this.state.messages[key]!.id);
       this.renderer.removeChild(this.renderer.parentNode(this.element), this.state.messages[key]);
+      this.state.messages[key] = undefined;
     }
   }
 
@@ -119,12 +167,13 @@ export class BValidatorDirective extends BTagDirective<
     if (!element) {
       const classname = `${key}-${this.tooltip()}`;
       element = this.renderer.createElement('div') as Element;
-      element.id = `${this.element.id}-${key}`;
+      element.id = `${this.baseId}-${key}`;
       this.putClass(element, classname);
       const parent = this.insertParent('form-field-validator');
       this.createMarginMessage(parent, key, message, element);
       this.renderer.appendChild(parent, element);
       this.state.messages[key] = element;
+      this.refreshAria();
     }
     return element as Element;
   }

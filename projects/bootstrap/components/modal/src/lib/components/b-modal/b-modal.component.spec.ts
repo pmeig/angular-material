@@ -22,6 +22,17 @@ class ModalsComponent {
   readonly flow = signal(true);
 }
 
+@Component({
+  imports: [ModalMaterial],
+  template: `
+    <button id="opener" type="button" (click)="shown.set(true)">Open</button>
+    <modal id="single" title="Delete?" [(show)]="shown"><p>Body</p></modal>
+  `,
+})
+class SingleModalComponent {
+  readonly shown = signal(false);
+}
+
 /** First render + 50 ms of TagComponent + the 170 ms animation of the modal. */
 const settled = async (fixture: ComponentFixture<unknown>) => {
   fixture.detectChanges();
@@ -86,5 +97,39 @@ describe('ModalMaterial', () => {
     expect(dialog('full').classList).toContain('modal-fullscreen');
     expect(dialog('full-md').classList).toContain('modal-fullscreen-md-down');
     expect(dialog('large').classList).toContain('modal-lg');
+  });
+});
+
+describe('ModalMaterial focus', () => {
+  let fixture: ComponentFixture<SingleModalComponent>;
+  const opener = () => fixture.nativeElement.querySelector('#opener') as HTMLButtonElement;
+  const dialog = () => fixture.nativeElement.querySelector('modal#single .modal') as HTMLElement | null;
+  const escape = () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+  beforeEach(async () => {
+    fixture = TestBed.createComponent(SingleModalComponent);
+    await settled(fixture);
+    opener().focus();
+    opener().click();
+    await settled(fixture);
+  });
+
+  it('moves the focus into the modal, and gives it back to the button that opened it once it is closed', async () => {
+    expect(document.activeElement).toBe(dialog());
+
+    escape();
+    await settled(fixture);
+    expect(document.activeElement).toBe(opener());
+  });
+
+  it('leaves the focus where the user put it when it is closed', async () => {
+    const other = document.createElement('input');
+    document.body.appendChild(other);
+    other.focus();
+
+    escape();
+    await settled(fixture);
+    expect(document.activeElement).toBe(other);
+    other.remove();
   });
 });
