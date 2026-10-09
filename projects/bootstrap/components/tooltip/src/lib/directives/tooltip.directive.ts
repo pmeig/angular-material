@@ -32,4 +32,16 @@ export class TooltipMaterial extends BAbstractTooltipDirective<TooltipFactory> {
     this.hide(event);
   }
 
+  /** The keyboard gets the tooltip too (WCAG 1.4.13): shown when the element is focused, hidden when it loses the focus or on Escape. */
+  @HostListener('focus')
+  protected onFocus() {
+    this.show();
+  }
+
+  @HostListener('blur')
+  @HostListener('keydown.escape')
+  protected onBlur() {
+    this.hide();
+  }
+
 }

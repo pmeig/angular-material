@@ -262,3 +262,8 @@ This project is licensed under the MIT License.
 
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
+
+## Fixed in 2.0.3
+
+- **The focus goes back** to the element that had it when the modal opened (the button that opened it), once it is closed,
+  by the cross, Escape, a click outside, the timeout or `[show]`. Not when the user moved the focus elsewhere on purpose.

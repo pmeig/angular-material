@@ -284,3 +284,10 @@ This project is licensed under the MIT License.
 
 ## Support
 For issues and questions, please open an issue on the GitHub repository.
+
+## Accessibility (since 2.0.2)
+
+- While the tooltip is shown, its id is in the `aria-describedby` of the element (after the ids the application wrote): a
+  screen reader reads it with the element. It goes with the tooltip.
+- The tooltip is also shown when the element gets the **keyboard focus**, and hidden when it loses it or on **Escape**
+  (WCAG 1.4.13): 2.0.0 and 2.0.1 showed it with the mouse only.

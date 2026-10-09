@@ -14,7 +14,7 @@ import {
 import { NgpDate, NgpDatePipe, NgpDateTime, NgpTime, Nullable } from '@pmeig/ng-core';
 import { emptyBooleanAttribute, EmptyBooleanAttribute, RGB } from '@pmeig/ng-material-core';
 import { findMapper, InputMapper } from '../b-input.mapper';
-import { BTagDirective } from '@pmeig/ngb-core';
+import { addDescribedBy, BTagDirective, removeDescribedBy, uniqueId } from '@pmeig/ngb-core';
 import { FormControlName } from '@angular/forms';
 
 export interface InputWeek {
@@ -87,9 +87,14 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
 
   private renderDescribe() {
     const describe = this.describe();
+    // the previous help text goes away (with its link to the field) before the new one is written
+    if (this.describeElement) {
+      removeDescribedBy(this.element, this.describeElement.id);
+      this.describeElement.remove();
+      this.describeElement = undefined;
+    }
     if (describe) {
       this.updateParent(false, `input-describe-${this.element.id}`);
-      this.describeElement = undefined;
     }
     if (describe) {
       if (typeof describe === 'string') {
@@ -101,6 +106,9 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
       }
       const parent = this.insertParent(`input-describe-${this.element.id}`);
       this.putClass(this.describeElement, 'form-text');
+      // read with the field by a screen reader: the id of the help text is in aria-describedby
+      this.describeElement!.id = this.element.id ? `${this.element.id}-describe` : uniqueId('ngb-describe');
+      addDescribedBy(this.element, this.describeElement!.id);
       this.renderer.appendChild(parent, this.describeElement);
     }
   }
@@ -108,7 +116,14 @@ export class BInputDirective extends BTagDirective<HTMLInputElement> {
   private refreshType() {
     const type = this.type();
     this.element.type = type;
-    this.removeParent();
+    // the wrapper also holds the help text (describe): it stays then, only without the class of a check box
+    if (this.parent) {
+      if (!this.describeElement) {
+        this.removeParent();
+      } else if (type !== 'checkbox' && type !== 'radio') {
+        this.updateParent(false, 'form-check');
+      }
+    }
     switch (type) {
       case 'checkbox':
       case 'radio':

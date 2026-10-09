@@ -112,6 +112,7 @@ export class ModalMaterial extends BTagComponent implements Modal {
       this.timeoutConfig.close = undefined;
       this.clearTimeout(this.timeoutConfig.animation.show);
       this.display.show.set(false);
+      this.restoreFocus();
       this.timeoutConfig.animation.show = this.addTimeout(() => this.display.container.set(false), TIMEOUT_ANIMATION).id;
       this.showChange.emit(false);
     }
@@ -119,6 +120,7 @@ export class ModalMaterial extends BTagComponent implements Modal {
 
   open() {
     if (!this.display.show()) {
+      this.rememberOpener();
       this.display.container.update(() => true);
       this.clearTimeout(this.timeoutConfig.animation.show);
       this.timeoutConfig.animation.show = this.addTimeout(() => {
@@ -129,6 +131,26 @@ export class ModalMaterial extends BTagComponent implements Modal {
       }, TIMEOUT_ANIMATION).id;
       this.applyTimeout();
       this.showChange.emit(true);
+    }
+  }
+
+  /** The element that had the focus when the modal opened (the button that opened it): the focus goes back to it on close. */
+  private opener?: HTMLElement;
+
+  private rememberOpener() {
+    const active = this.element.ownerDocument.activeElement;
+    this.opener = active instanceof HTMLElement && active !== this.element.ownerDocument.body && !this.element.contains(active)
+      ? active
+      : undefined;
+  }
+
+  /** Back to the opener, unless the user moved the focus elsewhere on purpose (outside the modal and not on the page). */
+  private restoreFocus() {
+    const document = this.element.ownerDocument;
+    const opener = this.opener;
+    this.opener = undefined;
+    if (opener?.isConnected && (document.activeElement === document.body || this.element.contains(document.activeElement))) {
+      opener.focus();
     }
   }
 
