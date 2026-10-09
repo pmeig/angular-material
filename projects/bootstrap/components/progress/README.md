@@ -212,7 +212,7 @@ This library generates and works with standard Bootstrap 5 progress classes:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility

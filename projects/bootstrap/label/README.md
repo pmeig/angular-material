@@ -116,7 +116,7 @@ This library generates and works with standard Bootstrap 5 form classes:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility
@@ -156,3 +156,13 @@ This project is licensed under the MIT License.
 ## Support
 
 For issues and questions, please open an issue on the GitHub repository.
+
+## Known issues (2.0.0)
+
+Found by reading the code (not reproduced in a running app):
+
+- **`label[for]` looks its input up too early**: the constructor calls `document.getElementById(for)` while the view is
+  being created, before the elements are attached to the document; when it returns `null` and `[for]` is not bound,
+  `onInit` reads `target().tagName` on `null` and throws.
+- **`[for]` is typed `Element`** but Angular binds `[for]="'id'"` (a string) to it: the `tagName` checks then fail
+  silently (no click forwarding, always `form-label`).

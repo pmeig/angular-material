@@ -15,7 +15,7 @@ A powerful Angular library that provides Bootstrap-styled loading spinners with 
 - 🎨 **CSS Integration** - Full Bootstrap 5.3.3 spinner compatibility
 - 🚀 Angular 21.2.0 support with signals
 - 📱 **Responsive Design** - Scalable spinners for all screen sizes
-- ♿ **Accessibility Friendly** - Screen reader support with proper markup
+- ♿ **Accessibility** - add `role="status"` and a visually hidden text yourself
 - 🛠️ **Flexible Implementation** - Easy integration with existing elements
 
 ## Usage
@@ -40,6 +40,8 @@ export class MyComponent { }
 ### Colored Spinners
 ```html
 <spinner color="primary"></spinner>
+<!-- accessible: -->
+<spinner color="primary" role="status"><span class="visually-hidden">Loading...</span></spinner>
 <spinner color="success"></spinner>
 <spinner color="danger"></spinner>
 <spinner color="warning"></spinner>
@@ -54,7 +56,7 @@ export class MyComponent { }
 <spinner color="secondary"></spinner>
 
 <!-- Large Spinner -->
-<spinner size="lg" color="success"></spinner>
+<spinner size="lg" color="success"></spinner> <!-- spinner-border-lg: not styled by Bootstrap -->
 ```
 ### Custom Colors
 ```html
@@ -69,11 +71,14 @@ export class MyComponent { }
 ```
 ### Loading States in Buttons
 ```html
-<button class="btn btn-primary" [disabled]="isLoading">
-  @if(isLoading) {
-    <spinner size="sm" color="white" class="me-2"></spinner>
+<!-- as in Bootstrap: the spinner is decorative (aria-hidden), the text carries role="status" -->
+<button color="primary" [disabled]="isLoading">
+  @if (isLoading) {
+    <spinner size="sm" aria-hidden="true" class="me-2"></spinner>
+    <span role="status">Loading...</span>
+  } @else {
+    Submit
   }
-{{ isLoading ? 'Loading...' : 'Submit' }}
 </button>
 ```
 ### Inline Loading Indicators
@@ -110,7 +115,7 @@ export class MyComponent { }
 #### Size Options
 - **Small**: `size="sm"` - Compact spinner for inline use
 - **Default**: No size attribute - Standard spinner size
-- **Large**: `size="lg"` - Prominent spinner for main loading states
+- **Large**: `size="lg"` - no Bootstrap style (see Bootstrap Classes Support)
 
 #### Color Configuration
 - **Bootstrap Colors**: `primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`
@@ -125,7 +130,7 @@ The spinner directive automatically:
 2. **Size Management**: Handles size variant styling
 3. **Color Processing**: Manages color through CSS classes or inline styles
 4. **Animation Control**: Provides smooth, hardware-accelerated animations
-5. **Accessibility**: Maintains proper ARIA attributes for screen readers
+5. **Accessibility**: adds no ARIA attribute: put `role="status"` and a `<span class="visually-hidden">Loading...</span>` inside yourself
 
 ### Performance Considerations
 - **Lightweight**: Minimal DOM manipulation and CSS
@@ -138,14 +143,14 @@ This library generates and works with standard Bootstrap 5 spinner classes:
 - `spinner-border` - Rotating border spinner
 - `spinner-grow` - Growing/pulsing spinner
 - `spinner-border-sm`, `spinner-grow-sm` - Small size variants
-- `spinner-border-lg`, `spinner-grow-lg` - Large size variants
+- `spinner-border-lg`, `spinner-grow-lg` - written for `size="lg"`, but **Bootstrap has no such class**: a large spinner needs your own CSS (or `style="width: 3rem; height: 3rem"`), as the [Bootstrap docs](https://getbootstrap.com/docs/5.3/components/spinners/#size) do
 - `text-primary`, `text-success`, etc. - Text color classes
 
 ## Dependencies
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility

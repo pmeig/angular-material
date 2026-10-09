@@ -109,7 +109,7 @@ The accordion module depends on:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-collapse**: ^0.0.1
+- **@pmeig/ngb-collapse**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility

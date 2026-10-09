@@ -182,7 +182,7 @@ This library generates and works with standard Bootstrap 5 select classes:
 
 - **Angular**: >=21.2
 - **@angular/common**: >=21.2
-- **@pmeig/ngb-core**: ^0.0.1
+- **@pmeig/ngb-core**: ^2.0.0
 - **tslib**: ^2.3.0
 
 ## Compatibility
@@ -223,3 +223,12 @@ This project is licensed under the MIT License.
 
 For issues and questions, please open an issue on the GitHub repository.
 
+
+## Known issues (2.0.0)
+
+- **Falsy `ngValue` is lost**: `ngValue = _ngValue() || value()`: `[ngValue]="0"`, `false` or `''` fall back to the
+  `value` attribute (often `undefined`). Fix: `?? `instead of `||`.
+- **Selection applied after the first render**: `[selection]` selects the matching option ~50 ms after the first
+  render (see `@pmeig/ngb-core`): the first option shows for an instant.
+- **Every `option` of the component** gets `BOptionDirective` (selector `option`), `datalist` options included: harmless,
+  but `SelectMaterial` and an `<input list>` in the same component share it.
